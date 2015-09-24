@@ -1,0 +1,462 @@
+\documentclass[
+	% -- opções da classe memoir --
+	12pt,				% tamanho da fonte
+	openright,			% capítulos começam em pág ímpar (insere página vazia caso preciso)
+	oneside,			% para impressão em apenas anverso. Oposto a twoside
+	%twoside,			% para impressão em verso e anverso. Oposto a oneside
+	a4paper,			% tamanho do papel. 
+	% -- opções da classe abntex2 --
+	%chapter=TITLE,		% títulos de capítulos convertidos em letras maiúsculas
+	%section=TITLE,		% títulos de seções convertidos em letras maiúsculas
+	%subsection=TITLE,	% títulos de subseções convertidos em letras maiúsculas
+	%subsubsection=TITLE,% títulos de subsubseções convertidos em letras maiúsculas
+	% -- opções do pacote babel --
+	english,			% idioma adicional para hifenização
+	francais,			% idioma adicional para hifenização
+	spanish,			% idioma adicional para hifenização
+	brazil				% o último idioma é o principal do documento
+	]{abntex2}
+
+% ---
+% Pacotes básicos 
+% ---
+\usepackage{lmodern}			% Usa a fonte Latin Modern
+\usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{microtype} 			% para melhorias de justificação
+
+% ---
+% Pacotes adicionais, usados apenas no âmbito do Modelo Canônico do abnteX2
+% ---
+\usepackage{lipsum}				% para geração de dummy text
+% ---
+
+% ---
+% Pacotes de citações
+% ---
+\usepackage[brazilian,hyperpageref]{backref}	% Paginas com as citações na bibl
+\usepackage[alf]{abntex2cite}					% Citações padrão ABNT
+
+% ---
+% Pacotes gráficos
+% ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+% --- 
+% CONFIGURAÇÕES DE PACOTES
+% --- 
+
+% ---
+% Configurações do pacote backref
+% Usado sem a opção hyperpageref de backref
+\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
+% Texto padrão antes do número das páginas
+\renewcommand{\backref}{}
+% Define os textos da citação
+\renewcommand*{\backrefalt}[4]{
+	\ifcase #1 %
+		Nenhuma citação no texto.%
+	\or
+		Citado na página #2.%
+	\else
+		Citado #1 vezes nas páginas #2.%
+	\fi}%
+% ---
+
+% ---
+% Configurações do pacote tikz
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=10em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+% ---
+
+% ---
+% Informações de dados para CAPA e FOLHA DE ROSTO
+% ---
+\titulo{Métodos de Segmentação Automática de Sinais de Eletromiografia para Classificação de Movimentos Utilizando Redes Neurais Artificiais}
+\autor
+{
+	UNIVERSIDADE FEDERAL DO RIO GRANDE DO SUL\\
+	ESCOLA DE ENGENHARIA\\
+	DEPARTAMENTO DE ENGENHARIA ELÉTRICA\\
+	GRADUAÇÃO EM ENGENHARIA ELÉTRICA\\
+	\vspace*{4\baselineskip} 
+	VICENTE COSTAMILAN DA CUNHA
+}
+\local{Porto Alegre}
+\data{2015}
+\orientador{Prof. Dr. Eng. Alexandre Balbinot}
+\coorientador{}
+\instituicao{}
+\tipotrabalho{Monografia (graduação)}
+% O preambulo deve conter o tipo do trabalho, o objetivo, 
+% o nome da instituição e a área de concentração 
+\preambulo{Projeto de Diplomação apresentado ao Departamento de Engenharia Elétrica da Escola de Enegenharia da Universidade Federal do Rio Grande do Sul, como requisito parcial para Graduação em Engenharia Elétrica}
+% ---
+
+
+% ---
+% Configurações de aparência do PDF final
+
+% alterando o aspecto da cor azul
+\definecolor{blue}{RGB}{41,5,195}
+\definecolor{black}{RGB}{0,0,0}
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title}, 
+		pdfauthor={\@author},
+    	pdfsubject={\imprimirpreambulo},
+	    pdfcreator={LaTeX with abnTeX2},
+		pdfkeywords={abnt}{latex}{abntex}{abntex2}{trabalho acadêmico}, 
+		colorlinks=true,	% false: boxed links; true: colored links
+    	linkcolor=black,	% color of internal links
+    	citecolor=black,	% color of links to bibliography
+    	filecolor=black,	% color of file links
+		urlcolor=black,
+		bookmarksdepth=4
+}
+\makeatother
+% --- 
+
+% --- 
+% Espaçamentos entre linhas e parágrafos 
+% --- 
+
+% O tamanho do parágrafo é dado por:
+\setlength{\parindent}{1.3cm}
+
+% Controle do espaçamento entre um parágrafo e outro:
+\setlength{\parskip}{0.2cm}  % tente também \onelineskip
+
+% ---
+% compila o indice
+% ---
+\makeindex
+% ---
+
+% ----
+% Início do documento
+% ----
+\begin{document}
+
+% Seleciona o idioma do documento (conforme pacotes do babel)
+%\selectlanguage{english}
+\selectlanguage{brazil}
+
+% Retira espaço extra obsoleto entre as frases.
+\frenchspacing 
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+% \pretextual
+
+% ---
+% Capa
+% ---
+\imprimircapa
+% ---
+
+% ---
+% Folha de rosto
+% (o * indica que haverá a ficha bibliográfica)
+% ---
+\imprimirfolhaderosto*
+% ---
+
+% ---
+INSERIR A FICHA BIBLIOGRÁFICA
+% ---
+
+% ---
+% Inserir folha de aprovação
+% ---
+
+% Isto é um exemplo de Folha de aprovação, elemento obrigatório da NBR
+% 14724/2011 (seção 4.2.1.3). Você pode utilizar este modelo até a aprovação
+% do trabalho. Após isso, substitua todo o conteúdo deste arquivo por uma
+% imagem da página assinada pela banca com o comando abaixo:
+%
+% \includepdf{folhadeaprovacao_final.pdf}
+%
+\begin{folhadeaprovacao}
+
+  \begin{center}
+    {\ABNTEXchapterfont\large\imprimirautor}
+
+    \vspace*{\fill}\vspace*{\fill}
+    \begin{center}
+      \ABNTEXchapterfont\bfseries\Large\imprimirtitulo
+    \end{center}
+    \vspace*{\fill}
+    
+    \hspace{.45\textwidth}
+    \begin{minipage}{.5\textwidth}
+        \imprimirpreambulo
+    \end{minipage}%
+    \vspace*{\fill}
+   \end{center}
+        
+   Trabalho aprovado. \imprimirlocal, XX de XXXXXX de 2015:
+
+   \assinatura{\textbf{\imprimirorientador} \\ Orientador} 
+   \assinatura{\textbf{Professor} \\ Convidado 1}
+   \assinatura{\textbf{Professor} \\ Convidado 2}
+   %\assinatura{\textbf{Professor} \\ Convidado 3}
+   %\assinatura{\textbf{Professor} \\ Convidado 4}
+      
+   \begin{center}
+    \vspace*{0.5cm}
+    {\large\imprimirlocal}
+    \par
+    {\large\imprimirdata}
+    \vspace*{1cm}
+  \end{center}
+  
+\end{folhadeaprovacao}
+% ---
+
+% ---
+% Dedicatória
+% ---
+\begin{dedicatoria}
+   \vspace*{\fill}
+   \centering
+   \noindent
+   \textit{ INSERIR DEDICATÓRIA } \vspace*{\fill}
+\end{dedicatoria}
+% ---
+
+% ---
+% Agradecimentos
+% ---
+\begin{agradecimentos}
+	INSERIR AGRADECIMENTOS
+\end{agradecimentos}
+% ---
+
+% ---
+% Epígrafe
+% ---
+\begin{epigrafe}
+    \vspace*{\fill}
+	\begin{flushright}
+		\textit{ INSERIR EPÍGRAFE }
+	\end{flushright}
+\end{epigrafe}
+% ---
+
+% --
+% RESUMOS
+% ---
+
+% resumo em português
+\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
+\begin{resumo}
+ A segmentação de sinais de eletromiografia (EMG) é parte essencial de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses, separando trechos de interesse do sinal correspondentes a esforços musculares e descartando trechos de sinal com baixa atividade muscular. Neste estudo, quatro métodos para segmentação automática de sinais de EMG foram implementados em MATLAB. Os métodos foram aplicados aos sinais da base de dados realizada por (LOPES, 2014) e a base de dados Ninapro (ATZORI et al, 2012). Uma rede neural artificial foi utilizada para classificar os movimentos realizados correspondentes aos sinais segmentados com os quatro métodos. Os resultados para classificação utilizando os diferentes métodos mostram que [resultados aqui]. 
+
+ \textbf{Palavras-chave}: Eletromiografia. Segmentação. MATLAB. Base de dados Ninapro.
+\end{resumo}
+
+% resumo em inglês
+\begin{resumo}[Abstract]
+ \begin{otherlanguage*}{english}
+	TRADUZIR RESUMO
+	
+   \vspace{\onelineskip}
+   \noindent 
+   \textbf{Keywords}: Eletromiography. Segmentation. MATLAB. Ninapro database.
+ \end{otherlanguage*}
+\end{resumo}
+% ---
+
+% ---
+% inserir lista de ilustrações
+% ---
+\pdfbookmark[0]{\listfigurename}{lof}
+\listoffigures*
+\cleardoublepage
+% ---
+
+% ---
+% inserir lista de tabelas
+% ---
+\pdfbookmark[0]{\listtablename}{lot}
+\listoftables*
+\cleardoublepage
+% ---
+
+% ---
+% inserir lista de abreviaturas e siglas
+% ---
+\begin{siglas}
+  	\item[EMG]		Eletromiografia
+	\item[MU]		\emph{Motor Unit}
+  	\item[MUAP]		\emph{Motor Unit Action Potencial}
+	\item[MUAPT]	\emph{Motor Unit Action Potencial Trains}
+	\item[MTD\#]	\emph{Método número \#}
+	\item[BEP]		\emph{Beginning Extraction Point}
+	\item[EEP]		\emph{Ending Extraction Point}
+\end{siglas}
+% ---
+
+% ---
+% inserir o sumario
+% ---
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+% ---
+
+
+
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+% ----------------------------------------------------------
+% Introdução
+% ----------------------------------------------------------
+\chapter{Introdução}
+% ----------------------------------------------------------
+
+Sinais de EMG apresentam crescentes aplicações no controle de próteses mioelétricas. Por exemplo, (HARGROVE et al, 2013) mostra o controle de prótese de perna de um amputado acima do joelho direito, enquanto (JUN-UK CHU et al, 2007) apresentou bons resultados de reconhecimento de padrões de EMG para desenvolvimento de uma prótese multifuncional de mão. Em áreas não relacionadas à próteses, (CONSTANTINOS S. PATTICHIS et al, 1995) utiliza redes neurais artificiais para realização de diagnósticos clínicos de desordens neuromusculares.
+
+As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais (HUDGINS et al,1993), classificador Bayesiano (ENGLEHART and HUDGINS, 2003), modelos de misturas de Gaussianas (HUANG et al, 2004) e lógicas \emph{fuzzy} (CHAN et al, 2000). Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet (JUN-UK CHU et al, 2007). 
+
+Este trabalho tem como objetivo implementar em MATLAB quatro diferentes métodos de segmentação automática de sinais de EMG. Os métodos serão aplicados em sinais da base de dados realizada por (LOPES, 2014), que contempla sinais de EMG de superfície provenientes da região do antebraço; e na base de dados NINAPRO (ATZORI et al, 2012), que contém sinais de dez canais de EMG de superfície para 52 diferentes movimentos de mão e punho.
+
+Os primeiros dois métodos (que serão identificados neste estudo pelos mneumônicos MTD1 e MTD2) tratam da detecção de picos do sinal e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável. Para as implementações dos métodos neste estudo, assume-se o conhecimento \emph{a priori} do número de segmentos de interesse contidos no sinal.
+
+O primeiro método (MTD1) é baseado no método de segmentação utilizado em (CHAUVET et al, 2001). Trata-se de método iterativo, identificando os picos do sinal a partir de \emph{threshold} de amplitude, segmentando o sinal em janelas de comprimento constante centradas nos picos. O valor de \emph{threshold} para a primeira iteração corresponde ao máximo absoluto do sinal. A cada nova iteração em que não se atinge um número desejado de segmentos, o novo \emph{threshold} é calculado como fração do \emph{threshold} da iteração anterior.
+
+O segundo método (MTD2) é baseado no método de segmentação utilizado em (KATSIS et al, 2006). De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente de MTD1, MTD2 não é iterativo, utilizando o valor máximo e o comprimento do sinal para cálculo do valor de \emph{threshold}.
+
+O terceiro método (MTD3) é baseado no método de segmentação utilizado em (GUT and MOSCHYTZ, 2000). Uma janela deslizante percorre o sinal e identifica inícios de segmentos quando a declividade média no interior da janela excede determinado valor de \emph{threshold}. Os finais dos segmentos são identificados quando a variação total do sinal no interior da janela é inferior a um segundo valor de \emph{threshold}.
+
+O quarto método (MTD4) é baseado no método de segmentação utilizado em (PATTICHIS et al, 1995). Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
+
+Utilizando valores de variância e RMS dos sinais segmentados, como no estudo de (SCHONS, 2014) [TODO: DETERMINAR AS CARACTERÍSTICAS A SEREM UTILIZADAS PARA TREINAMENTO DA REDE NEURAL], uma rede neural artificial será treinada para classificar entre possíveis movimentos. O objetivo final deste estudo é avaliar a influência dos métodos de segmentação nas taxas de acerto de classiicação.
+
+% ----------------------------------------------------------
+\chapter{Revisão Bibliográfica}
+\include{revisaoBibliografica}
+% ----------------------------------------------------------
+
+% ----------------------------------------------------------
+\chapter{Metodologia Experimental}
+\include{metodologiaExperimental}
+% ----------------------------------------------------------
+
+% ----------------------------------------------------------
+\chapter{Resultados e Discussões}
+\include{resultados}
+% ----------------------------------------------------------
+
+% ---
+% Conclusão
+% ---
+\chapter{Conclusão}
+% ---
+
+%% ----------------------------------------------------------
+%% ELEMENTOS PÓS-TEXTUAIS
+%% ----------------------------------------------------------
+%\postextual
+%% ----------------------------------------------------------
+%
+%% ----------------------------------------------------------
+%% Referências bibliográficas
+%% ----------------------------------------------------------
+%\bibliography{abntex2-modelo-references}
+%
+%% ----------------------------------------------------------
+%% Glossário
+%% ----------------------------------------------------------
+%%
+%% Consulte o manual da classe abntex2 para orientações sobre o glossário.
+%%
+%%\glossary
+%
+%% ----------------------------------------------------------
+%% Apêndices
+%% ----------------------------------------------------------
+%
+%% ---
+%% Inicia os apêndices
+%% ---
+%\begin{apendicesenv}
+%
+%% Imprime uma página indicando o início dos apêndices
+%\partapendices
+%
+%% ----------------------------------------------------------
+%\chapter{Quisque libero justo}
+%% ----------------------------------------------------------
+%
+%\lipsum[50]
+%
+%% ----------------------------------------------------------
+%\chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
+%ac pretium ante justo a nulla curabitur tristique arcu eu metus}
+%% ----------------------------------------------------------
+%\lipsum[55-57]
+%
+%\end{apendicesenv}
+%% ---
+%
+%% ----------------------------------------------------------
+%% Anexos
+%% ----------------------------------------------------------
+%
+%% ---
+%% Inicia os anexos
+%% ---
+%\begin{anexosenv}
+%
+%% Imprime uma página indicando o início dos anexos
+%\partanexos
+%
+%% ---
+%\chapter{Morbi ultrices rutrum lorem.}
+%% ---
+%\lipsum[30]
+%
+%% ---
+%\chapter{Cras non urna sed feugiat cum sociis natoque penatibus et magnis dis
+%parturient montes nascetur ridiculus mus}
+%% ---
+%
+%\lipsum[31]
+%
+%% ---
+%\chapter{Fusce facilisis lacinia dui}
+%% ---
+%
+%\lipsum[32]
+%
+%\end{anexosenv}
+%
+%%---------------------------------------------------------------------
+%% INDICE REMISSIVO
+%%---------------------------------------------------------------------
+%\phantompart
+%\printindex
+%%---------------------------------------------------------------------
+
+\end{document}
