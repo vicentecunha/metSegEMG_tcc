@@ -17,6 +17,10 @@
 	brazil				% o último idioma é o principal do documento
 	]{abntex2}
 
+% Evita linhas orfãs e viúvas
+\widowpenalty=10000
+\clubpenalty=10000
+
 % ---
 % Pacotes básicos 
 % ---
@@ -84,10 +88,10 @@
 % ---
 % Informações de dados para CAPA e FOLHA DE ROSTO
 % ---
-\titulo{Métodos de Segmentação Automática de Sinais de Eletromiografia para Classificação de Movimentos Utilizando Redes Neurais Artificiais}
+\titulo{Métodos de Segmentação Automática de Sinais de Eletromiografia de Superfície para Classificação de Movimentos Utilizando Redes Neurais Artificiais}
 \autor
 {
-	UNIVERSIDADE FEDERAL DO RIO GRANDE DO SUL\\
+	UNIVERSIDADE FEDERAL DO RIO GR\&E DO SUL\\
 	ESCOLA DE ENGENHARIA\\
 	DEPARTAMENTO DE ENGENHARIA ELÉTRICA\\
 	GRADUAÇÃO EM ENGENHARIA ELÉTRICA\\
@@ -96,13 +100,13 @@
 }
 \local{Porto Alegre}
 \data{2015}
-\orientador{Prof. Dr. Eng. Alexandre Balbinot}
+\orientador{Prof. Dr. Eng. Alex\&re Balbinot}
 \coorientador{}
 \instituicao{}
 \tipotrabalho{Monografia (graduação)}
 % O preambulo deve conter o tipo do trabalho, o objetivo, 
 % o nome da instituição e a área de concentração 
-\preambulo{Projeto de Diplomação apresentado ao Departamento de Engenharia Elétrica da Escola de Enegenharia da Universidade Federal do Rio Grande do Sul, como requisito parcial para Graduação em Engenharia Elétrica}
+\preambulo{Projeto de Diplomação apresentado ao Departamento de Engenharia Elétrica da Escola de Engenharia da Universidade Federal do Rio Gr\&e do Sul, como requisito parcial para Graduação em Engenharia Elétrica}
 % ---
 
 
@@ -267,9 +271,11 @@ INSERIR A FICHA BIBLIOGRÁFICA
 % resumo em português
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
- A segmentação de sinais de eletromiografia (EMG) é parte essencial de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses, separando trechos de interesse do sinal correspondentes a esforços musculares e descartando trechos de sinal com baixa atividade muscular. Neste estudo, quatro métodos para segmentação automática de sinais de EMG foram implementados em MATLAB. Os métodos foram aplicados aos sinais da base de dados realizada por (LOPES, 2014) e a base de dados Ninapro (ATZORI et al, 2012). Uma rede neural artificial foi utilizada para classificar os movimentos realizados correspondentes aos sinais segmentados com os quatro métodos. Os resultados para classificação utilizando os diferentes métodos mostram que [resultados aqui]. 
 
- \textbf{Palavras-chave}: Eletromiografia. Segmentação. MATLAB. Base de dados Ninapro.
+	A segmentação de sinais de eletromiografia (EMG) é parte essencial de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses, separando trechos de interesse do sinal correspondentes a esforços musculares e descartando trechos de sinal com baixa atividade muscular. Neste estudo, quatro métodos para segmentação automática de sinais de EMG foram implementados em MATLAB. Os métodos foram aplicados aos sinais de EMG de superfície a base de dados do projeto Ninapro e aos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Uma rede neural artificial foi utilizada para classificar os movimentos realizados correspondentes aos sinais segmentados com os quatro métodos. TODO: RESULTADOS.
+
+	\vspace{\onelineskip}
+	\textbf{Palavras-chave}: Eletromiografia. Segmentação. Base de dados Ninapro.
 \end{resumo}
 
 % resumo em inglês
@@ -335,43 +341,49 @@ INSERIR A FICHA BIBLIOGRÁFICA
 \chapter{Introdução}
 % ----------------------------------------------------------
 
-Sinais de EMG apresentam crescentes aplicações no controle de próteses mioelétricas. Por exemplo, (HARGROVE et al, 2013) mostra o controle de prótese de perna de um amputado acima do joelho direito, enquanto (JUN-UK CHU et al, 2007) apresentou bons resultados de reconhecimento de padrões de EMG para desenvolvimento de uma prótese multifuncional de mão. Em áreas não relacionadas à próteses, (CONSTANTINOS S. PATTICHIS et al, 1995) utiliza redes neurais artificiais para realização de diagnósticos clínicos de desordens neuromusculares.
+Sinais de EMG apresentam crescentes aplicações no controle de próteses mioelétricas. Por exemplo, (HARGROVE \emph{et al}. 2013) mostram o controle de uma prótese de perna de um amputado acima do joelho direito, enquanto (JUN-UK CHU \emph{et al}. 2007) apresentou bons resultados de reconhecimento de padrões de EMG para desenvolvimento de uma prótese multifuncional de mão. Em áreas não relacionadas à próteses, (CONSTANTINOS S. PATTICHIS \emph{et al}. 1995) utilizaram redes neurais artificiais para realização de diagnósticos clínicos de desordens neuromusculares.
 
-As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais (HUDGINS et al,1993), classificador Bayesiano (ENGLEHART and HUDGINS, 2003), modelos de misturas de Gaussianas (HUANG et al, 2004) e lógicas \emph{fuzzy} (CHAN et al, 2000). Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet (JUN-UK CHU et al, 2007). 
+As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais (HUDGINS \emph{et al}.1993), classificador Bayesiano (ENGLEHART \& HUDGINS, 2003) e lógica \emph{fuzzy} (CHAN \emph{et al}. 2000). Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet (JUN-UK CHU \emph{et al}. 2007). 
 
-Este trabalho tem como objetivo implementar em MATLAB quatro diferentes métodos de segmentação automática de sinais de EMG. Os métodos serão aplicados em sinais da base de dados realizada por (LOPES, 2014), que contempla sinais de EMG de superfície provenientes da região do antebraço; e na base de dados NINAPRO (ATZORI et al, 2012), que contém sinais de dez canais de EMG de superfície para 52 diferentes movimentos de mão e punho.
+Este trabalho tem como objetivo desenvolver em MATLAB quatro diferentes métodos de segmentação automática de sinais de EMG. Os métodos serão aplicados em sinais da base de dados do projeto Ninapro (ATZORI \emph{et al}. 2012) - que contém sinais de dez canais de EMG de superfície para 52 diferentes movimentos de mão e punho - e em sinais da base de dados similarmente adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica.
 
-Os primeiros dois métodos (que serão identificados neste estudo pelos mneumônicos MTD1 e MTD2) tratam da detecção de picos do sinal e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável. Para as implementações dos métodos neste estudo, assume-se o conhecimento \emph{a priori} do número de segmentos de interesse contidos no sinal.
+Os primeiros dois métodos (que serão identificados neste estudo pelos mnemônicos MTD1 e MTD2) tratam da detecção de picos do sinal utilizando \emph{thresholding} e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável. Para as implementações dos métodos neste estudo, assume-se o conhecimento \emph{a priori} do número de segmentos de interesse contidos no sinal.
 
-O primeiro método (MTD1) é baseado no método de segmentação utilizado em (CHAUVET et al, 2001). Trata-se de método iterativo, identificando os picos do sinal a partir de \emph{threshold} de amplitude, segmentando o sinal em janelas de comprimento constante centradas nos picos. O valor de \emph{threshold} para a primeira iteração corresponde ao máximo absoluto do sinal. A cada nova iteração em que não se atinge um número desejado de segmentos, o novo \emph{threshold} é calculado como fração do \emph{threshold} da iteração anterior.
+O primeiro método (MTD1) é baseado no método de segmentação utilizado em (CHAUVET \emph{et al}. 2001). Trata-se de método iterativo, identificando os picos do sinal a partir de \emph{threshold} de amplitude, segmentando o sinal em janelas de comprimento constante centradas nos picos. O valor de \emph{threshold} para a primeira iteração corresponde ao máximo absoluto do sinal. A cada nova iteração em que não se atinge um número desejado de segmentos, o novo \emph{threshold} é calculado como fração do \emph{threshold} da iteração anterior.
 
-O segundo método (MTD2) é baseado no método de segmentação utilizado em (KATSIS et al, 2006). De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente de MTD1, MTD2 não é iterativo, utilizando o valor máximo e o comprimento do sinal para cálculo do valor de \emph{threshold}.
+O segundo método (MTD2) é baseado no método de segmentação utilizado em (KATSIS \emph{et al}. 2006). De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente de MTD1, MTD2 não é iterativo, utilizando o valor máximo e o comprimento do sinal para cálculo do valor de \emph{threshold}.
 
-O terceiro método (MTD3) é baseado no método de segmentação utilizado em (GUT and MOSCHYTZ, 2000). Uma janela deslizante percorre o sinal e identifica inícios de segmentos quando a declividade média no interior da janela excede determinado valor de \emph{threshold}. Os finais dos segmentos são identificados quando a variação total do sinal no interior da janela é inferior a um segundo valor de \emph{threshold}.
+O terceiro método (MTD3) é baseado no método de segmentação utilizado em (GUT \& MOSCHYTZ, 2000). Uma janela deslizante percorre o sinal e identifica inícios de segmentos quando a declividade média no interior da janela excede determinado valor limite. Os finais dos segmentos são identificados quando a variação total do sinal no interior da janela é inferior a um segundo valor de \emph{threshold}.
 
-O quarto método (MTD4) é baseado no método de segmentação utilizado em (PATTICHIS et al, 1995). Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
+O quarto método (MTD4) é baseado no método de segmentação utilizado em (PATTICHIS \emph{et al}. 1995). Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
 
-Utilizando valores de variância e RMS dos sinais segmentados, como no estudo de (SCHONS, 2014) [TODO: DETERMINAR AS CARACTERÍSTICAS A SEREM UTILIZADAS PARA TREINAMENTO DA REDE NEURAL], uma rede neural artificial será treinada para classificar entre possíveis movimentos. O objetivo final deste estudo é avaliar a influência dos métodos de segmentação nas taxas de acerto de classiicação.
+Utilizando valores de RMS, variância e frequência mediana dos sinais segmentados, uma rede neural artificial será treinada para classificar entre possíveis movimentos. O objetivo final deste estudo é avaliar a influência dos métodos de segmentação nas taxas de acerto de classiicação.
 
 % ----------------------------------------------------------
 \chapter{Revisão Bibliográfica}
-\include{revisaoBibliografica}
+\input{revisaoBibliografica}
 % ----------------------------------------------------------
 
 % ----------------------------------------------------------
 \chapter{Metodologia Experimental}
-\include{metodologiaExperimental}
+\input{metodologiaExperimental}
 % ----------------------------------------------------------
 
 % ----------------------------------------------------------
 \chapter{Resultados e Discussões}
-\include{resultados}
+\input{resultados}
 % ----------------------------------------------------------
 
 % ---
 % Conclusão
 % ---
-\chapter{Conclusão}
+\chapter{Conclusões}
+% ---
+
+% ---
+% Proposta de Futuros Trabalhos
+% ---
+\chapter{Propostas de Futuros Trabalhos}
 % ---
 
 %% ----------------------------------------------------------
