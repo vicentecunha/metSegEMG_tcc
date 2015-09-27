@@ -50,7 +50,7 @@
 % ---
 \usepackage{graphicx}
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{shapes,arrows,positioning}
 
 % --- 
 % CONFIGURAÇÕES DE PACOTES
@@ -71,18 +71,6 @@
 	\else
 		Citado #1 vezes nas páginas #2.%
 	\fi}%
-% ---
-
-% ---
-% Configurações do pacote tikz
-% Define block styles
-\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
-    text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
-\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
-    text width=10em, text centered, rounded corners, minimum height=4em]
-\tikzstyle{line} = [draw, -latex']
-\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
-    minimum height=2em]
 % ---
 
 % ---
@@ -259,7 +247,8 @@ INSERIR A FICHA BIBLIOGRÁFICA
 \begin{epigrafe}
     \vspace*{\fill}
 	\begin{flushright}
-		\textit{ INSERIR EPÍGRAFE }
+		\textit{ `Not a particle of evidence, Pip,' said Mr Jaggers, shaking his head and gathering up his skirts. `Take nothing on its looks; take everything on evidence. There's no better rule.'}\\
+		Charles Dickens, Great Expectations
 	\end{flushright}
 \end{epigrafe}
 % ---

@@ -3,7 +3,7 @@
 
 Sinais de EMG podem ser adquiridos por eletrodos posicionados na superfície da pele (eletrodo não invasivo) ou por agulhas introduzidas no tecido muscular (eletrodo invasivo). Sinais de EMG são compostos por potenciais de ação de fibras musculares organizadas em unidades funcionais chamadas de "unidades motoras" (MU - \emph{Motor Unit}) (DE LUCA \emph{et al}. 2006). Uma unidade motora é composta por um neurônio motor e as fibras musculares que ele inerva, e é a entidade fundamental que controla a ativação de músculos estriados (BUCHTAL and SCHMALBRUCH, 1980). A soma algébrica dos potenciais de ação de todas as fibras de uma unidade motora é chamada de "potencial de ação da unidade motora", ou em inglês, MUAP (\emph{Motor Unit Action Potential}) (ALMEIDA, 1997). A Figura \ref{fig_MUAP_comp} apresenta a composição de uma MUAP a partir da soma dos potenciais das fibras de uma unidade motora.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
 	\caption{\label{fig_MUAP_comp}Soma de potenciais de ação das \emph{n} fibras de uma unidade motora, formando uma MUAP \emph{h(t)}.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/MUAP_oneMU.png}
@@ -13,7 +13,7 @@ Sinais de EMG podem ser adquiridos por eletrodos posicionados na superfície da 
 
 Dependendo do método utilizado para aquisição de EMG, é comum a captura da contribuição de mais de uma unidade motora no mesmo canal. A influência de uma unidade motora no sinal adquirido depende principalmente da distância das fibras musculares ao ponto de aquisição (HAMMARBERG and STERNAD, 2002). Sinais de EMG de longa duração são constituídos por sequências temporais de MUAPs, também conhecidas como MUAPTs (\emph{MUAP Trains}). A Figura \ref{fig_MUAP_trains} exemplifica MUAPTs de diferentes MUs que somam-se para formar um sinal de EMG de longa duração.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
 	\caption{\label{fig_MUAP_trains}MUAPTs de diferentes MUs somam-se para compor o sinal adquirido por um canal de EMG.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/MUAP_trains.jpg}
@@ -25,7 +25,9 @@ Dependendo do método utilizado para aquisição de EMG, é comum a captura da c
 \section{Métodos de Segmentação}
 % ---
 
-Esta seção descreve os métodos de segmentação que foram utilizados como base teórica para os métodos desenvolvidos neste trabalho. Nota-se que nomes utilizados para variáveis e constantes (por exemplo `$r$', `$T$', etc.) foram determinados pelo autor deste estudo, não necessariamente sendo estes utilizados nos métodos originais. Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos BEP (\emph{beginning extraction point}, ponto inicial de um segmento) e EEP (\emph{ending extraction point}, ponto final de um segmento), também utilizados em (PATTICHIS \emph{et al}. 1995).
+Esta seção descreve os métodos de segmentação que foram utilizados como base teórica para os métodos desenvolvidos neste trabalho. Nota-se que nomes utilizados para variáveis e constantes (por exemplo, sinal a ser segmentado `$x$', \emph{threshold} `$T$', etc.) foram determinados pelo autor deste estudo, não necessariamente sendo estes utilizados nos métodos originais.
+
+Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos BEP (\emph{beginning extraction point}, ponto inicial de um segmento) e EEP (\emph{ending extraction point}, ponto final de um segmento), também utilizados em (PATTICHIS \emph{et al}. 1995).
 	
 % ---
 \subsection{Método 1 - método iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD1)}
@@ -85,23 +87,36 @@ Para determinar o final do método, avalia-se a razão $r_k$ entre a quantidade 
 
 O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{fig_mtd1flux}.
 
-\begin{figure}[htb]
+
+% ---
+% Configurações do pacote tikz
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=10em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+% ---
+
+\begin{figure}[!htb]
 	\caption{\label{fig_mtd1flux}Fluxograma representativo do MTD1.}
 	\begin{center}
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
 			\node [block] (init) {INÍCIO\\ \vspace{\onelineskip} $k = 0$\\$T_0 = max(x)$};
-			\node [block, below of=init, node distance=3cm] (identify) {Identificar candidatos a centros de segmentos};
-			\node [decision, below of=identify] (decide) {$\frac{N_c}{L} >= r_{target}$};
-			\node [block, left of=identify, node distance=6cm] (update) {$k++$\\$T_k = q \times T_{k-1}$};
-			\node [block, below of=decide, node distance=4cm] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
+			\node [block, below = 1cm of init] (identify) {Identificar candidatos a centros de segmentos};
+			\node [decision, below = 1cm of identify] (decide) {$\frac{N_c}{L} >= r_{target}$};
+			\node [block, left = 1cm of identify] (update) {$k++$\\$T_k = q \times T_{k-1}$};
+			\node [block, below = 1cm of decide] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
 			
 			% Draw edges
 			\path [line] (init) -- (identify);
 			\path [line] (identify) -- (decide);
 			\path [line] (decide) -| node [near start] {NÃO} (update);
-			\path [line] (update) |- (identify);
-			\path [line] (decide) -- node {SIM}(stop);
+			\path [line] (update) -- (identify);
+			\path [line] (decide) -- node [near start] {SIM}(stop);
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
@@ -119,7 +134,7 @@ O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{f
 \subsection{Método 2 - método não iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD2)}
 % ---
 
-Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006). As definições da Tabela \ref{tab:mtd2params} serão utilizados para descrever este método. Primeiramente, calcula-se o valor de \emph{threshold} $T$ a partir da média aritmética, do comprimento $L$ e do valor máximo do sinal a ser segmentado $x$. No trabalho de (KATSIS \emph{et al}. 2006), a relação utilizada para cálculo de $T$ é obtido pelo fluxograma da Figura \ref{fig_mtd2flux}.
+Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. O trabalho de (KATSIS \emph{et al}. 2006) utiliza a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
 
 \begin{table}[htb]
 \IBGEtab{%
@@ -137,29 +152,49 @@ Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006). As 
 	$l$ & Comprimento desejado para os segmentos \\
 	\midrule
 	$T$ & Valor de \emph{threshold} \\
+	\midrule
+	$A$ & Coeficiente utilizado para decisão de método de cálculo de $T$ \\
+	\midrule
+	$B$ & Múltiplo da média aritmética do sinal $x$ para obtenção de $T$ \\
+	\midrule
+	$C$ & Fração do valor máximo do sinal $x$ para cálculo de $T$ \\
 	\bottomrule
 \end{tabular}%
 }{%
 }
 \end{table}
 
-\begin{figure}[htb]
-	\caption{\label{fig_mtd2flux} TODO: FLUXOGRAMA PARA CÁLCULO DE THRESHOLD NO MTD2}
+% ---
+% Configurações do pacote tikz
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=10em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=10em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+% ---
+
+\begin{figure}[!htb]
+	\caption{\label{fig_mtd2flux} Fluxograma representativo do MTD2.}
 	\begin{center}
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
-			\node [block] (init) {INÍCIO\\ \vspace{\onelineskip} $k = 0$\\$T_0 = max(x)$};
-			\node [block, below of=init, node distance=3cm] (identify) {Identificar candidatos a centros de segmentos};
-			\node [decision, below of=identify] (decide) {$\frac{N_c}{L} >= r_{target}$};
-			\node [block, left of=identify, node distance=6cm] (update) {$k++$\\$T_k = q \times T_{k-1}$};
-			\node [block, below of=decide, node distance=4cm] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
+			\node [block] (init) {INÍCIO};
+			\node [decision, below = 1cm of init] (decide) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i|$};
+			\node [block, below left = 1cm and 1cm of decide] (case 1) {$T = \frac{B}{L}\sum_{i=1}^{L}|x_i|$};
+			\node [block, below right = 1cm and 1cm of decide] (case 2) {$T = \frac{max(x)}{C}$};
+			\node [block, below = 3cm of decide] (identify) {Identificar centros de segmentos};
+			\node [block, below = 1cm of identify] (stop) {Segmentos de comprimento $l$ nos centros identificados\\ \vspace{\onelineskip} FIM};
 			
 			% Draw edges
-			\path [line] (init) -- (identify);
-			\path [line] (identify) -- (decide);
-			\path [line] (decide) -| node [near start] {NÃO} (update);
-			\path [line] (update) |- (identify);
-			\path [line] (decide) -- node {SIM}(stop);
+			\path [line] (init) -- (decide);
+			\path [line] (decide) -| node [near start] {SIM} (case 1);
+			\path [line] (decide) -| node [near start] {NÃO} (case 2);
+			\path [line] (case 1) -| (identify);
+			\path [line] (case 2) -| (identify);
+			\path [line] (identify) -- (stop);
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
@@ -169,7 +204,7 @@ Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006). As 
 %	if\left(max(x) > \frac{30}{L}\sum_{i=1}^{L}|x_i|\right); then: T = \frac{5}{L}\sum_{i=1}^{L}|x_i|; else: T = \frac{max(x)}{5}
 %\end{equation}
 
-De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são considerados possíveis candidatos para centros de segmentos. Para os possíveis candidatos que estiverem afastados de uma distância inferior a $l$, apenas o candidato de maior amplitude é considerado. Em (KATSIS \emph{et al}. 2006) utilizou-se comprimento $l$ de 121 amostras.
+De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são considerados possíveis candidatos para centros de segmentos. Para os possíveis candidatos que estiverem afastados de uma distância inferior a $l$, apenas o candidato de maior amplitude é considerado. Em (KATSIS \emph{et al}. 2006) utilizou-se coeficientes $A$, $B$ e $C$ respectivamente de 30, 5 e 5, com comprimento $l$ de 121 amostras.
 
 %A Figura \ref{fig:mtd1example} serve para ilustrar o MTD2, apresentando uma implementação em trecho de sinal de EMG retirado da base de dados Ninapro, com segmentos de comprimento $l$ de 401 amostras. O valor de \emph{threshold} T para este exemplo é calculado como $T = \frac{max(x_i)}{5}$, já que o máximo absoluto do sinal é menor que trinta vezes a média do sinal.
 %
@@ -203,11 +238,11 @@ De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são
 	\midrule
 	$\beta$ & Declividade média do sinal $x$ contido na janela deslizante \\
 	\midrule
-	$B$ & Valor limite para declividade média que determina ponto inicial de um segmento\\
+	$B$ & Valor limite para declividade média que determina um BEP\\
 	\midrule
 	$\gamma$ & Variação total do sinal $x$ contido na janela deslizante \\
 	\midrule
-	$C$ & Valor limite para variação total que determina ponto final de um segmento\\
+	$C$ & Valor limite para variação total que determina um EEP\\
 	\bottomrule
 \end{tabular}%
 }{%
