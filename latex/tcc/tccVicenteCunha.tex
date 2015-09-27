@@ -52,6 +52,21 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning}
 
+%--
+% Força figuras às suas seções
+%--
+
+\usepackage{placeins}
+
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+\let\Oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
+
 % --- 
 % CONFIGURAÇÕES DE PACOTES
 % --- 
@@ -71,6 +86,18 @@
 	\else
 		Citado #1 vezes nas páginas #2.%
 	\fi}%
+% ---
+
+% ---
+% Configurações do pacote tikz
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=10em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
 % ---
 
 % ---
