@@ -108,15 +108,6 @@ O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{f
 	\end{center}
 \end{figure}
 
-%Para ilustrar o MTD1, a Figura \ref{fig:mtd1example} apresenta uma implementação em trecho de sinal de EMG retirado da base de dados Ninapro, com fração $q$ de 90\% (isto é, $T_k = 0.9\times T_{k-1}$) e segmentos de comprimento $l$ de 401 amostras.
-% 
-%\begin{figure}
-%\centering
-%\includegraphics[width=\linewidth]{./img/mtd1example.eps}
-%\caption{Ilustração da implementação do MTD1, com $q = 0.9$ e $l = 401$. Do autor.}
-%\label{fig:mtd1example}
-%\end{figure}
- 
 % ---
 \subsection{Método 2 - método não iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD2)}
 % ---
@@ -151,18 +142,6 @@ Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que
 }
 \end{table}
 
-% ---
-% Configurações do pacote tikz
-% Define block styles
-\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
-    text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
-\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
-    text width=10em, text centered, rounded corners, minimum height=4em]
-\tikzstyle{line} = [draw, -latex']
-\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
-    minimum height=2em]
-% ---
-
 \begin{figure}[!htb]
 	\caption{\label{fig_mtd2flux} Fluxograma representativo do MTD2.}
 	\begin{center}
@@ -186,21 +165,7 @@ Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que
 	\end{center}
 \end{figure}
 
-%\begin{equation}
-%\label{eq:thKatsisCond}
-%	if\left(max(x) > \frac{30}{L}\sum_{i=1}^{L}|x_i|\right); then: T = \frac{5}{L}\sum_{i=1}^{L}|x_i|; else: T = \frac{max(x)}{5}
-%\end{equation}
-
 De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são considerados possíveis candidatos para centros de segmentos. Para os possíveis candidatos que estiverem afastados de uma distância inferior a $l$, apenas o candidato de maior amplitude é considerado. Em (KATSIS \emph{et al}. 2006) utilizou-se coeficientes $A$, $B$ e $C$ respectivamente de 30, 5 e 5, com comprimento $l$ de 121 amostras.
-
-%A Figura \ref{fig:mtd1example} serve para ilustrar o MTD2, apresentando uma implementação em trecho de sinal de EMG retirado da base de dados Ninapro, com segmentos de comprimento $l$ de 401 amostras. O valor de \emph{threshold} T para este exemplo é calculado como $T = \frac{max(x_i)}{5}$, já que o máximo absoluto do sinal é menor que trinta vezes a média do sinal.
-%
-%\begin{figure}
-%\centering
-%\includegraphics[width=\linewidth]{./img/mtd2example.eps}
-%\caption{Ilustração da implementação do MTD2, com $l = 401$. Do autor.}
-%\label{fig:mtd2example}
-%\end{figure}
 
 % ---
 \subsection{Método 3 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando variação total (MTD3)}
@@ -258,43 +223,35 @@ O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
 			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
-			\node [decision, below right = 1cm and 1cm of init] (final_detect) {$w_0++$ \\ \vspace{\onelineskip} Janela atinge o final do sinal $x$?};
-			\node [block, right = 3.2cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
-			\node [block, below left = 2cm and 0.7cm of final_detect, text width=11em] (beta) {$\beta = \frac{1}{W}\sum_{i=w_0+1}^{W}(x_i - x_{i-1})$};
-			\node [decision, left = 1cm of beta] (BEP_decide) {$\beta > B$?};
-			\node [block, below = 1cm of beta] (BEP_detected) {BEP identificado};
-			\node [block, below = 1cm of BEP_detected, text width = 6em] (w0pp) {$w_0++$};
-			\node [block, right = 1cm of w0pp] (gamma) {$\gamma = \sum_{i=w_0+1}^{W}(x_i - x_{i-1})$};
-			\node [decision, below = 1cm of gamma] (EEP_decide) {$\gamma < C$?};
-			\node [block, right = 3cm of BEP_detected] (EEP_detected) {EEP identificado};
+			\node [decision, below = 1cm of init, text width = 8em] (final_detect) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 == (L - W)?$};
+			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
+			\node [decision, below left = 1cm and 3cm of final_detect, text width=12em] (BEP_decide) {$\beta = \frac{1}{W}\sum_{i=w_0+1}^{W}(x_i - x_{i-1})$ \\ \vspace{\onelineskip} $\beta > B$?};
+			\node [block, below = 1cm of BEP_decide] (BEP_detected) {$w_0$ é BEP};
+			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 == (L - W)?$};
+			\node [decision, above right = 1cm and 3cm of w0pp, text width=12em] (EEP_decide) {$\gamma = \sum_{i=w_0+1}^{W}(x_i - x_{i-1})$ \\ \vspace{\onelineskip} $\gamma < C$?};
+			\node [block, above = 1cm of EEP_decide] (EEP_detected) {$(w_0 + W - 1)$ é EEP};
+			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
 			
-%			% Draw edges
-			\path [line] (init) -| (final_detect);
-			\path [line] (final_detect) -| node [near start] {SIM} (stop);
-			\path [line] (final_detect) |- node [near start] {NÃO} (beta);
-			\path [line] (beta) -- (BEP_decide);
-			\path [line] (BEP_decide) |- node [near start] {NÃO} (final_detect);
-			\path [line] (BEP_decide) |- node [near start] {SIM} (BEP_detected);
+			% Draw edges
+			\path [line] (init) -- (final_detect);
+			\path [line] (final_detect) -- node [near start] {SIM} (stop);
+			\path [line] (final_detect) -| node [near start] {NÃO} (BEP_decide);
+			\path [line] (BEP_decide) -| node [near start] {NÃO} (final_detect);
+			\path [line] (BEP_decide) -- node [near start] {SIM} (BEP_detected);
 			\path [line] (BEP_detected) -- (w0pp);
-			\path [line] (w0pp) -- (gamma);
-			\path [line] (gamma) -- (EEP_decide);
-			\path [line] (EEP_decide) -| node [near start] {SIM} (EEP_detected);
+			\path [line] (w0pp) -| node [near start] {NÃO} (EEP_decide);
+			\path [line] (EEP_decide) -- node [near start] {SIM} (EEP_detected);
 			\path [line] (EEP_decide) -| node [near start] {NÃO} (w0pp);
 			\path [line] (EEP_detected) -- (final_detect);
+			\path [line] (w0pp) -| node [near start] {SIM}(discard);
+			\path [line] (discard) -- (stop);
 			
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
 
-%\begin{figure}
-%\centering
-%\includegraphics[width=\linewidth]{./img/mtd3ex.png}
-%\caption{Ilustração da implementação do MTD3, com $W = 100$. Do autor.}
-%\label{fig:mtd3example}
-%\end{figure}
-
 % ---
-\subsection{Método 4 - método com janela deslizante utilizando \emph{thresholding} para detecção de BEP e EEP de segmentos  (MTD4)}
+\subsection{Método 4 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando \emph{thresholding} (MTD4)}
 % ---
 
 Este é o método de segmentação utilizado em (PACHITTIS \emph{et al}. 1995). As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
@@ -310,6 +267,8 @@ Este é o método de segmentação utilizado em (PACHITTIS \emph{et al}. 1995). 
 	\midrule \midrule
 	$x$ & Sinal a ser segmentado \\
 	\midrule
+	$L$ & Comprimento total do sinal $x$ \\
+	\midrule
 	$W$ & Comprimento da janela deslizante utilizada pelo método \\
 	\midrule
 	$T$ & Valor de \emph{threshold} \\
@@ -319,18 +278,42 @@ Este é o método de segmentação utilizado em (PACHITTIS \emph{et al}. 1995). 
 }
 \end{table}
 
-Primeiramente, a janela deslizante de comprimento $W$ percorre o sinal da direita para a esquerda. Os BEPs dos segmentos são os primeiros pontos (com exceção do final do sinal $x$) nas quais, com a janela situada à esquerda do ponto, o sinal contido pela janela permanece abaixo do valor de threshold $T$.
+Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W - 1$ após as BEPs nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$.
 
-As EEPs são identificadas de forma similar, com a janela percorrendo o sinal da esquerda para a direita. Os EEPs dos segmentos são os primeiros pontos nas quais, com a janela situada à direita do ponto (com exceção do ínicio do sinal $x$), o sinal contido pela janela permanece abaixo do valor de threshold $T$.
+No trabalho de (PACHITTIS \emph{et al}. 1995), utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
 
-No trabalho de (PACHITTIS \emph{et al}. 1995), utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado).
-
-%\begin{figure}
-%\centering
-%\includegraphics[width=\linewidth]{./img/mtd4ex.png}
-%\caption{Ilustração da implementação do MTD4, com $W = 100$ e $T = 0,5$. Do autor.}
-%\label{fig:mtd4example}
-%\end{figure}
+\begin{figure}[!htb]
+	\caption{\label{fig_mtd4flux} Fluxograma representativo do MTD4.}
+	\begin{center}
+		\begin{tikzpicture}[node distance = 2cm, auto]
+			% Place nodes
+			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
+			\node [decision, below = 1cm of init, text width = 8em] (beg_detect) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 == W - L$?};
+			\node [decision, below left = 1cm and 3cm of beg_detect, text width = 10em] (threshBEP) {Máximo do sinal contido na janela $< T$?};
+			\node [block, below = 1cm of threshBEP] (BEP_detected) {$(w_0-1)$ é BEP};
+			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 == W - L$?};
+			\node [decision, above right = 1cm and 3cm of w0pp, text width = 10em] (threshEEP) {Máximo do sinal contido na janela $< T$?};
+			\node [block, above = 1cm of threshEEP] (EEP_detected) {$(w_0+W)$ é EEP};
+			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
+			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
+			
+			% Draw edges
+			\path [line] (init) -- (beg_detect);
+			\path [line] (beg_detect) -| node [near start] {NÃO} (threshBEP);
+			\path [line] (threshBEP) -| node [near start] {SIM} (beg_detect);
+			\path [line] (threshBEP) -- node [near start] {NÃO} (BEP_detected);
+			\path [line] (BEP_detected) -- (w0pp);
+			\path [line] (w0pp) -| node [near start] {NÃO} (threshEEP);
+			\path [line] (w0pp) -| node [near start] {SIM} (discard);
+			\path [line] (threshEEP) -| node [near start] {NÃO} (w0pp);
+			\path [line] (threshEEP) -- node [near start] {SIM} (EEP_detected);
+			\path [line] (EEP_detected) -- (beg_detect);
+			\path [line] (discard) -- (stop);
+			\path [line] (beg_detect) -- (stop);
+			
+		\end{tikzpicture}
+	\end{center}
+\end{figure}
 
 % ---
 \section{Redes Neurais Artificias}
