@@ -15,30 +15,61 @@
 
 function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
 
-    T0 = max(x); % Máximo dos canais é o valor inicial de threshold
-    [L, num_channels] = size(x); % Obtém comprimento de sinais e número de canais
-        
-    for current_channel = 1:num_canais % Segmentação para cada um dos canais
+	% Máximo dos canais é o valor inicial de threshold
+    T0 = max(x); 
+	
+	% Obtém comprimento do sinal e número de canais
+    [L, numberOfChannels] = size(x);
+	
+	% Array utilizado para armazenar o número de candidatos a centro de
+	% 	segmentos identificados por canal
+	numberOfCandidates = zeros(1, numberOfChannels); 
+	
+	% Cell array utilizado para armazenar as localizações de candidatos
+	%	a centro de segmentos identificados por canal
+	locsOfCandidates = cell(1, numberOfChannels);
+	
+    % Plot dos centros identificados
+    figure(1)
+    
+	% Identificação de candidatos a centro para cada um dos canais
+    for currentChannel = 1:numberOfChannels 
 
-		T_k = T0(current_channel); % Threshold inicial
-        
-		% Processo iterativo:
-        target_reached = false;
-		while ~target_reached
-		
-            T_k = q*T_k; % Calcula threshold desta iteração
+		% Threshold inicial
+		T_k = T0(currentChannel); 
+        		
+		% Processo iterativo
+        targetReached = false;
+		while ~targetReached
+
+			% Calcula threshold desta iteração
+            T_k = q*T_k; 
             
-            if T_k < T_lim % Limite de valor de threshold atingido
+			% Verifica se limite de valor de threshold foi atingido
+            if T_k < T_lim
+                warning(['Threshold limit reached on channel ', ...
+                    num2str(currentChannel), '. Stopping iterations.'])
                 break
             end
                 
-            % Identifica os possíveis candidatos para centros de segmentos
-            [~, centers_locs_current_channel] = findpeaks(x(:,current_channel), ...
+            % Identifica candidatos para centros de segmentos
+            [centerValues, centerLocs] = findpeaks(x(:,currentChannel), ...
                'MinPeakHeight', T_k, 'MinPeakDistance',l);
             
             % Determina o encerramento do processo iterativo
-             target_reached = (length(centers_locs_current_channel)/L > N);
-
+             targetReached = (length(centerLocs)/L > r_target);
+			 
 		end
+		
+		% Armazena o número de candidatos identificados para este canal
+		numberOfCandidates(currentChannel) = (length(centerLocs));
+
+        % Armazena os locais dos candidatos identificados para este canal
+        locsOfCandidates{currentChannel} = centerLocs;
+        
+        % Plot dos centros identificados
+        subplot(5,2,currentChannel), plot(x(:,currentChannel)), hold on, ...
+            plot(centerLocs,centerValues,'r*'), hold off
+        
     end
 end
