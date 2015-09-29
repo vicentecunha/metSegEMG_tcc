@@ -50,6 +50,8 @@ Este é o método iterativo de segmentação utilizado em (CHAUVET \emph{et al}.
 	$l$ & Comprimento desejado para os segmentos \\
 	\midrule
 	$T_k$ & Valor de \emph{threshold} para a iteração $k$ \\
+	\midrule
+	$T_{lim}$ & Valor de limite inferior para o \emph{threshold} \\
 	\midrule 
 	$q$ & Fração de $T_{k-1}$ para determinação de $T_k$ \\
 	\midrule 
@@ -76,16 +78,14 @@ Inicialmente, determina-se o valor de \emph{threshold} $T_0$ equivalente ao máx
   T_k = q \times T_{k-1}
 \end{equation}
 
-Pontos do sinal acima do valor de $T_k$ são possíveis candidatos para centros de segmentos. Caso exista mais de um possível candidato em uma vizinhança bilateral de $l$ amostras do sinal, apenas o ponto de maior amplitude nesta vizinhança é considerado.
-
-Para determinar o final do método, avalia-se a razão $r_k$ entre a quantidade identificada de candidatos $N_{k}$ e o comprimento total do sinal $L$ (Equação (\ref{eq:mtd1rk})). Caso $r_k$ seja menor que um valor predeterminado $r_{target}$, calcula-se $T_{k+1}$ para realização da próxima iteração (Equação (\ref{eq:mtd1tk})). Caso $r_k$ seja maior ou igual ao valor predeterminado $r_{target}$, encerra-se o método e os segmentos são tomados como janelas de sinal de comprimento $l$, centradas nos candidatos identificados na última iteração.
+Pontos do sinal acima do valor de $T_k$ são possíveis candidatos para centros de segmentos. Caso exista mais de um possível candidato em uma vizinhança bilateral de $l$ amostras do sinal, apenas o ponto de maior amplitude nesta vizinhança é considerado. Para determinar o final do método, avalia-se a razão $r_k$ entre a quantidade identificada de candidatos $N_{k}$ e o comprimento total do sinal $L$ (Equação (\ref{eq:mtd1rk})). Caso $r_k$ seja menor que um valor predeterminado $r_{target}$, calcula-se $T_{k+1}$ para realização da próxima iteração (Equação (\ref{eq:mtd1tk})). Caso $r_k$ seja maior ou igual ao valor predeterminado $r_{target}$, encerra-se o método e os segmentos são tomados como janelas de sinal de comprimento $l$, centradas nos candidatos identificados na última iteração.
 
 \begin{equation}
 \label{eq:mtd1rk}
   r_k = \frac{N_{k}}{L} 
 \end{equation}
 
-O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{fig_mtd1flux}.
+Adicionalmente, o estabelecimento de um valor limite mínimo para \emph{threshold} $T_{lim}$ garante que o método não entre em laço infinito e evita detecção de segmentos em trechos de baixa atividade muscular. Caso o valor de \emph{threshold} $T_k$ para a iteração atual seja inferior a $T_{lim}$, encerra-se o processo iterativo. O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{fig_mtd1flux}.
 
 \begin{figure}[!htb]
 	\caption{\label{fig_mtd1flux}Fluxograma representativo do MTD1.}
@@ -93,17 +93,21 @@ O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{f
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
 			\node [block] (init) {INÍCIO\\ \vspace{\onelineskip} $k = 0$\\$T_0 = max(x)$};
-			\node [block, below = 1cm of init] (identify) {Identificar candidatos a centros de segmentos};
-			\node [decision, below = 1cm of identify] (decide) {$\frac{N_c}{L} >= r_{target}$};
-			\node [block, left = 1cm of identify] (update) {$k++$\\$T_k = q \times T_{k-1}$};
-			\node [block, below = 1cm of decide] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
+			\node [block, below = 1cm of init] (update) {$k++$\\$T_k = q \times T_{k-1}$};
+			\node [decision, below = 1cm of update] (check_t) {$T_k < T_{lim}$?};
+			\node [block, right = 2cm of check_t] (identify) {Identificar candidatos a centros de segmentos};
+			\node [decision, right = 1cm of identify, text width = 8em] (decide) {$\frac{N_k}{L} >= r_{target}$?};
+			\node [block, below = 1cm of check_t] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
 			
 			% Draw edges
-			\path [line] (init) -- (identify);
+			\path [line] (init) -- (update);
+			\path [line] (update) -- (check_t);
+			\path [line] (check_t) -- node [near start] {SIM} (stop);
+			\path [line] (check_t) -- node [near start] {NÃO} (identify);
 			\path [line] (identify) -- (decide);
-			\path [line] (decide) -| node [near start] {NÃO} (update);
-			\path [line] (update) -- (identify);
-			\path [line] (decide) -- node [near start] {SIM}(stop);
+			\path [line] (decide) |- node [near start] {SIM} (stop);
+			\path [line] (decide) |- node [near start] {NÃO} (update);
+			
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
@@ -148,7 +152,7 @@ Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
 			\node [block] (init) {INÍCIO};
-			\node [decision, below = 1cm of init,text width=10em] (decide) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i|$};
+			\node [decision, below = 1cm of init,text width=10em] (decide) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i|$?};
 			\node [block, below left = 1cm and 1cm of decide] (case 1) {$T = \frac{B}{L}\sum_{i=1}^{L}|x_i|$};
 			\node [block, below right = 1cm and 1cm of decide] (case 2) {$T = \frac{max(x)}{C}$};
 			\node [block, below = 3cm of decide] (identify) {Identificar centros de segmentos};
@@ -309,7 +313,7 @@ No trabalho de (PACHITTIS \emph{et al}. 1995), utilizou-se janelas de compriment
 			\path [line] (threshEEP) -- node [near start] {SIM} (EEP_detected);
 			\path [line] (EEP_detected) -- (beg_detect);
 			\path [line] (discard) -- (stop);
-			\path [line] (beg_detect) -- (stop);
+			\path [line] (beg_detect) -- node [near start] {SIM} (stop);
 			
 		\end{tikzpicture}
 	\end{center}
