@@ -10,6 +10,9 @@
 %   B - múltiplo da média aritmética do sinal x para obtenção de threshold		%
 %   C - fração do valor máximo do sinal x para cálculo de threshold				%
 %                                                                           	%
+% Retorno:                                                                      %
+%   x_seg - cell array com os canais segmentados                                %
+%                                                                           	%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function x_seg = seg_mtd2(x, l, A, B, C)
@@ -31,8 +34,8 @@ function x_seg = seg_mtd2(x, l, A, B, C)
     end
 	
 	% Identifica centros de segmentos
-        [centerValues, centerLocs] = findpeaks(x_sum, ...
-           'MinPeakHeight', T, 'MinPeakDistance',l);
+    [centerValues, centerLocs] = findpeaks(x_sum, ...
+        'MinPeakHeight', T, 'MinPeakDistance',l);
     
     % Eliminação de centros que estão muito aos extremos do sinal
     if(centerLocs(1) < l/2)

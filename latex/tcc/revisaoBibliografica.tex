@@ -227,23 +227,27 @@ O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
 			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
-			\node [decision, below = 1cm of init, text width = 8em] (final_detect) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 == (L - W)?$};
+			\node [decision, below = 1cm of init, text width = 9em] (final_detect) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 > (L - W + 1)?$};
 			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
-			\node [decision, below left = 1cm and 3cm of final_detect, text width=12em] (BEP_decide) {$\beta = \frac{1}{W}\sum_{i=w_0+1}^{W}(x_i - x_{i-1})$ \\ \vspace{\onelineskip} $\beta > B$?};
+			\node [block, left = 2cm of final_detect, text width = 13em] (beta) {$\beta = \frac{1}{W-1}\sum_{i=w_0}^{w_0+W-1}(x_{i+1} - x_i)$};
+			\node [decision, below = 1cm of beta] (BEP_decide) {$\beta > B$?};
 			\node [block, below = 1cm of BEP_decide] (BEP_detected) {$w_0$ é BEP};
-			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 == (L - W)?$};
-			\node [decision, above right = 1cm and 3cm of w0pp, text width=12em] (EEP_decide) {$\gamma = \sum_{i=w_0+1}^{W}(x_i - x_{i-1})$ \\ \vspace{\onelineskip} $\gamma < C$?};
+			\node [decision, below = 2cm of BEP_detected, text width = 9em] (w0pp) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 > (L - W + 1)?$};
+			\node [block, right = 2cm of w0pp, text width = 13em] (gamma) {$\gamma = \sum_{i=w_0}^{w_0+W-1}(x_{i+1} - x_i)$};
+			\node [decision, above = 1cm of gamma] (EEP_decide) {$\gamma < C$?};
 			\node [block, above = 1cm of EEP_decide] (EEP_detected) {$(w_0 + W - 1)$ é EEP};
 			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
 			
 			% Draw edges
 			\path [line] (init) -- (final_detect);
 			\path [line] (final_detect) -- node [near start] {SIM} (stop);
-			\path [line] (final_detect) -| node [near start] {NÃO} (BEP_decide);
+			\path [line] (final_detect) -- node [near start] {NÃO} (beta);
+			\path [line] (beta) -- (BEP_decide);
 			\path [line] (BEP_decide) -| node [near start] {NÃO} (final_detect);
 			\path [line] (BEP_decide) -- node [near start] {SIM} (BEP_detected);
 			\path [line] (BEP_detected) -- (w0pp);
-			\path [line] (w0pp) -| node [near start] {NÃO} (EEP_decide);
+			\path [line] (w0pp) -- node [near start] {NÃO} (gamma);
+			\path [line] (gamma) -- (EEP_decide);
 			\path [line] (EEP_decide) -- node [near start] {SIM} (EEP_detected);
 			\path [line] (EEP_decide) -| node [near start] {NÃO} (w0pp);
 			\path [line] (EEP_detected) -- (final_detect);

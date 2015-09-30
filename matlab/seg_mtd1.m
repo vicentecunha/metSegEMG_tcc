@@ -11,7 +11,6 @@
 %		total de sinal                                                      	%
 %   T_lim - valor de limite inferior para threshold                         	%
 %                                                                           	%
-%                                                                               %
 % Retorno:                                                                      %
 %   x_seg - cell array com os canais segmentados                                %
 %                                                                           	%
@@ -44,7 +43,7 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
             break
         end
             
-        % Identifica centros de segmentos
+        % Identifica candidatos a centros de segmentos
         [centerValues, centerLocs] = findpeaks(x_sum, ...
            'MinPeakHeight', T_k, 'MinPeakDistance',l);
         
