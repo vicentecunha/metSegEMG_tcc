@@ -1,17 +1,21 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-% MTD1 - método iterativo utilizando thresholding para detecção de centros    %
-% 	de segmentos de comprimento constante                                     %
-%                                                                             %
-% Argumentos:                                                                 %
-%   x - matriz column-wise com os sinais a serem segmentados                  %
-%   l - comprimento desejado para os segmentos                                %
-%   q - razão de atualização entre iterações para valor de threshold          %
-%   r_target - razão mínima esperada entre número de segmentos e comprimento  %
-%		total de sinal                                                        %
-%   T_lim - valor de limite inferior para threshold                           %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                           	%
+% MTD1 - método iterativo utilizando thresholding para detecção de centros de	%
+% 	 segmentos de comprimento constante                                   		%
+%                                                                           	%
+% Argumentos:                                                               	%
+%   x - matriz column-wise com os canais do sinal a ser segmentado           	%
+%   l - comprimento desejado para os segmentos                              	%
+%   q - razão de atualização entre iterações para valor de threshold        	%
+%   r_target - razão mínima esperada entre número de segmentos e comprimento	%
+%		total de sinal                                                      	%
+%   T_lim - valor de limite inferior para threshold                         	%
+%                                                                           	%
+%                                                                               %
+% Retorno:                                                                      %
+%   x_seg - cell array com os canais segmentados                                %
+%                                                                           	%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
 
@@ -40,7 +44,7 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
             break
         end
             
-        % Identifica candidatos para centros de segmentos
+        % Identifica centros de segmentos
         [centerValues, centerLocs] = findpeaks(x_sum, ...
            'MinPeakHeight', T_k, 'MinPeakDistance',l);
         
