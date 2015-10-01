@@ -1,20 +1,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                        		%    
-% MTD3 - método com janela deslizante para detecção de BEP e EEP de segmentos	%
-%	utilizando variação total                           						%
+% MTD4 - método com janela deslizante para detecção de BEP e EEP de segmentos	%
+%	utilizando thresholding                                						%
 %                                                                           	%
 % Argumentos:                                                               	%
 %   x - matriz column-wise com os canais do sinal a ser segmentado           	%
 %	W - comprimento da janela deslizante utilizada pelo método					%
-%   B - valor limite para declividade média que determina um BEP				%
-%   C - valor limite para variação total que determina um EEP					%
-%                                                                           	%
+%   T - valor de threshold                                      				%
+%                                                                               %
 % Retorno:                                                                      %
 %   x_seg - cell array com os canais segmentados                                %
 %                                                                           	%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function x_seg = seg_mtd3(x, B, C)
+function x_seg = seg_mtd4(x, W, T)
 
     % Obtém comprimento do sinal e número de canais
     [L, numberOfChannels] = size(x);
@@ -34,11 +33,11 @@ function x_seg = seg_mtd3(x, B, C)
     
 	% Janela deslizante
 	for w0 = 1:L-W
-        if( (mean(diff(x_sum(w0:w0+W-1))) > B) && searchBEP ) % Detecção de BEP
+        if( ~(max(x_sum(w0:w0+W-1)) < T) && searchBEP ) % Detecção de BEP
             BEPsFlags(w0) = 1;
             searchBEP = false;
         end
-        if( (sum(diff(x_sum(w0:w0+W-1))) < C) && ~searchBEP ) % Detecção de EEP
+        if( (max(x_sum(w0:w0+W-1)) < T) && ~searchBEP ) % Detecção de EEP
             EEPsFlags(w0+W-1) = 1;
             searchBEP = true;
         end
@@ -62,5 +61,5 @@ function x_seg = seg_mtd3(x, B, C)
                 x(BEPsLocs(currentSegment):EEPsLocs(currentSegment));
         end
     end
-    
+
 end
