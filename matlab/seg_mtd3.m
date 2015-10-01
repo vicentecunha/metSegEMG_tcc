@@ -16,7 +16,7 @@
 
 function x_seg = seg_mtd3(x, B, C)
 
-	% Obtém comprimento do sinal e número de canais
+    % Obtém comprimento do sinal e número de canais
     [L, numberOfChannels] = size(x);
 
     % Soma dos canais
@@ -25,34 +25,42 @@ function x_seg = seg_mtd3(x, B, C)
         x_sum = x_sum + x(:,currentChannel);
     end
 
+    % Array lógico para BEPs e EEPs detectados
+    BEPsFlags = false(L,1);
+    EEPsFlags = false(L,1);
+    
+    % Indicador se a janela procura por BEP ou EEP
+    searchBEP = true;
+    
 	% Janela deslizante
 	for w0 = 1:L-W
-		if( mean(diff(x_sum(w0:w0+W-1))) > B ) % Detecção de BEP
-			
-		end
+        if( (mean(diff(x_sum(w0:w0+W-1))) > B) && searchBEP) % Detecção de BEP
+            BEPsFlags(w0) = 1;
+            searchBEP = false;
+        end
+        if( (sum(diff(x_sum(w0:w0+W-1))) < C) && ~searchBEP) % Detecção de EEP
+            EEPsFlags(w0+W-1) = 1;
+            searchBEP = true;
+        end
 	end
-	
-	% Identifica centros de segmentos
-	[centerValues, centerLocs] = findpeaks(x_sum, ...
-		'MinPeakHeight', T, 'MinPeakDistance',l);
     
-    % Eliminação de centros que estão muito aos extremos do sinal
-    if(centerLocs(1) < l/2)
-        centerLocs(1) = [];
-        centerValues(1) = [];
-    end
-    if(L - centerLocs(end) < l/2)
-        centerLocs(end) = [];
-        centerValues(end) = [];
-    end
+    % Posições de EEPs e BEPs
+    BEPsLocs = find(BEPsFlags);
+    EEPsLocs = find(EEPsFlags);
     
+    % Caso tenha sido detectada uma BEP sem respectivo EEP, elimina último BEP
+    numberOfSegments = length(BEPsLocs);
+    if( numBEPs > length(BEPsLocs))
+        BEPsLocs(end) = [];
+    end
+
     % Segmentação dos canais
-    x_seg = cell(length(centerLocs),numberOfChannels);
+    x_seg = cell(numberOfSegments,numberOfChannels);
     for currentChannel = 1:numberOfChannels
-        for currentSegment = 1:length(centerLocs)
+        for currentSegment = 1:numberOfSegments
             x_seg{currentSegment,currentChannel} = ...
-                x(centerLocs - l/2: centerLocs+l/2-1,currentChannel);
+                x(BEPsLocs(currentSegment):EEPsLocs(currentSegment));
         end
     end
-	
+    
 end

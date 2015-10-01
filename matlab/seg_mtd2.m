@@ -48,12 +48,13 @@ function x_seg = seg_mtd2(x, l, A, B, C)
     end
     
     % Segmentação dos canais
-    x_seg = cell(length(centerLocs),numberOfChannels);
+    numberOfSegments = length(centerLocs);
+    x_seg = cell(numberOfSegments,numberOfChannels);
     for currentChannel = 1:numberOfChannels
-        for currentSegment = 1:length(centerLocs)
+        for currentSegment = 1:numberOfSegments
             x_seg{currentSegment,currentChannel} = ...
                 x(centerLocs - l/2: centerLocs+l/2-1,currentChannel);
         end
     end
-	
+    
 end

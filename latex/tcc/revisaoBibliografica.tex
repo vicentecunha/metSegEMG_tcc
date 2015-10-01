@@ -296,10 +296,10 @@ No trabalho de (PACHITTIS \emph{et al}. 1995), utilizou-se janelas de compriment
 		\begin{tikzpicture}[node distance = 2cm, auto]
 			% Place nodes
 			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
-			\node [decision, below = 1cm of init, text width = 8em] (beg_detect) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 == W - L$?};
+			\node [decision, below = 1cm of init, text width = 8em] (beg_detect) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 > L-W+1$?};
 			\node [decision, below left = 1cm and 3cm of beg_detect, text width = 10em] (threshBEP) {Máximo do sinal contido na janela $< T$?};
 			\node [block, below = 1cm of threshBEP] (BEP_detected) {$(w_0-1)$ é BEP};
-			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 == W - L$?};
+			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 > L-W+1$?};
 			\node [decision, above right = 1cm and 3cm of w0pp, text width = 10em] (threshEEP) {Máximo do sinal contido na janela $< T$?};
 			\node [block, above = 1cm of threshEEP] (EEP_detected) {$(w_0+W)$ é EEP};
 			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
