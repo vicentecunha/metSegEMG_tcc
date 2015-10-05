@@ -52,6 +52,11 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning}
 
+% ---
+% Pacotes para adição de code snippets
+% ---
+\usepackage[]{mcode}
+
 %--
 % Força figuras às suas seções
 %--
@@ -106,7 +111,7 @@
 \titulo{Métodos de Segmentação Automática de Sinais de Eletromiografia de Superfície para Classificação de Movimentos Utilizando Redes Neurais Artificiais}
 \autor
 {
-	UNIVERSIDADE FEDERAL DO RIO GR\&E DO SUL\\
+	UNIVERSIDADE FEDERAL DO RIO GRANDE DO SUL\\
 	ESCOLA DE ENGENHARIA\\
 	DEPARTAMENTO DE ENGENHARIA ELÉTRICA\\
 	GRADUAÇÃO EM ENGENHARIA ELÉTRICA\\
@@ -115,13 +120,13 @@
 }
 \local{Porto Alegre}
 \data{2015}
-\orientador{Prof. Dr. Eng. Alex\&re Balbinot}
+\orientador{Prof. Dr. Eng. Alexandre Balbinot}
 \coorientador{}
 \instituicao{}
 \tipotrabalho{Monografia (graduação)}
 % O preambulo deve conter o tipo do trabalho, o objetivo, 
 % o nome da instituição e a área de concentração 
-\preambulo{Projeto de Diplomação apresentado ao Departamento de Engenharia Elétrica da Escola de Engenharia da Universidade Federal do Rio Gr\&e do Sul, como requisito parcial para Graduação em Engenharia Elétrica}
+\preambulo{Projeto de Diplomação apresentado ao Departamento de Engenharia Elétrica da Escola de Engenharia da Universidade Federal do Rio Grande do Sul, como requisito parcial para Graduação em Engenharia Elétrica}
 % ---
 
 
@@ -386,6 +391,11 @@ Utilizando valores de RMS, variância e frequência mediana dos sinais segmentad
 % ----------------------------------------------------------
 
 % ----------------------------------------------------------
+\chapter{Capítulo temporário: orientação}
+\input{orientacao}
+% ----------------------------------------------------------
+
+% ----------------------------------------------------------
 \chapter{Resultados e Discussões}
 \input{resultados}
 % ----------------------------------------------------------
@@ -405,7 +415,7 @@ Utilizando valores de RMS, variância e frequência mediana dos sinais segmentad
 %% ----------------------------------------------------------
 %% ELEMENTOS PÓS-TEXTUAIS
 %% ----------------------------------------------------------
-%\postextual
+\postextual
 %% ----------------------------------------------------------
 %
 %% ----------------------------------------------------------
@@ -428,24 +438,36 @@ Utilizando valores de RMS, variância e frequência mediana dos sinais segmentad
 %% ---
 %% Inicia os apêndices
 %% ---
-%\begin{apendicesenv}
+\begin{apendicesenv}
 %
 %% Imprime uma página indicando o início dos apêndices
-%\partapendices
+\partapendices
 %
 %% ----------------------------------------------------------
-%\chapter{Quisque libero justo}
+\chapter{Função em Matlab para MTD1}
 %% ----------------------------------------------------------
 %
-%\lipsum[50]
+\lstinputlisting{../../matlab/seg_mtd1.m}
 %
 %% ----------------------------------------------------------
-%\chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
-%ac pretium ante justo a nulla curabitur tristique arcu eu metus}
+\chapter{Função em Matlab para MTD2}
 %% ----------------------------------------------------------
-%\lipsum[55-57]
 %
-%\end{apendicesenv}
+\lstinputlisting{../../matlab/seg_mtd2.m}
+%
+%% ----------------------------------------------------------
+\chapter{Função em Matlab para MTD3}
+%% ----------------------------------------------------------
+%
+\lstinputlisting{../../matlab/seg_mtd3.m}
+%
+%% ----------------------------------------------------------
+\chapter{Função em Matlab para MTD4}
+%% ----------------------------------------------------------
+%
+\lstinputlisting{../../matlab/seg_mtd4.m}
+%
+\end{apendicesenv}
 %% ---
 %
 %% ----------------------------------------------------------

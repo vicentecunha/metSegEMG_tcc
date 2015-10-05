@@ -1,43 +1,50 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                        		%    
-% MTD2 - método não iterativo utilizando thresholding para detecção de 			%
-% 	centros de segmentos de comprimento constante                           	%
-%                                                                           	%
-% Argumentos:                                                               	%
-%   x - matriz column-wise com os canais do sinal a ser segmentado           	%
-%   l - comprimento desejado para os segmentos                              	%
-%   A - coeficiente utilizado para decisão de método de cálculo de threshold	%
-%   B - múltiplo da média aritmética do sinal x para obtenção de threshold		%
-%   C - fração do valor máximo do sinal x para cálculo de threshold				%
-%                                                                           	%
-% Retorno:                                                                      %
-%   x_seg - cell array com os canais segmentados                                %
-%                                                                           	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MTD2 - metodo nao iterativo utilizando thresholding para deteccao de
+% 	centros de segmentos de comprimento constante                           
+%                                                                           
+% Argumentos:                                                               
+%   x - matriz cujas colunas sao canais do sinal a ser segmentado           
+%   l - comprimento desejado para os segmentos                              
+%   A - coeficiente utilizado para decisao de metodo de calculo de threshold
+%   B - multiplo da media aritmetica do sinal x para obtencao de threshold	
+%   C - fracao do valor maximo do sinal x para calculo de threshold			
+%                                                                           
+% Retorno:                                                                   
+%   x_seg - cell array com os canais segmentados                             
+%%
 
 function x_seg = seg_mtd2(x, l, A, B, C)
 
-	% Obtém comprimento do sinal e número de canais
-    [L, numberOfChannels] = size(x);
+%% Preprocessamento
 
+	% Obtem comprimento do sinal e numero de canais
+    [L, numberOfChannels] = size(x);
+    
+    % Retificacao de sinal
+    x_ret = abs(x);
+    
     % Soma dos canais
     x_sum = zeros(L,1);
     for currentChannel = 1:numberOfChannels
-        x_sum = x_sum + x(:,currentChannel);
+        x_sum = x_sum + x_ret(:,currentChannel);
     end
-
-	% Cálculo do threshold
-    if(max(x_sum) > A*mean(x_sum))
-		T = B*mean(x_sum);
+    
+    % FIR passa-baixas em 20 Hz
+    x_filt = filter(fir1(255,0.01),1,x_sum);
+    
+%% Metodo
+    
+	% Calculo do threshold
+    if(max(x_filt) > A*mean(x_filt))
+		T = B*mean(x_filt);
 	else
-		T = max(x_sum)/C;
+		T = max(x_filt)/C;
     end
 	
 	% Identifica centros de segmentos
-    [centerValues, centerLocs] = findpeaks(x_sum, ...
+    [centerValues, centerLocs] = findpeaks(x_filt, ...
         'MinPeakHeight', T, 'MinPeakDistance',l);
     
-    % Eliminação de centros que estão muito aos extremos do sinal
+    % Eliminacao de centros que estao muito aos extremos do sinal
     if(centerLocs(1) < l/2)
         centerLocs(1) = [];
         centerValues(1) = [];
@@ -47,7 +54,7 @@ function x_seg = seg_mtd2(x, l, A, B, C)
         centerValues(end) = [];
     end
     
-    % Segmentação dos canais
+    % Segmentacao dos canais
     numberOfSegments = length(centerLocs);
     x_seg = cell(numberOfSegments,numberOfChannels);
     for currentChannel = 1:numberOfChannels

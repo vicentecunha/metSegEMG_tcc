@@ -1,40 +1,47 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                           	%
-% MTD1 - método iterativo utilizando thresholding para detecção de centros de	%
-% 	 segmentos de comprimento constante                                   		%
-%                                                                           	%
-% Argumentos:                                                               	%
-%   x - matriz column-wise com os canais do sinal a ser segmentado           	%
-%   l - comprimento desejado para os segmentos                              	%
-%   q - razão de atualização entre iterações para valor de threshold        	%
-%   r_target - razão mínima esperada entre número de segmentos e comprimento	%
-%		total de sinal                                                      	%
-%   T_lim - valor de limite inferior para threshold                         	%
-%                                                                           	%
-% Retorno:                                                                      %
-%   x_seg - cell array com os canais segmentados                                %
-%                                                                           	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MTD1 - metodo iterativo utilizando thresholding para deteccao de centros de
+% 	 segmentos de comprimento constante                                   	
+%                                                                           
+% Argumentos:                                                               
+%   x - matriz cujas colunas sao canais do sinal a ser segmentado           
+%   l - comprimento desejado para os segmentos                              
+%   q - razao de atualizacao entre iteracoes para valor de threshold        
+%   r_target - razao minima esperada entre numero de segmentos e comprimento
+%		total de sinal                                                      
+%   T_lim - valor de limite inferior para threshold                         
+%                                                                           
+% Retorno:                                                                     
+%   x_seg - cell array com os canais segmentados                               
+%%                                                                           
 
 function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
 
-	% Obtém comprimento do sinal e número de canais
-    [L, numberOfChannels] = size(x);
+%% Preprocessamento
 
+	% Obtem comprimento do sinal e numero de canais
+    [L, numberOfChannels] = size(x);
+    
+    % Retificacao de sinal
+    x_ret = abs(x);
+    
     % Soma dos canais
     x_sum = zeros(L,1);
     for currentChannel = 1:numberOfChannels
-        x_sum = x_sum + x(:,currentChannel);
+        x_sum = x_sum + x_ret(:,currentChannel);
     end
+    
+    % FIR passa-baixas em 20 Hz
+    x_filt = filter(fir1(255,0.01),1,x_sum);
+    
+%% Metodo    
 
-	% Valor inicial de threshold corresponde ao máximo do sinal
-    T_k = max(x_sum); 
+    % Valor inicial de threshold corresponde ao maximo do sinal
+    T_k = max(x_filt); 
 
 	% Processo iterativo
     targetReached = false;
 	while ~targetReached
 	
-		% Calcula threshold desta iteração
+		% Calcula threshold desta iteracao
         T_k = q*T_k; 
         
 		% Verifica se limite de valor de threshold foi atingido
@@ -44,7 +51,7 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
         end
             
         % Identifica candidatos a centros de segmentos
-        [centerValues, centerLocs] = findpeaks(x_sum, ...
+        [centerValues, centerLocs] = findpeaks(double(x_filt), ...
            'MinPeakHeight', T_k, 'MinPeakDistance',l);
         
         % Determina o encerramento do processo iterativo
@@ -52,7 +59,7 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
 		 
 	end
     
-    % Eliminação de centros que estão muito aos extremos do sinal
+    % Eliminacao de centros que estao muito aos extremos do sinal
     if(centerLocs(1) < l/2)
         centerLocs(1) = [];
         centerValues(1) = [];
@@ -62,7 +69,7 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
         centerValues(end) = [];
     end
     
-    % Segmentação dos canais
+    % Segmentacao dos canais
     numberOfSegments = length(centerLocs);
     x_seg = cell(numberOfSegments,numberOfChannels);
     for currentChannel = 1:numberOfChannels
@@ -71,5 +78,5 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
                 x(centerLocs - l/2: centerLocs+l/2-1,currentChannel);
         end
     end
-	
+
 end
