@@ -1,19 +1,21 @@
-%% MTD1 - metodo iterativo utilizando thresholding para deteccao de centros de
-% 	 segmentos de comprimento constante                                   	
+%%
+%   MTD1 - metodo iterativo utilizando thresholding para deteccao de
+%   centros de segmentos de comprimento constante                                   	
 %                                                                           
-% Argumentos:                                                               
+% Argumentos: (para mais detalhes, refira a descricao do MTD1)
 %   x - matriz cujas colunas sao canais do sinal a ser segmentado           
 %   l - comprimento desejado para os segmentos                              
 %   q - razao de atualizacao entre iteracoes para valor de threshold        
-%   r_target - razao minima esperada entre numero de segmentos e comprimento
-%		total de sinal                                                      
+%   r_target - razao minima esperada entre numero de segmentos e
+%       comprimento	total de sinal                        
 %   T_lim - valor de limite inferior para threshold                         
 %                                                                           
 % Retorno:                                                                     
-%   x_seg - cell array com os canais segmentados                               
+%   x_seg - cell array com canais segmentados
+%   centerLocsMean - posicoes centrais dos segmentos
 %%                                                                           
 
-function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
+function [x_seg, centerLocs] = seg_mtd1(x, l, q, r_target, T_lim)
 
 %% Preprocessamento
 
@@ -22,60 +24,76 @@ function x_seg = seg_mtd1(x, l, q, r_target, T_lim)
     
     % Retificacao de sinal
     x_ret = abs(x);
-    
-    % Soma dos canais
-    x_sum = zeros(L,1);
-    for currentChannel = 1:numberOfChannels
-        x_sum = x_sum + x_ret(:,currentChannel);
-    end
-    
-    % FIR passa-baixas em 20 Hz
-    x_filt = filter(fir1(255,0.01),1,x_sum);
-    
-%% Metodo    
-
-    % Valor inicial de threshold corresponde ao maximo do sinal
-    T_k = max(x_filt); 
-
-	% Processo iterativo
-    targetReached = false;
-	while ~targetReached
+     
+ 	% Suavizacao utilizando media movel
+	x_smooth = smooth(x_ret, 32);
+    x_smooth = reshape(x_smooth, L, numberOfChannels);
 	
-		% Calcula threshold desta iteracao
-        T_k = q*T_k; 
-        
-		% Verifica se limite de valor de threshold foi atingido
-        if T_k < T_lim
-            warning('Threshold limit reached. Stopping iterations.')
-            break
-        end
-            
-        % Identifica candidatos a centros de segmentos
-        [centerValues, centerLocs] = findpeaks(double(x_filt), ...
-           'MinPeakHeight', T_k, 'MinPeakDistance',l);
-        
-        % Determina o encerramento do processo iterativo
-         targetReached = (length(centerLocs)/L > r_target);
-		 
-	end
+%% Metodo 
+
+    % Cell array para armazenar posicoes dos segmentos identificados
+    centerLocsCell = cell(1,numberOfChannels);
+
+    for currentChannel = 1:numberOfChannels        
+        % Processo iterativo 
+        targetReached = false;
+        T_k = max(x_smooth(:,currentChannel));
+        while ~targetReached            
+            % Calcula threshold desta iteracao
+            T_k = q*T_k; 
+
+            % Verifica se o limite de valor de threshold foi atingido
+            if T_k < T_lim
+                break
+            end
+
+            % Identifica candidatos a centros de segmentos
+            [~, centerLocsCell{1,currentChannel}] = ...
+                findpeaks(double(x_smooth(:,currentChannel)), ...
+                'MinPeakHeight', T_k, 'MinPeakDistance',l);
+
+            % Determina o encerramento do processo iterativo
+             targetReached = ...
+                 (length(centerLocsCell{1,currentChannel})/L > r_target);            
+        end        
+    end
     
-    % Eliminacao de centros que estao muito aos extremos do sinal
-    if(centerLocs(1) < l/2)
-        centerLocs(1) = [];
-        centerValues(1) = [];
+%% Segmentacao dos canais
+
+    % Maximo numero de segmentos detectados
+    numberOfSegments = 0;
+    for currentChannel = 1:numberOfChannels        
+        currentChannelNumberOfSegments = length(centerLocsCell{1,currentChannel});        
+        if  currentChannelNumberOfSegments > numberOfSegments
+            numberOfSegments = currentChannelNumberOfSegments;
+        end        
     end
-    if(L - centerLocs(end) < l/2)
-        centerLocs(end) = [];
-        centerValues(end) = [];
+    
+    % Clustering dos centros de segmentos detectados
+    centerLocsArray = cell2mat(centerLocsCell');
+    idx = kmeans(centerLocsArray,numberOfSegments);
+    
+    % Media dos clusters
+    centerLocsMean = zeros(numberOfSegments,1);
+    for currentCluster = 1:numberOfSegments
+        centerLocsMean(currentCluster) = ...
+            mean(centerLocsArray(idx == currentCluster));
     end
+    centerLocs = sort(round(centerLocsMean));
     
     % Segmentacao dos canais
-    numberOfSegments = length(centerLocs);
     x_seg = cell(numberOfSegments,numberOfChannels);
     for currentChannel = 1:numberOfChannels
         for currentSegment = 1:numberOfSegments
-            x_seg{currentSegment,currentChannel} = ...
-                x(centerLocs - l/2: centerLocs+l/2-1,currentChannel);
+            if mod(l,2) == 0 % se l for par
+                x_seg{currentSegment,currentChannel} = ...
+                    x(centerLocs(currentSegment)-l/2: ...
+                    centerLocs(currentSegment)+l/2 - 1, currentChannel);
+            else % se l for impar
+                x_seg{currentSegment,currentChannel} = ...
+                    x(centerLocs(currentSegment)-(l+1)/2: ...
+                    centerLocs(currentSegment)+(l+1)/2 - 1, currentChannel);
+            end
         end
     end
 
