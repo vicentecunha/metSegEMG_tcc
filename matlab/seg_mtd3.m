@@ -1,14 +1,19 @@
-%% MTD3 - metodo com janela deslizante para deteccao de BEP e EEP de segmentos
+%%
+%   MTD3 - metodo com janela deslizante para deteccao de BEP e EEP de segmentos
 %	utilizando variacao total                           		
 %                                                                
-% Argumentos:                                                    
+% Argumentos: (para mais detalhes, refira a descricao do MTD3)                                                   
 %   x - matriz cujas colunas sao canais do sinal a ser segmentado
-%	W - comprimento da janela deslizante utilizada pelo metodo	
+%	W - comprimento da janela deslizante utilizada pelo metodo
+%       (deve ser inteiro maior que zero)
 %   B - valor limite para declividade media que determina um BEP
-%   C - valor limite para variacao total que determina um EEP	
+%       (deve ser maior que zero)
+%   C - valor limite para variacao total que determina um EEP
+%       (deve ser maior que zero)
 %                                                                
 % Retorno:                                                       
-%   x_seg - cell array com os canais segmentados                 
+%   x_seg - cell array com os canais segmentados
+%   centerLocs - posicoes centrais dos segmentos
 %%
 
 function x_seg = seg_mtd3(x, B, C)
@@ -20,15 +25,9 @@ function x_seg = seg_mtd3(x, B, C)
     
     % Retificacao de sinal
     x_ret = abs(x);
-    
-    % Soma dos canais
-    x_sum = zeros(L,1);
-    for currentChannel = 1:numberOfChannels
-        x_sum = x_sum + x_ret(:,currentChannel);
-    end
-    
-    % FIR passa-baixas em 20 Hz
-    x_filt = filter(fir1(255,0.01),1,x_sum);
+     
+ 	% Suavizacao utilizando media movel
+	x_smooth = reshape(smooth(x_ret, 32), L, numberOfChannels);
     
 %% Metodo
 

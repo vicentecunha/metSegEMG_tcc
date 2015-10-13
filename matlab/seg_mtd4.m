@@ -1,13 +1,17 @@
-%% MTD4 - metodo com janela deslizante para deteccao de BEP e EEP de segmentos
+%%
+%   MTD4 - metodo com janela deslizante para deteccao de BEP e EEP de segmentos
 %	utilizando thresholding                                		
 %                                                                
-% Argumentos:                                                    
+% Argumentos: (para mais detalhes, refira a descricao do MTD4)                                                   
 %   x - matriz cujas colunas sao canais do sinal a ser segmentado
 %	W - comprimento da janela deslizante utilizada pelo metodo	
-%   T - valor de threshold                                      
+%       (deve ser inteiro maior que zero)
+%   T - valor de threshold
+%       (deve ser maior que zero)
 %                                                                
 % Retorno:                                                       
-%   x_seg - cell array com os canais segmentados                 
+%   x_seg - cell array com os canais segmentados
+%   centerLocs - posicoes centrais dos segmentos
 %%
 
 function x_seg = seg_mtd4(x, W, T)
