@@ -1,0 +1,32 @@
+\begin{figure}[!htb]
+	\caption{\label{fig_mtd4flux} Fluxograma representativo do MTD4.}
+	\begin{center}
+		\begin{tikzpicture}[node distance = 2cm, auto]
+			% Place nodes
+			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
+			\node [decision, below = 1cm of init, text width = 8em] (beg_detect) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 > L-W+1$?};
+			\node [decision, below left = 1cm and 3cm of beg_detect, text width = 10em] (threshBEP) {Máximo do sinal contido na janela $< T$?};
+			\node [block, below = 1cm of threshBEP] (BEP_detected) {$w_0$ é BEP};
+			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 > L-W+1$?};
+			\node [decision, above right = 1cm and 3cm of w0pp, text width = 10em] (threshEEP) {Máximo do sinal contido na janela $< T$?};
+			\node [block, above = 1cm of threshEEP] (EEP_detected) {$w_0+W-1$ é EEP};
+			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
+			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
+			
+			% Draw edges
+			\path [line] (init) -- (beg_detect);
+			\path [line] (beg_detect) -| node [near start] {NÃO} (threshBEP);
+			\path [line] (threshBEP) -| node [near start] {SIM} (beg_detect);
+			\path [line] (threshBEP) -- node [near start] {NÃO} (BEP_detected);
+			\path [line] (BEP_detected) -- (w0pp);
+			\path [line] (w0pp) -| node [near start] {NÃO} (threshEEP);
+			\path [line] (w0pp) -| node [near start] {SIM} (discard);
+			\path [line] (threshEEP) -| node [near start] {NÃO} (w0pp);
+			\path [line] (threshEEP) -- node [near start] {SIM} (EEP_detected);
+			\path [line] (EEP_detected) -- (beg_detect);
+			\path [line] (discard) -- (stop);
+			\path [line] (beg_detect) -- node [near start] {SIM} (stop);
+			
+		\end{tikzpicture}
+	\end{center}
+\end{figure}

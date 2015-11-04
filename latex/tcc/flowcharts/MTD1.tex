@@ -1,0 +1,24 @@
+\begin{figure}[!htb]
+	\caption{\label{fig_mtd1flux}Fluxograma representativo do MTD1.}
+	\begin{center}
+		\begin{tikzpicture}[node distance = 2cm, auto]
+			% Place nodes
+			\node [block] (init) {INÍCIO\\ \vspace{\onelineskip} $k = 0$\\$T_0 = max(x)$};
+			\node [block, below = 1cm of init] (update) {$k++$\\$T_k = q \times T_{k-1}$};
+			\node [decision, below = 1cm of update] (check_t) {$T_k < T_{lim}$?};
+			\node [block, right = 2cm of check_t] (identify) {Identificar candidatos a centros de segmentos};
+			\node [decision, right = 1cm of identify, text width = 8em] (decide) {$\frac{N_k}{L} >= r_{target}$?};
+			\node [block, below = 1cm of check_t] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
+			
+			% Draw edges
+			\path [line] (init) -- (update);
+			\path [line] (update) -- (check_t);
+			\path [line] (check_t) -- node [near start] {SIM} (stop);
+			\path [line] (check_t) -- node [near start] {NÃO} (identify);
+			\path [line] (identify) -- (decide);
+			\path [line] (decide) |- node [near start] {SIM} (stop);
+			\path [line] (decide) |- node [near start] {NÃO} (update);
+			
+		\end{tikzpicture}
+	\end{center}
+\end{figure}
