@@ -1,24 +1,62 @@
+Este capítulo divide-se entre a implmentação dos métodos de segmentação MTD1 - MTD4 e a obtenção de resultados de classificação utilizando RNA. O fluxograma da Figura \ref{fig:panorama} apresenta uma visão geral da metodologia utilizada, que será explanada em sequência.
+
+\input{./flowcharts/metodologia.tex}
+
 % ---
-\section{Preprocessamento}
+\section{Implementação de Métodos de Segmentação}
 % ---
 
-Esta seção descreve as operações de preprocessamento aplicadas aos sinais de eletromiografia anterior à implementação dos métodos de segmentação.
+Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. 
 
-\subsection{Retificação de Sinal}
+\subsection {Preprocessamento}
+\subsubsection{Retificação de Sinal}
 
-O sinal, adquirido em 
+Os sinais de eletromiografia para ambas as bases de dados (Ninapro e IEE) são armazenados mantendo sua polaridade original (\emph{i.e.} amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (função \emph{abs()}). A retificação completa do sinal mantém toda sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
+
+\begin{figure}[!htb]
+	\label{fig:rectification}
+	\caption{Retificação completa de trecho de sinal de eletromiografia.}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	\end{center}
+	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\end{figure}
 
 \subsection{Normalização}
 
+Os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da equação \ref{eq:normalization}, onde $x$ é o sinal original para um canal e $x_{norm}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica a retificação para três canais de um trecho de sinal já retificado.
 
-\subsection{MTD1 e MTD2: uso da função \emph{findpeaks} para detecção de centros de segmentos}
+\begin{equation}
+	\label{eq:x_normalization}
+	x_{norm} = \frac{x}{max(x)}
+\end{equation}
 
-\subsection{Obtenção de valores para parâmetros dos métodos}
+\begin{figure}[!htb]
+	\label{fig:normalization}
+	\caption{Normalização de canais de eletromiografia de acordo com seu valor máximo.}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	\end{center}
+	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\end{figure}
+
+% ---
+\section{Parâmetros utilizados nos métodos}
+% ---
+
+Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, fixou-se alguns destes parâmetros e realizou-se uma lista de valores a serem explorados em cada método. Os métodos de segmentação foram então aplicados aos sinais das bases de dados considerando as diferentes possibilidades de combinação para tais valores. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua lista de valores explorada.
+
+\input{./tables/combinacoes}
 
 % ---
 \section{Rede Neural Artificial}
 % ---
 
-\subsection{Características dos segmentos utilizadas pela rede}
+
+
+%---
+\section{Características utilizadas como preditores}
+%---
+
 
 \subsection{Treinamento, Validação e Teste}

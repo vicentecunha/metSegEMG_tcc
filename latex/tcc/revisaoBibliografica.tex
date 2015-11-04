@@ -34,7 +34,7 @@ Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos 
 % ---
 
 Este é o método iterativo de segmentação utilizado em (CHAUVET \emph{et al}. 2001). As definições da Tabela \ref{tab_mtd1params} serão utilizados para descrever este método.
-\begin{table}[htb]
+\begin{table}[!htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD1.}%
 	\label{tab_mtd1params}
@@ -87,30 +87,7 @@ Pontos do sinal acima do valor de $T_k$ são possíveis candidatos para centros 
 
 Adicionalmente, o estabelecimento de um valor limite mínimo para \emph{threshold} $T_{lim}$ garante que o método não entre em laço infinito e evita detecção de segmentos em trechos de baixa atividade muscular. Caso o valor de \emph{threshold} $T_k$ para a iteração atual seja inferior a $T_{lim}$, encerra-se o processo iterativo. O método de segmentação MTD1 é representado pelo fluxograma da Figura \ref{fig_mtd1flux}.
 
-\begin{figure}[!htb]
-	\caption{\label{fig_mtd1flux}Fluxograma representativo do MTD1.}
-	\begin{center}
-		\begin{tikzpicture}[node distance = 2cm, auto]
-			% Place nodes
-			\node [block] (init) {INÍCIO\\ \vspace{\onelineskip} $k = 0$\\$T_0 = max(x)$};
-			\node [block, below = 1cm of init] (update) {$k++$\\$T_k = q \times T_{k-1}$};
-			\node [decision, below = 1cm of update] (check_t) {$T_k < T_{lim}$?};
-			\node [block, right = 2cm of check_t] (identify) {Identificar candidatos a centros de segmentos};
-			\node [decision, right = 1cm of identify, text width = 8em] (decide) {$\frac{N_k}{L} >= r_{target}$?};
-			\node [block, below = 1cm of check_t] (stop) {Segmentos de comprimento $l$ centrados nos candidatos identificados\\ \vspace{\onelineskip} FIM};
-			
-			% Draw edges
-			\path [line] (init) -- (update);
-			\path [line] (update) -- (check_t);
-			\path [line] (check_t) -- node [near start] {SIM} (stop);
-			\path [line] (check_t) -- node [near start] {NÃO} (identify);
-			\path [line] (identify) -- (decide);
-			\path [line] (decide) |- node [near start] {SIM} (stop);
-			\path [line] (decide) |- node [near start] {NÃO} (update);
-			
-		\end{tikzpicture}
-	\end{center}
-\end{figure}
+\input{./flowcharts/MTD1.tex}
 
 % ---
 \subsection{Método 2 - método não iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD2)}
@@ -118,7 +95,7 @@ Adicionalmente, o estabelecimento de um valor limite mínimo para \emph{threshol
 
 Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. O trabalho de (KATSIS \emph{et al}. 2006) utiliza a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
 
-\begin{table}[htb]
+\begin{table}[!htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD2.}%
 	\label{tab:mtd2params}
@@ -146,28 +123,7 @@ Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que
 }
 \end{table}
 
-\begin{figure}[!htb]
-	\caption{\label{fig_mtd2flux} Fluxograma representativo do MTD2.}
-	\begin{center}
-		\begin{tikzpicture}[node distance = 2cm, auto]
-			% Place nodes
-			\node [block] (init) {INÍCIO};
-			\node [decision, below = 1cm of init,text width=10em] (decide) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i|$?};
-			\node [block, below left = 1cm and 1cm of decide] (case 1) {$T = \frac{B}{L}\sum_{i=1}^{L}|x_i|$};
-			\node [block, below right = 1cm and 1cm of decide] (case 2) {$T = \frac{max(x)}{C}$};
-			\node [block, below = 3cm of decide] (identify) {Identificar centros de segmentos};
-			\node [block, below = 1cm of identify] (stop) {Segmentos de comprimento $l$ nos centros identificados\\ \vspace{\onelineskip} FIM};
-			
-			% Draw edges
-			\path [line] (init) -- (decide);
-			\path [line] (decide) -| node [near start] {SIM} (case 1);
-			\path [line] (decide) -| node [near start] {NÃO} (case 2);
-			\path [line] (case 1) -| (identify);
-			\path [line] (case 2) -| (identify);
-			\path [line] (identify) -- (stop);
-		\end{tikzpicture}
-	\end{center}
-\end{figure}
+\input{./flowcharts/MTD2.tex}
 
 De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são considerados possíveis candidatos para centros de segmentos. Para os possíveis candidatos que estiverem afastados de uma distância inferior a $l$, apenas o candidato de maior amplitude é considerado. Em (KATSIS \emph{et al}. 2006) utilizou-se coeficientes $A$, $B$ e $C$ respectivamente de 30, 5 e 5, com comprimento $l$ de 121 amostras.
 
@@ -177,7 +133,7 @@ De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são
 
 	Este é o método de segmentação utilizado em (GUT and MOSCHYTZ, 2000). As definições da Tabela \ref{tab:mtd3params} serão utilizados para descrever este método.
 	
-\begin{table}[htb]
+\begin{table}[!htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD3.}%
 	\label{tab:mtd3params}
@@ -221,42 +177,7 @@ O EEP do correspondente segmento é então obtido como o ponto mais à direita d
 
 O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 
-\begin{figure}[!htb]
-	\caption{\label{fig_mtd3flux} Fluxograma representativo do MTD3.}
-	\begin{center}
-		\begin{tikzpicture}[node distance = 2cm, auto]
-			% Place nodes
-			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
-			\node [decision, below = 1cm of init, text width = 9em] (final_detect) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 > (L - W + 1)?$};
-			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
-			\node [block, left = 2cm of final_detect, text width = 13em] (beta) {$\beta = \frac{1}{W-1}\sum_{i=w_0}^{w_0+W-1}(x_{i+1} - x_i)$};
-			\node [decision, below = 1cm of beta] (BEP_decide) {$\beta > B$?};
-			\node [block, below = 1cm of BEP_decide] (BEP_detected) {$w_0$ é BEP};
-			\node [decision, below = 2cm of BEP_detected, text width = 9em] (w0pp) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 > (L - W + 1)?$};
-			\node [block, right = 2cm of w0pp, text width = 13em] (gamma) {$\gamma = \sum_{i=w_0}^{w_0+W-1}(x_{i+1} - x_i)$};
-			\node [decision, above = 1cm of gamma] (EEP_decide) {$\gamma < C$?};
-			\node [block, above = 1cm of EEP_decide] (EEP_detected) {$(w_0 + W - 1)$ é EEP};
-			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
-			
-			% Draw edges
-			\path [line] (init) -- (final_detect);
-			\path [line] (final_detect) -- node [near start] {SIM} (stop);
-			\path [line] (final_detect) -- node [near start] {NÃO} (beta);
-			\path [line] (beta) -- (BEP_decide);
-			\path [line] (BEP_decide) -| node [near start] {NÃO} (final_detect);
-			\path [line] (BEP_decide) -- node [near start] {SIM} (BEP_detected);
-			\path [line] (BEP_detected) -- (w0pp);
-			\path [line] (w0pp) -- node [near start] {NÃO} (gamma);
-			\path [line] (gamma) -- (EEP_decide);
-			\path [line] (EEP_decide) -- node [near start] {SIM} (EEP_detected);
-			\path [line] (EEP_decide) -| node [near start] {NÃO} (w0pp);
-			\path [line] (EEP_detected) -- (final_detect);
-			\path [line] (w0pp) -| node [near start] {SIM}(discard);
-			\path [line] (discard) -- (stop);
-			
-		\end{tikzpicture}
-	\end{center}
-\end{figure}
+\input{./flowcharts/MTD3.tex}
 
 % ---
 \subsection{Método 4 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando \emph{thresholding} (MTD4)}
@@ -264,7 +185,7 @@ O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 
 Este é o método de segmentação utilizado em (PACHITTIS \emph{et al}. 1995). As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
 
-\begin{table}[htb]
+\begin{table}[!htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD4.}%
 	\label{tab:mtd4params}
@@ -290,38 +211,7 @@ Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal d
 
 No trabalho de (PACHITTIS \emph{et al}. 1995), utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
 
-\begin{figure}[!htb]
-	\caption{\label{fig_mtd4flux} Fluxograma representativo do MTD4.}
-	\begin{center}
-		\begin{tikzpicture}[node distance = 2cm, auto]
-			% Place nodes
-			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
-			\node [decision, below = 1cm of init, text width = 8em] (beg_detect) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 > L-W+1$?};
-			\node [decision, below left = 1cm and 3cm of beg_detect, text width = 10em] (threshBEP) {Máximo do sinal contido na janela $< T$?};
-			\node [block, below = 1cm of threshBEP] (BEP_detected) {$w_0$ é BEP};
-			\node [decision, below = 2cm of BEP_detected, text width = 8em] (w0pp) {$w_0 \gets w_0 +1$ \\ \vspace{\onelineskip} $w_0 > L-W+1$?};
-			\node [decision, above right = 1cm and 3cm of w0pp, text width = 10em] (threshEEP) {Máximo do sinal contido na janela $< T$?};
-			\node [block, above = 1cm of threshEEP] (EEP_detected) {$w_0+W-1$ é EEP};
-			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
-			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
-			
-			% Draw edges
-			\path [line] (init) -- (beg_detect);
-			\path [line] (beg_detect) -| node [near start] {NÃO} (threshBEP);
-			\path [line] (threshBEP) -| node [near start] {SIM} (beg_detect);
-			\path [line] (threshBEP) -- node [near start] {NÃO} (BEP_detected);
-			\path [line] (BEP_detected) -- (w0pp);
-			\path [line] (w0pp) -| node [near start] {NÃO} (threshEEP);
-			\path [line] (w0pp) -| node [near start] {SIM} (discard);
-			\path [line] (threshEEP) -| node [near start] {NÃO} (w0pp);
-			\path [line] (threshEEP) -- node [near start] {SIM} (EEP_detected);
-			\path [line] (EEP_detected) -- (beg_detect);
-			\path [line] (discard) -- (stop);
-			\path [line] (beg_detect) -- node [near start] {SIM} (stop);
-			
-		\end{tikzpicture}
-	\end{center}
-\end{figure}
+\input{./flowcharts/MTD4.tex}
 
 % ---
 \section{Base de Dados Utilizadas}
