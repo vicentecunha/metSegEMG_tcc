@@ -1,22 +1,74 @@
+% Set up a few colours
+\colorlet{lcfree}{green}
+\colorlet{lcnorm}{blue}
+\colorlet{lccong}{red}
+% -------------------------------------------------
+% Set up a new layer for the debugging marks, and make sure it is on
+% top
+\pgfdeclarelayer{marx}
+\pgfsetlayers{main,marx}
+% A macro for marking coordinates (specific to the coordinate naming
+% scheme used here). Swap the following 2 definitions to deactivate
+% marks.
+\providecommand{\cmark}[2][]{%
+  \begin{pgfonlayer}{marx}
+    \node [nmark] at (c#2#1) {#2};
+  \end{pgfonlayer}{marx}
+  } 
+\providecommand{\cmark}[2][]{\relax} 
+% -------------------------------------------------
+% Start the picture
 \begin{figure}[!htb]
-	\caption{\label{fig_mtd2flux} Fluxograma representativo do MTD2.}
+	\caption{\label{fig:panorama}Fluxograma representativo do MTD2.}
 	\begin{center}
-		\begin{tikzpicture}[node distance = 2cm, auto]
-			% Place nodes
-			\node [block] (init) {INÍCIO};
-			\node [decision, below = 1cm of init,text width=10em] (decide) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i|$?};
-			\node [block, below left = 1cm and 1cm of decide] (case 1) {$T = \frac{B}{L}\sum_{i=1}^{L}|x_i|$};
-			\node [block, below right = 1cm and 1cm of decide] (case 2) {$T = \frac{max(x)}{C}$};
-			\node [block, below = 3cm of decide] (identify) {Identificar centros de segmentos};
-			\node [block, below = 1cm of identify] (stop) {Segmentos de comprimento $l$ nos centros identificados\\ \vspace{\onelineskip} FIM};
+		\begin{tikzpicture}[%
+			>=triangle 60,              % Nice arrows; your taste may be different
+			start chain=going below,    % General flow is top-to-bottom
+			node distance=6mm and 60mm, % Global setup of box spacing
+			every join/.style={norm},   % Default linetype for connecting boxes
+			]
+		% ------------------------------------------------- 
+		% A few box styles 
+		% <on chain> *and* <on grid> reduce the need for manual relative
+		% positioning of nodes
+		\tikzset{
+		  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
+		  proc/.style={base, rectangle, text width=8em},
+		  test/.style={base, diamond, aspect=2, text width=10em},
+		  term/.style={proc, rounded corners},
+		  % coord node style is used for placing corners of connecting lines
+		  coord/.style={coordinate, on chain, on grid, node distance=6mm and 25mm},
+		  % nmark node style is used for coordinate debugging marks
+		  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+		  % -------------------------------------------------
+		  % Connector line styles for different parts of the diagram
+		  norm/.style={->, draw, lcnorm},
+		  free/.style={->, draw, lcfree},
+		  cong/.style={->, draw, lccong},
+		  it/.style={font={\small\itshape}}
+		}
+		% -------------------------------------------------
+		% Node placement: column 1
+		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
+		\node [test, join] (t1) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i| ?$};
+		\node [proc, fill=lcnorm!25] (avg) {$T = \frac{B}{L}\sum_{i=1}^{L}|x_i|$};
+		\node [proc, fill=lcfree!25, join] (id) {Identificação de centros de segmentos};
+		\node [proc, fill=lcfree!25, join] (fin) {Segmentos de comprimento $l$ nos centros identificados};
+		\node [term, densely dotted, it, fill=lccong!25, join] {FIM};
+		% -------------------------------------------------
+		% Node placement: column 2
+		\node [proc, fill=lcnorm!25, right=of avg] (max) {$T = \frac{max(x)}{C}$};
+		% -------------------------------------------------
+		% Test connections
+		\path (t1.south) to node [near start, xshift=2em] {$sim$} (avg);
+			\draw [*->,lcnorm] (t1.south) -- (avg);
 			
-			% Draw edges
-			\path [line] (init) -- (decide);
-			\path [line] (decide) -| node [near start] {SIM} (case 1);
-			\path [line] (decide) -| node [near start] {NÃO} (case 2);
-			\path [line] (case 1) -| (identify);
-			\path [line] (case 2) -| (identify);
-			\path [line] (identify) -- (stop);
+		\path (t1.east) to node [near start, yshift=2em] {$não$} (max);
+			\draw [o->,lcnorm] (t1.east) -| (max);
+		
+		\draw [->,lcnorm] (max) |- (id);
+		
+		% -------------------------------------------------
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
