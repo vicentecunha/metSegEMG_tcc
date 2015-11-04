@@ -19,7 +19,7 @@
 % -------------------------------------------------
 % Start the picture
 \begin{figure}[!htb]
-	\caption{\label{fig:panorama}Fluxograma representativo do MTD1.}
+	\caption{\label{fig_mtd1flux}Fluxograma representativo do MTD1.}
 	\begin{center}
 		\begin{tikzpicture}[%
 			>=triangle 60,              % Nice arrows; your taste may be different
@@ -52,7 +52,7 @@
 		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
 		\node [proc, fill=lcnorm!25, join] {$k = 0$};
 		\node [proc, fill=lcnorm!25, join] {$T_k = max(x)$};
-		\node [proc, fill=lcnorm!25, join] (in) {$k++$};
+		\node [proc, fill=lcnorm!25, join] (in) {$k \gets k + 1$};
 		\node [proc, fill=lcnorm!25, join] {$T_k = q \times T_{k-1}$};
 		\node [test, join] (t1) {$T_k < T_{min}$};
 		\node [proc, fill=lcfree!25] (fin) {Segmentos de comprimento $l$ centrados nos candidatos identificados};

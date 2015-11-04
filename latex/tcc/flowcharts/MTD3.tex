@@ -1,36 +1,98 @@
+% Set up a few colours
+\colorlet{lcfree}{green}
+\colorlet{lcnorm}{blue}
+\colorlet{lccong}{red}
+% -------------------------------------------------
+% Set up a new layer for the debugging marks, and make sure it is on
+% top
+\pgfdeclarelayer{marx}
+\pgfsetlayers{main,marx}
+% A macro for marking coordinates (specific to the coordinate naming
+% scheme used here). Swap the following 2 definitions to deactivate
+% marks.
+\providecommand{\cmark}[2][]{%
+  \begin{pgfonlayer}{marx}
+    \node [nmark] at (c#2#1) {#2};
+  \end{pgfonlayer}{marx}
+  } 
+\providecommand{\cmark}[2][]{\relax} 
+% -------------------------------------------------
+% Start the picture
 \begin{figure}[!htb]
-	\caption{\label{fig_mtd3flux} Fluxograma representativo do MTD3.}
+	\caption{\label{fig_mtd3flux}Fluxograma representativo do MTD3.}
 	\begin{center}
-		\begin{tikzpicture}[node distance = 2cm, auto]
-			% Place nodes
-			\node [block] (init) {INÍCIO \\ \vspace{\onelineskip} $w_0 = 0$ \\ \vspace{\onelineskip} Janela de comprimento $W$, iniciando em $w_0$};
-			\node [decision, below = 1cm of init, text width = 9em] (final_detect) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 > (L - W + 1)?$};
-			\node [block, left = 1cm of init] (stop) {Segmentos formados pelos BEPs e EEPs identificados \\ \vspace{\onelineskip} FIM};
-			\node [block, left = 2cm of final_detect, text width = 13em] (beta) {$\beta = \frac{1}{W-1}\sum_{i=w_0}^{w_0+W-1}(x_{i+1} - x_i)$};
-			\node [decision, below = 1cm of beta] (BEP_decide) {$\beta > B$?};
-			\node [block, below = 1cm of BEP_decide] (BEP_detected) {$w_0$ é BEP};
-			\node [decision, below = 2cm of BEP_detected, text width = 9em] (w0pp) {$w_0 \gets w_0 + 1$ \\ \vspace{\onelineskip} $w_0 > (L - W + 1)?$};
-			\node [block, right = 2cm of w0pp, text width = 13em] (gamma) {$\gamma = \sum_{i=w_0}^{w_0+W-1}(x_{i+1} - x_i)$};
-			\node [decision, above = 1cm of gamma] (EEP_decide) {$\gamma < C$?};
-			\node [block, above = 1cm of EEP_decide] (EEP_detected) {$(w_0 + W - 1)$ é EEP};
-			\node [block, left = 1cm of stop] (discard) {Descartar último BEP};
-			
-			% Draw edges
-			\path [line] (init) -- (final_detect);
-			\path [line] (final_detect) -- node [near start] {SIM} (stop);
-			\path [line] (final_detect) -- node [near start] {NÃO} (beta);
-			\path [line] (beta) -- (BEP_decide);
-			\path [line] (BEP_decide) -| node [near start] {NÃO} (final_detect);
-			\path [line] (BEP_decide) -- node [near start] {SIM} (BEP_detected);
-			\path [line] (BEP_detected) -- (w0pp);
-			\path [line] (w0pp) -- node [near start] {NÃO} (gamma);
-			\path [line] (gamma) -- (EEP_decide);
-			\path [line] (EEP_decide) -- node [near start] {SIM} (EEP_detected);
-			\path [line] (EEP_decide) -| node [near start] {NÃO} (w0pp);
-			\path [line] (EEP_detected) -- (final_detect);
-			\path [line] (w0pp) -| node [near start] {SIM}(discard);
-			\path [line] (discard) -- (stop);
-			
+		\begin{tikzpicture}[%
+			>=triangle 60,              % Nice arrows; your taste may be different
+			start chain=going below,    % General flow is top-to-bottom
+			node distance=6mm and 60mm, % Global setup of box spacing
+			every join/.style={norm},   % Default linetype for connecting boxes
+			]
+		% ------------------------------------------------- 
+		% A few box styles 
+		% <on chain> *and* <on grid> reduce the need for manual relative
+		% positioning of nodes
+		\tikzset{
+		  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
+		  proc/.style={base, rectangle, text width=10em},
+		  test/.style={base, diamond, aspect=2, text width=6em},
+		  term/.style={proc, rounded corners},
+		  % coord node style is used for placing corners of connecting lines
+		  coord/.style={coordinate, on chain, on grid, node distance=6mm and 25mm},
+		  % nmark node style is used for coordinate debugging marks
+		  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+		  % -------------------------------------------------
+		  % Connector line styles for different parts of the diagram
+		  norm/.style={->, draw, lcnorm},
+		  free/.style={->, draw, lcfree},
+		  cong/.style={->, draw, lccong},
+		  it/.style={font={\small\itshape}}
+		}
+		% -------------------------------------------------
+		% Node placement: column 1
+		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
+		\node [proc, fill=lcnorm!25, join] {$w_0 = 0$};
+		\node [proc, fill=lcfree!25, join] (W) {Janela de comprimento $W$, iniciando em $w_0$};
+		\node [proc, fill=lcnorm!25, join] (w0) {$w_0 \gets w_0 + 1$};
+		\node [test, join] (t1) {$w_0 + W > L$};
+		% -------------------------------------------------
+		% Node placement: column 2
+		\node [proc, fill=lcnorm!25, right=of t1] (beta) {$\beta = \frac{1}{W}\sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1}) $};
+		\node [test, join] (B) {$\beta > B$};
+		\node [proc, fill=lcfree!25] (BEP) {$w_0$ é BEP};
+		\node [proc, fill=lcnorm!25, join] (w01) {$w_0 \gets w_0 + 1$};
+		\node [test, join] (t2) {$w_0 + W > L$};
+		\node [proc, fill=lcnorm!25] (gamma) {$\gamma = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1}) $};
+		\node [test, join] (C) {$\gamma < C$};
+		\node [proc, fill=lcfree!25] (EEP) {$w_0+W$ é EEP};
+		% -------------------------------------------------
+		% Node placement: column 1
+		\node [proc, fill=lcfree!25, left=of gamma] (fin) {Segmentos limitados pelos BEPs e EEPs identificados};
+		\node [term, densely dotted, it, fill=lccong!25, join] (fim) {FIM};
+		% -------------------------------------------------
+		% Coordinates
+		\node [coord, right=of B, xshift = 4em] (c1) {};
+		\node [coord, below=of t1, yshift = -17em] (c2) {};
+		\node [coord, right=of C, xshift = 2em] (c3) {};
+		% -------------------------------------------------
+		% Test connections
+		\path (t1.south) to node [near start, xshift=1em, yshift = 6em] {$sim$} (fin);
+			\draw [*->,lcnorm] (t1.south) -- (c2) -- (fin);
+		\path (t1.east) to node [near start, yshift=1em] {$não$} (beta);
+			\draw [o->,lcnorm] (t1.east) -- (beta);
+		\path (B.south) to node [near start, xshift=2em] {$sim$} (BEP);
+			\draw [*->,lcnorm] (B.south) -- (BEP);
+		\path (B.east) to node [near start, yshift=1em] {$não$} (c1);
+			\draw [o->,lcnorm] (B.east) -- (c1);
+		\path (t2.south) to node [near start, xshift=2em] {$não$} (gamma);
+			\draw [o->,lcnorm] (t2.south) -- (gamma);
+		\path (t2.west) to node [near start, yshift=1em] {$sim$} (c2);
+			\draw [*->,lcnorm] (t2.west) -- (c2);
+			\draw [->,lcnorm] (EEP) -| (c1) |- (w0);
+		\path (C.south) to node [near start, xshift=2em] {$sim$} (EEP);
+			\draw [*->,lcnorm] (C.south) -- (EEP);
+		\path (C.east) to node [near start, yshift=1em] {$não$} (c3);
+			\draw [o->,lcnorm] (C.east) -- (c3) |- (w01);
+		% -------------------------------------------------
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
