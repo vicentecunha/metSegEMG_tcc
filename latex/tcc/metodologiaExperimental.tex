@@ -1,62 +1,77 @@
-Este capítulo divide-se entre a implmentação dos métodos de segmentação MTD1 - MTD4 e a obtenção de resultados de classificação utilizando RNA. O fluxograma da Figura \ref{fig:panorama} apresenta uma visão geral da metodologia utilizada, que será explanada em sequência.
-
-\input{./flowcharts/metodologia.tex}
-
-% ---
 \section{Implementação de Métodos de Segmentação}
-% ---
 
-Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. 
+Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. O fluxograma da Figura \ref{flow:MTDs} apresenta de forma resumida os passos comuns aos quatro métodos, que serão explanados nas subseções seguintes. Os códigos em Matlab criados para os quatro métodos são apresentados nos Apêndices A - D.
+
+\input{./flowcharts/MTDsResumo.tex}
+
 
 \subsection {Preprocessamento}
 \subsubsection{Retificação de Sinal}
 
-Os sinais de eletromiografia para ambas as bases de dados (Ninapro e IEE) são armazenados mantendo sua polaridade original (\emph{i.e.} amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (função \emph{abs()}). A retificação completa do sinal mantém toda sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
+Os sinais de eletromiografia para ambas as bases de dados (Ninapro e IEE) são armazenados mantendo sua polaridade original (\emph{i.e.} amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
 
-\begin{figure}[!htb]
-	\label{fig:rectification}
-	\caption{Retificação completa de trecho de sinal de eletromiografia.}
+\begin{figure}[htb]
+	\caption{\label{fig:rectification} Retificação completa de trecho de sinal de eletromiografia.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
 	\end{center}
 	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
 \end{figure}
 
-\subsection{Normalização}
+\subsubsection{Normalização}
 
-Os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da equação \ref{eq:normalization}, onde $x$ é o sinal original para um canal e $x_{norm}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica a retificação para três canais de um trecho de sinal já retificado.
+Os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da equação \ref{eq:x_normalization}, onde $x$ é o sinal original para um canal e $x_{norm}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica a normalização para três canais de um trecho de sinal já retificado.
 
 \begin{equation}
 	\label{eq:x_normalization}
 	x_{norm} = \frac{x}{max(x)}
 \end{equation}
 
-\begin{figure}[!htb]
-	\label{fig:normalization}
-	\caption{Normalização de canais de eletromiografia de acordo com seu valor máximo.}
+\begin{figure}[htb]
+	\caption{\label{fig:normalization}Normalização de canais de eletromiografia de acordo com seu valor máximo.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
 	\end{center}
 	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
 \end{figure}
 
-% ---
-\section{Parâmetros utilizados nos métodos}
-% ---
+
+\subsection{Implementação dos métodos de segmentação}
+\subsubsection{Parâmetros utilizados}
 
 Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, fixou-se alguns destes parâmetros e realizou-se uma lista de valores a serem explorados em cada método. Os métodos de segmentação foram então aplicados aos sinais das bases de dados considerando as diferentes possibilidades de combinação para tais valores. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua lista de valores explorada.
 
 \input{./tables/combinacoes}
 
-% ---
+\subsubsection{Identificação de segmentos utilizando \emph{k-means}}
+
+Os sinais para ambas as bases de dados são compostos por 12 canais de aquisição. Os métodos de segmentação são implementados individualmente aos doze canais. Para os métodos MTD1 e MTD2, as posições centrais dos segmentos obtidas em cada canal são registradas, enquanto que para os métodos MTD3 e MT4 registra-se as posições de BEPs e EEPs. Tais posições são agrupadas utilizando o método de \emph{clustering k-means}. Este agrupamento permite a identificação dos segmentos obtidos nos diferentes canais que referem-se a um mesmo trecho de aumento da atividade muscular. Tomando a média de cada grupo, o sinal original pode então ser segmentado, de forma que os segmentos mantém coerência temporal entre canais. A Figura \ref{fig:kmeans1} exemplifica o grupamento das posições centrais de segmentos nos métodos MTD1 e MTD2 e a Figura \ref{fig:kmeans2} exemplifica o grupamento de BEPs e EEPs nos métodos MTD3 e MTD4.
+
+\begin{figure}[htb]
+	\caption{\label{fig:kmeans1}\emph{Clustering} por \emph{k-means} dos centros de segmentos obtidos pelos métodos MTD1 e MTD2.}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	\end{center}
+	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\end{figure}
+
+\begin{figure}[htb]
+	\caption{\label{fig:kmeans2}\emph{Clustering} por \emph{k-means} de BEPs e EEPs de segmentos obtidos pelos métodos MTD3 e MTD4.}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	\end{center}
+	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\end{figure}
+
+%==============================================================================
 \section{Rede Neural Artificial}
-% ---
 
+Esta seção descreve a utilização de RNA para classificação dos segmentos obtidos de acordo com movimentos de interesse. O processo de classificação é representado pelo fluxograma da Figura \ref{flow:RNAresumo}, que será explanado nas subseções seguintes.
 
+\input{./flowcharts/RNAresumo.tex}
 
-%---
-\section{Características utilizadas como preditores}
-%---
+\subsection{Características utilizadas como preditores}
 
+Os segmentos de sinal produzidos pelos métodos MTD1 a MTD4
 
 \subsection{Treinamento, Validação e Teste}

@@ -3,7 +3,7 @@
 
 Sinais de EMG podem ser adquiridos por eletrodos posicionados na superfície da pele (eletrodo não invasivo) ou por agulhas introduzidas no tecido muscular (eletrodo invasivo). Sinais de EMG são compostos por potenciais de ação de fibras musculares organizadas em unidades funcionais chamadas de "unidades motoras" (MU - \emph{Motor Unit}) (DE LUCA \emph{et al}. 2006). Uma unidade motora é composta por um neurônio motor e as fibras musculares que ele inerva, e é a entidade fundamental que controla a ativação de músculos estriados (BUCHTAL and SCHMALBRUCH, 1980). A soma algébrica dos potenciais de ação de todas as fibras de uma unidade motora é chamada de "potencial de ação da unidade motora", ou em inglês, MUAP (\emph{Motor Unit Action Potential}) (ALMEIDA, 1997). A Figura \ref{fig_MUAP_comp} apresenta a composição de uma MUAP a partir da soma dos potenciais das fibras de uma unidade motora.
 
-\begin{figure}[!htb]
+\begin{figure}[htb]
 	\caption{\label{fig_MUAP_comp}Soma de potenciais de ação das \emph{n} fibras de uma unidade motora, formando uma MUAP \emph{h(t)}.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/MUAP_oneMU.png}
@@ -13,7 +13,7 @@ Sinais de EMG podem ser adquiridos por eletrodos posicionados na superfície da 
 
 Dependendo do método utilizado para aquisição de EMG, é comum a captura da contribuição de mais de uma unidade motora no mesmo canal. A influência de uma unidade motora no sinal adquirido depende principalmente da distância das fibras musculares ao ponto de aquisição (HAMMARBERG and STERNAD, 2002). Sinais de EMG de longa duração são constituídos por sequências temporais de MUAPs, também conhecidas como MUAPTs (\emph{MUAP Trains}). A Figura \ref{fig_MUAP_trains} exemplifica MUAPTs de diferentes MUs que somam-se para formar um sinal de EMG de longa duração.
 
-\begin{figure}[!htb]
+\begin{figure}[htb]
 	\caption{\label{fig_MUAP_trains}MUAPTs de diferentes MUs somam-se para compor o sinal adquirido por um canal de EMG.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/MUAP_trains.jpg}
@@ -34,7 +34,7 @@ Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos 
 % ---
 
 Este é o método iterativo de segmentação utilizado em (CHAUVET \emph{et al}. 2001). As definições da Tabela \ref{tab_mtd1params} serão utilizados para descrever este método.
-\begin{table}[!htb]
+\begin{table}[htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD1.}%
 	\label{tab_mtd1params}
@@ -95,7 +95,7 @@ Adicionalmente, o estabelecimento de um valor limite mínimo para \emph{threshol
 
 Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. O trabalho de (KATSIS \emph{et al}. 2006) utiliza a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
 
-\begin{table}[!htb]
+\begin{table}[htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD2.}%
 	\label{tab:mtd2params}
@@ -133,7 +133,7 @@ De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são
 
 	Este é o método de segmentação utilizado em (GUT and MOSCHYTZ, 2000). As definições da Tabela \ref{tab:mtd3params} serão utilizados para descrever este método.
 	
-\begin{table}[!htb]
+\begin{table}[htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD3.}%
 	\label{tab:mtd3params}
@@ -185,7 +185,7 @@ O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 
 Este é o método de segmentação utilizado em (PACHITTIS \emph{et al}. 1995). As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
 
-\begin{table}[!htb]
+\begin{table}[htb]
 \IBGEtab{%
 	\caption{Parâmetros utilizados para definir MTD4.}%
 	\label{tab:mtd4params}
