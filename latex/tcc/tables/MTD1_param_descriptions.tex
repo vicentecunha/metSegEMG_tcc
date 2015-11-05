@@ -1,0 +1,31 @@
+\begin{table}[htb]
+\IBGEtab{%
+	\caption{Parâmetros utilizados para definir MTD1.}%
+	\label{tab_mtd1params}
+}{%
+	\begin{tabular}{ccc}
+	\toprule
+	Nome & Descrição \\
+	\midrule \midrule
+	$x$ & Sinal a ser segmentado \\
+	\midrule
+	$L$ & Comprimento total do sinal a ser segmentado \\
+	\midrule
+	$l$ & Comprimento desejado para os segmentos \\
+	\midrule
+	$T_k$ & Valor de \emph{threshold} para a iteração $k$ \\
+	\midrule
+	$T_{lim}$ & Valor de limite inferior para o \emph{threshold} \\
+	\midrule 
+	$q$ & Fração de $T_{k-1}$ para determinação de $T_k$ \\
+	\midrule 
+	$N_{k}$ & Número total de candidatos para centros de segmentos identificados na iteração $k$ \\
+	\midrule 
+	$r_k$ & Razão entre número de candidatos identificados na iteração $k$ e o comprimento total do sinal \\
+	\midrule 
+	$r_{target}$ & Razão mínima esperada para $r_k$, utilizada para determinar o final do método \\
+	\bottomrule
+\end{tabular}%
+}{%
+}
+\end{table}

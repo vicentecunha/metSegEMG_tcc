@@ -12,3 +12,6 @@ latex/abntex2-doc-1.9.5/*.pdf
 latex/abntex2-modelos-1.9.5/*.pdf
 latex/tcc/img/*-eps-converted-to.pdf
 *.asv
+*.bbl
+*.blg
+*.brf
