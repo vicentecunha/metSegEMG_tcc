@@ -34,7 +34,7 @@
 		\tikzset{
 		  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
 		  proc/.style={base, rectangle, text width=8em},
-		  test/.style={base, diamond, aspect=2, text width=10em},
+		  test/.style={base, diamond, aspect=2, text width=9em},
 		  term/.style={proc, rounded corners},
 		  % coord node style is used for placing corners of connecting lines
 		  coord/.style={coordinate, on chain, on grid, node distance=6mm and 25mm},
@@ -50,8 +50,8 @@
 		% -------------------------------------------------
 		% Node placement: column 1
 		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
-		\node [test, join] (t1) {$max(x) > \frac{A}{L}\sum_{i=1}^{L}|x_i| ?$};
-		\node [proc, fill=lcnorm!25] (avg) {$T = \frac{B}{L}\sum_{i=1}^{L}|x_i|$};
+		\node [test, join] (t1) {$max(x) > \frac{A}{L}\sum\limits_{i=1}^{L}|x_i|$};
+		\node [proc, fill=lcnorm!25] (avg) {$T = \frac{B}{L}\sum\limits_{i=1}^{L}|x_i|$};
 		\node [proc, fill=lcfree!25, join] (id) {Identificação de centros de segmentos};
 		\node [proc, fill=lcfree!25, join] (fin) {Segmentos de comprimento $l$ nos centros identificados};
 		\node [term, densely dotted, it, fill=lccong!25, join] {FIM};
