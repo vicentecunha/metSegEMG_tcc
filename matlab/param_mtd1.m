@@ -1,36 +1,32 @@
-%%
-%   Variação de parâmetros para MTD1
-%
-%   Classificação de movimentos utilizando rede neural artificial para
-%   diferentes parâmetros no método de segmentação MTD1
-%%
+% Implementação do MTD1 com variação de parâmetros 
+% e medida do número de segmentos obtidos por movimento
 close all
 clear
+
+%% Parâmetros utilizados
+
+% Predeterminados
+l = 10e3;
+r_target = 5.6e-5;
+
+% Combinações a serem testadas
+q = [0.8 0.85 0.9 0.95];
+T_lim = [0.05 0.1 0.15 0.2];
+combinations = combvec(q, T_lim)';
+numberOfCombinations = length(combinations);
+
 %% Base de dados Ninapro
 
 ninaproList = ls('database/ninapro2/S*_E1*');
 numberOfSubjects = length(ninaproList);
 numberOfChannels = 12;
 
-%% Parâmetros
-
-% Predeterminados
-l = 10e3;
-r_target = 5.6e-5;
-
-% Possibilidades de combinação a serem testadas
-q = [0.8 0.85 0.9 0.95];
-T_lim = [0.05 0.1 0.15 0.2];
-
-combinations = combvec(q, T_lim)';
-numberOfCombinations = length(combinations);
-
 %% Implementação com treinamento interno a cada voluntário
 
-numberOfCharacteristics = 3; % características utilizadas pela rede neural
-internalClassificationCellArray = cell(numberOfCombinations, numberOfSubjects);
+numberOfCharacteristics = 3;
 predictorsCellArray = cell(numberOfCombinations, numberOfSubjects);
 targetsCellArray = cell(numberOfCombinations, numberOfSubjects);
+internalClassificationCellArray = cell(numberOfCombinations, numberOfSubjects);
 centerLocsCellArray = cell(numberOfCombinations, numberOfSubjects);
 
 for currentSubject = 1:numberOfSubjects
@@ -52,7 +48,7 @@ for currentSubject = 1:numberOfSubjects
         
         % Alvos para treinamento da rede neural
         targetsCellArray{currentCombination, currentSubject} = ...
-            identifyClasses(centerLocsCellArray{currentCombination,currentSubject}, stimulus);
+            identifyClasses(centerLocsCellArray{currentCombination,currentSubject},stimulus);
         
         % Entradas da rede neural
         numberOfSegments = length(centerLocsCellArray{currentCombination,currentSubject});
@@ -86,25 +82,22 @@ for currentSubject = 1:numberOfSubjects
         internalClassificationCellArray{currentCombination, currentSubject} = ...
             internalTrainedNet(predictorsCellArray{currentCombination,currentSubject}');
         
+        % Plot da matriz de confusão
         plotconfusion(targetsCellArray{currentCombination, currentSubject}', ...
             internalClassificationCellArray{currentCombination, currentSubject}, ...
             ['Current Subject: ' num2str(currentSubject) ...
             ' Current Combination: ' num2str(currentCombination)]);
-        
-        % Salva plot da matriz de confusão
         savefig(['./out/confusion/S' num2str(currentSubject) ...
             '_C' num2str(currentCombination) '_MTD1.fig'])
     end
 end
-
-%% Salva a workspace atual
-save('./out/workspace/MTD1.mat')
+save('./out/workspace/MTD1.mat') % salva a workspace atual
 
 %% Implementação com treinamento global
 
-globalClassificationCellArray = cell(numberOfCombinations, 1);
 globalPredictorsCellArray = cell(numberOfCombinations, 1);
 globalTargetsCellArry = cell(numberOfCombinations, 1);
+globalClassificationCellArray = cell(numberOfCombinations, 1);
 
 for currentCombination = 1:numberOfCombinations
     
@@ -113,21 +106,17 @@ for currentCombination = 1:numberOfCombinations
     
     % Concatenação de todos os voluntários
     globalPredictorsCellArray{currentCombination, 1} = ...
-        predictorsCellArray{currentCombination,1};
-    
+        predictorsCellArray{currentCombination,1};    
     globalTargetsCellArry{currentCombination, 1} = ...
         targetsCellArray{currentCombination, 1};
     
-    for currentSubject = 2:numberOfSubjects
-        
+    for currentSubject = 2:numberOfSubjects        
          globalPredictorsCellArray{currentCombination, 1} = ...
              cat(1, globalPredictorsCellArray{currentCombination, 1}, ...
              predictorsCellArray{currentCombination,currentSubject});
-         
          globalTargetsCellArry{currentCombination, 1} = ...
              cat(1, globalTargetsCellArry{currentCombination, 1}, ...
              targetsCellArray{currentCombination,currentSubject});
-         
     end
     
     % Treinamento de rede neural e resultados de classificação
@@ -135,18 +124,14 @@ for currentCombination = 1:numberOfCombinations
         train(patternnet(10,'trainscg'), ...
         globalPredictorsCellArray{currentCombination, 1}', ...
         globalTargetsCellArry{currentCombination, 1}');
-    
     globalClassificationCellArray{currentCombination, 1} = ...
         globalTrainedNet(globalPredictorsCellArray{currentCombination, 1}');
-    
+
+    % Plot da matriz de confusão
     plotconfusion(globalTargetsCellArry{currentCombination, 1}', ...
         globalClassificationCellArray{currentCombination, 1}, ...
         ['Current Combination: ' num2str(currentCombination)]);
-    
-    % Salva plot da matriz de confusão
-    savefig(['./out/confusion/S' num2str(currentSubject) '_global_MTD1.fig'])
+    savefig(['./out/confusion/C' num2str(currentCombination) '_global_MTD1.fig'])
     
 end
-
-
-
+save('./out/workspace/MTD1.mat') % salva a workspace atual

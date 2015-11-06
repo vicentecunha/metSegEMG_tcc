@@ -169,7 +169,7 @@ Sinais de EMG apresentam crescentes aplicações no controle de próteses mioel�
 
 As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais \cite{Hudgins1993}, classificador Bayesiano \cite{Englehart2003} e lógica \emph{fuzzy} \cite{Chan2000}. Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet \cite{Jun-UkChu2007}. 
 
-Este trabalho tem como objetivo desenvolver em MATLAB quatro diferentes métodos de segmentação automática de sinais de EMG. Os métodos serão aplicados em sinais da base de dados do projeto Ninapro \cite{Atzori2014} - que contém sinais de dez canais de EMG de superfície para 52 diferentes movimentos de mão e punho - e em sinais da base de dados similarmente adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica.
+Neste trabalho, propõe-se e implementa-se em MATLAB quatro diferentes métodos de segmentação automática para sinais de EMG de superfície. Os métodos serão aplicados em sinais da base de dados número 2 do projeto Ninapro \cite{Atzori2014} - que contém sinais de EMG de superfície em 12 canais para 49 diferentes movimentos de mão e punho - e em sinais da base de dados similarmente adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica.
 
 Os primeiros dois métodos (que serão identificados neste estudo pelos mnemônicos MTD1 e MTD2) tratam da detecção de picos do sinal utilizando \emph{thresholding} e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável. Para as implementações dos métodos neste estudo, assume-se o conhecimento \emph{a priori} do número de segmentos de interesse contidos no sinal.
 
@@ -181,7 +181,7 @@ O terceiro método (MTD3) é baseado no método de segmentação utilizado em \c
 
 O quarto método (MTD4) é baseado no método de segmentação utilizado em \cite{Pattichis1995}. Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
 
-Utilizando valores de RMS, variância e frequência mediana dos sinais segmentados, uma rede neural artificial será treinada para classificar entre 17 movimentos . O objetivo final deste estudo é avaliar a influência dos métodos de segmentação nas taxas de acerto de classiicação.
+Utilizando valores de RMS, variância e frequência mediana dos sinais segmentados, uma rede neural artificial será treinada para classificar entre os 17 diferentes movimentos de mão e punho constantes do exercício 1 da database número 2 do projeto Ninapro \cite{Gijsberts2014}. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos (para possível uso em trabalhos futuros do laboratório de Instrumentação Eletro-Eletrônica) e fornecer avaliação comparativa entre métodos a respeito da taxa de acerto de classificação obtida com uso de RNA.
 
 %=========================================================================
 % REVISÃO BIBLIOGRÁFICA
@@ -189,24 +189,24 @@ Utilizando valores de RMS, variância e frequência mediana dos sinais segmentad
 %=========================================================================
 		\section{Sinais de Eletromiografia}
 %-------------------------------------------------------------------------
-Sinais de EMG podem ser adquiridos por eletrodos posicionados na superfície da pele (eletrodo não invasivo) ou por agulhas introduzidas no tecido muscular (eletrodo invasivo). Sinais de EMG são compostos por potenciais de ação de fibras musculares organizadas em unidades funcionais chamadas de "unidades motoras" (MU - \emph{Motor Unit}) \cite{Luca2006}. Uma unidade motora é composta por um neurônio motor e as fibras musculares que ele inerva, e é a entidade fundamental que controla a ativação de músculos estriados (BUCHTAL \& SCHMALBRUCH, 1980). A soma algébrica dos potenciais de ação de todas as fibras de uma unidade motora é chamada de "potencial de ação da unidade motora", ou em inglês, MUAP (\emph{Motor Unit Action Potential}) (ALMEIDA, 1997). A Figura \ref{fig_MUAP_comp} apresenta a composição de uma MUAP a partir da soma dos potenciais das fibras de uma unidade motora.
+Sinais de EMG podem ser adquiridos por eletrodos posicionados na superfície da pele (eletrodo não invasivo) ou por agulhas introduzidas no tecido muscular (eletrodo invasivo). Os sinais são formados por potenciais de ação de fibras musculares organizadas em unidades funcionais chamadas de ``unidades motoras'' (MU - \emph{Motor Unit}) \cite{Luca2006}. Uma unidade motora é composta por um neurônio motor e as fibras musculares que ele inerva, e é a entidade fundamental que controla a ativação de músculos estriados \cite{Buchthal980}. A soma algébrica dos potenciais de ação de todas as fibras de uma unidade motora é chamada de ``potencial de ação da unidade motora'', ou em inglês, MUAP (\emph{Motor Unit Action Potential}) \cite{Almeida1997}. A Figura \ref{fig_MUAP_comp} apresenta a composição de uma MUAP a partir da soma dos potenciais das fibras de uma unidade motora.
 
 \begin{figure}[htb]
-	\caption{\label{fig_MUAP_comp}Soma de potenciais de ação das \emph{n} fibras de uma unidade motora, formando uma MUAP \emph{h(t)}.}
+	\caption{\label{fig_MUAP_comp}Soma de potenciais de ação das $n$ fibras de uma unidade motora, formando uma MUAP $h(t)$.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/MUAP_oneMU.png}
 	\end{center}
-	\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+	\legend{Fonte: adaptado de \cite{Basmajian1985}.}
 \end{figure}
 
-Dependendo do método utilizado para aquisição de EMG, é comum a captura da contribuição de mais de uma unidade motora no mesmo canal. A influência de uma unidade motora no sinal adquirido depende principalmente da distância das fibras musculares ao ponto de aquisição (HAMMARBERG and STERNAD, 2002). Sinais de EMG de longa duração são constituídos por sequências temporais de MUAPs, também conhecidas como MUAPTs (\emph{MUAP Trains}). A Figura \ref{fig_MUAP_trains} exemplifica MUAPTs de diferentes MUs que somam-se para formar um sinal de EMG de longa duração.
+Dependendo do método utilizado para aquisição de EMG, é comum a captura da contribuição de mais de uma unidade motora no mesmo canal. A influência de uma unidade motora na amplitude sinal adquirido depende principalmente da distância das fibras musculares ao ponto de aquisição \cite{Gerdle1999}. Sinais de EMG de longa duração são constituídos por sequências temporais de MUAPs, também conhecidas como MUAPTs (\emph{MUAP Trains}). A Figura \ref{fig_MUAP_trains} exemplifica MUAPTs de diferentes MUs que somam-se para formar um sinal de EMG de longa duração.
 
 \begin{figure}[htb]
 	\caption{\label{fig_MUAP_trains}MUAPTs de diferentes MUs somam-se para compor o sinal adquirido por um canal de EMG.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/MUAP_trains.jpg}
 	\end{center}
-	\legend{Fonte: adaptado de KLINE \& DE LUCA, 2014}
+	\legend{Fonte: adaptado de \cite{Kline2014}}
 \end{figure}
 
 %-------------------------------------------------------------------------
@@ -215,16 +215,16 @@ Dependendo do método utilizado para aquisição de EMG, é comum a captura da c
 \label{sec:MTDs}
 Esta seção descreve os métodos de segmentação que foram desenvolvidos neste trabalho, citando trabalhos da área que foram utilizados como base teórica para os métodos . Nota-se que nomes utilizados para variáveis e constantes (por exemplo, sinal a ser segmentado `$x$', \emph{threshold} `$T$', etc.) foram determinados pelo autor deste trabalho, não necessariamente sendo estes utilizados nos métodos citados.
 
-Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos BEP (\emph{beginning extraction point}, ponto inicial de um segmento) e EEP (\emph{ending extraction point}, ponto final de um segmento), também utilizados em (PATTICHIS \emph{et al}. 1995).
+Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos BEP (\emph{beginning extraction point}, ponto inicial de um segmento) e EEP (\emph{ending extraction point}, ponto final de um segmento), também utilizados em \cite{Pattichis1995}.
 	
 %-------------------------------------------------------------------------
 				\subsection{Método 1 - método iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD1)}
 %-------------------------------------------------------------------------
-Este é o método iterativo de segmentação utilizado em (CHAUVET \emph{et al}. 2001). As definições da Tabela \ref{tab_mtd1params} serão utilizados para descrever este método.
+Este método iterativo é adaptado do método de segmentação utilizado em \cite{Chauvet2001}. As definições da Tabela \ref{tab_mtd1params} serão utilizados para descrever este método.
 
 \input{./tables/MTD1_param_descriptions.tex}
 
-Inicialmente, determina-se o valor de \emph{threshold} $T_0$ equivalente ao máximo absoluto do sinal a ser segmentado $x$ (Equação (\ref{eq:mtd1t0})). O valor $T_k$ é atualizado em cada iteração $k$ como sendo uma fração $q$ de $T_{k-1}$ (Equação (\ref{eq:mtd1tk})). No trabalho de (CHAUVET \emph{et al}. 2001), este valor $q$ foi empiricamente determinado em 90\%.
+Inicialmente, determina-se o valor de \emph{threshold} $T_0$ equivalente ao máximo absoluto do sinal a ser segmentado $x$ (Equação (\ref{eq:mtd1t0})). O valor $T_k$ é atualizado em cada iteração $k$ como sendo uma fração $q$ de $T_{k-1}$ (Equação (\ref{eq:mtd1tk})). No trabalho de \cite{Chauvet2001}, este valor $q$ foi empiricamente determinado em 90\%.
 
 \begin{equation}
 \label{eq:mtd1t0}
@@ -236,7 +236,7 @@ Inicialmente, determina-se o valor de \emph{threshold} $T_0$ equivalente ao máx
   T_k = q \times T_{k-1}
 \end{equation}
 
-Pontos do sinal acima do valor de $T_k$ são possíveis candidatos para centros de segmentos. Caso exista mais de um possível candidato em uma vizinhança bilateral de $l$ amostras do sinal, apenas o ponto de maior amplitude nesta vizinhança é considerado. Para determinar o final do método, avalia-se a razão $r_k$ entre a quantidade identificada de candidatos $N_{k}$ e o comprimento total do sinal $L$ (Equação (\ref{eq:mtd1rk})). Caso $r_k$ seja menor que um valor predeterminado $r_{target}$, calcula-se $T_{k+1}$ para realização da próxima iteração (Equação (\ref{eq:mtd1tk})). Caso $r_k$ seja maior ou igual ao valor predeterminado $r_{target}$, encerra-se o método e os segmentos são tomados como janelas de sinal de comprimento $l$, centradas nos candidatos identificados na última iteração.
+Pontos do sinal acima do valor de $T_k$ são possíveis candidatos para centros de segmentos. Caso exista mais de um possível candidato em uma vizinhança bilateral de $l$ amostras do sinal, apenas o ponto de maior amplitude nesta vizinhança é considerado. Para determinar o final do método, avalia-se a razão $r_k$ entre a quantidade identificada de candidatos $N_{k}$ e o comprimento total do sinal $L$ (equação \ref{eq:mtd1rk}). Caso $r_k$ seja menor que um valor predeterminado $r_{target}$, calcula-se $T_{k+1}$ para realização da próxima iteração (equação \ref{eq:mtd1tk}). Caso $r_k$ seja maior ou igual ao valor predeterminado $r_{target}$, encerra-se o método e os segmentos são tomados como janelas de sinal de comprimento $l$, centradas nos candidatos identificados na última iteração.
 
 \begin{equation}
 \label{eq:mtd1rk}
@@ -250,20 +250,20 @@ Adicionalmente, o estabelecimento de um valor limite mínimo para \emph{threshol
 %-------------------------------------------------------------------------
 			\subsection{Método 2 - método não iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD2)}
 %-------------------------------------------------------------------------
-Este é o método de segmentação utilizado em (KATSIS \emph{et al}. 2006), que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. O trabalho de (KATSIS \emph{et al}. 2006) utiliza a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
+Este é o método de segmentação utilizado por \cite{Katsis2006}, que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. O trabalho de \cite{Katsis2006} utiliza a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
 
 \input{./tables/MTD2_param_descriptions.tex}
 
 \input{./flowcharts/MTD2.tex}
 
-De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são considerados possíveis candidatos para centros de segmentos. Para os possíveis candidatos que estiverem afastados de uma distância inferior a $l$, apenas o candidato de maior amplitude é considerado. Em (KATSIS \emph{et al}. 2006) utilizou-se coeficientes $A$, $B$ e $C$ respectivamente de 30, 5 e 5, com comprimento $l$ de 121 amostras.
+De forma similar ao MTD1, os pontos do sinal que tiverem valor acima de $T$ são considerados possíveis candidatos para centros de segmentos. Para os possíveis candidatos que estiverem afastados de uma distância inferior a $l$, apenas o candidato de maior amplitude é considerado. Em \cite{Katsis2006} utilizou-se coeficientes $A$, $B$ e $C$ respectivamente de 30, 5 e 5, com comprimento $l$ de 121 amostras.
 
 %-------------------------------------------------------------------------
 			\subsection{Método 3 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando variação total (MTD3)}
 %-------------------------------------------------------------------------
-Este é o método de segmentação utilizado em (GUT and MOSCHYTZ, 2000). As definições da Tabela \ref{tab:mtd3params} serão utilizados para descrever este método.
+Este é o método de segmentação utilizado em \cite{Gut2000}. As definições da Tabela \ref{tab:mtd3params} serão utilizados para descrever este método.
 
-\input{./tables/MTD3_param_descriptions.tex}	
+\input{./tables/MTD3_param_descriptions.tex}
 
 Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. Caso a declividade média $\beta$ do trecho de sinal contido pela janela, calculado pela Equação (\ref{eq:decMedia}), exceda um limite $B$, o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento.
 
@@ -286,21 +286,28 @@ O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 %-------------------------------------------------------------------------
 			\subsection{Método 4 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando \emph{thresholding} (MTD4)}
 %-------------------------------------------------------------------------
-Este é o método de segmentação utilizado em (PACHITTIS \emph{et al}. 1995). As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
+Este é o método de segmentação adaptado de \cite{Pattichis1995}. As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
 
 \input{./tables/MTD4_param_descriptions.tex}
 
 Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W - 1$ após as BEPs nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$.
 
-No trabalho de (PACHITTIS \emph{et al}. 1995), utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
+No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
 
 \input{./flowcharts/MTD4.tex}
 
 %-------------------------------------------------------------------------
-		\section{Base de Dados Utilizadas}
+		\section{Bases de Dados Utilizadas}
 %-------------------------------------------------------------------------
+Este trabalho faz uso de aquisições da base de dados número 2 da Ninapro \cite{Atzori2014} e a base de dados (que replica os mesmos métodos da Ninapro) em construção realizada pelo Laboratório de Instrumentação Eletro-Eletrônica (IEE).
+
 %-------------------------------------------------------------------------
 			\subsection{Base de Dados Ninapro}
+%-------------------------------------------------------------------------
+
+
+%-------------------------------------------------------------------------
+				\subsubsection{Base de Dados Ninapro}
 %-------------------------------------------------------------------------
 %-------------------------------------------------------------------------
 			\subsection{Base de Dados do IEE}
@@ -391,7 +398,9 @@ Esta seção descreve a utilização de RNA para classificação dos segmentos o
 %-------------------------------------------------------------------------
 			\subsection{Características Utilizadas como Preditores}
 %-------------------------------------------------------------------------
-Os preditores (``entradas'') utilizados pela RNA são o valor \emph{rms}, a variância e a frequência mediana dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais parâmetros foram selecionados de forma a seguir trabalhos realizados por Favieiro em (Favieiro, ). O valor \emph{rms} ou \emph{root mean square} de um sinal discreto \emph{x} de comprimento $L$ (em Matlab, função \emph{rms()}) é dada pela equação \ref{eq:rms} e a variância deste sinal (em Matlab, função \emph{var()}) é dada pela equação \ref{eq:var}.
+Os preditores (``entradas'') utilizados pela RNA são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultado para uso com RNA, como \cite{Favieiro2009}, \cite{Schons2014} e \cite{CeneXXXX}.
+
+O valor RMS ou \emph{root mean square} de um sinal discreto \emph{x} de comprimento $L$ (em Matlab, função \emph{rms()}) é dada pela equação \ref{eq:rms} e a variância deste sinal (em Matlab, função \emph{var()}) é dada pela equação \ref{eq:var}, onde $\bar{x}$ é o valor médio do sinal. A frequência mediana é tal que a soma total da densidade de potência para frequências abaixo da frequência mediana é igual à soma total da densidade de potência para frequências acima da frequência mediana, sendo estimada pela função \emph{medfreq()} em Matlab.
 
 \begin{equation}
 	\label{eq:rms}
@@ -400,12 +409,14 @@ Os preditores (``entradas'') utilizados pela RNA são o valor \emph{rms}, a vari
 
 \begin{equation}
 	\label{eq:var}
-	var(x) = \sum\limits_{i=1}^{L}(x_i - \mu)^2
+	var(x) = \frac{1}{L-1}\sum\limits_{i=1}^{L}(x_i - \bar{x})^2
 \end{equation}
 
 %-------------------------------------------------------------------------
-			\subsection{Treinamento, Validação e Teste}
+			\subsection{Movimentos Utilizados como Alvo}
 %-------------------------------------------------------------------------
+Obtém-se os movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados Ninapro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar a variável que servirá como resposta esperada no treinamento da RNA. 
+
 
 %=========================================================================
 % RESULTADOS E DISCUSSÕES
@@ -439,15 +450,19 @@ Os preditores (``entradas'') utilizados pela RNA são o valor \emph{rms}, a vari
 \chapter{Função em Matlab para MTD2}
 \lstinputlisting{../../matlab/seg_mtd2.m}
 %-------------------------------------------------------------------------
-\chapter{Função em Matlab para MTD3}
-\lstinputlisting{../../matlab/seg_mtd3.m}
-%-------------------------------------------------------------------------
-\chapter{Função em Matlab para MTD4}
-\lstinputlisting{../../matlab/seg_mtd4.m}
+%\chapter{Função em Matlab para MTD3}
+%\lstinputlisting{../../matlab/seg_mtd3.m}
+%%-------------------------------------------------------------------------
+%\chapter{Função em Matlab para MTD4}
+%\lstinputlisting{../../matlab/seg_mtd4.m}
 %-------------------------------------------------------------------------
 \chapter{Código utilizado para determinação de $r_{target}$ do MTD1}
 \label{ap:r_target}
 \lstinputlisting{../../matlab/rtarget_mtd1.m}
+%-------------------------------------------------------------------------
+\chapter{Função em Matlab para obtenção dos movimentos relacionados aos segmentos}
+\label{ap:idMoves}
+\lstinputlisting{../../matlab/identifyClasses.m}
 %-------------------------------------------------------------------------
 \end{apendicesenv}
 

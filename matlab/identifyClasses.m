@@ -1,10 +1,10 @@
 %%
-%   Identificação das classes de movimentos
+%   Identificacao das classes de movimentos
 %%
 
 function targetDataArray = identifyClasses(centerLocs, stimulus)
 
-%% Remodela o vetor de estímulo, removendo trechos de 0
+%% Remodela o vetor de estimulo, removendo trechos de 0
 
 reshapedStimulus = stimulus;
 currentMovement = 1;
@@ -16,7 +16,7 @@ for index = 1:length(stimulus)
     end
 end
 
-%% Gera a matriz de identificação das classes
+%% Gera a matriz de identificacao das classes
 
 numberOfSegments = length(centerLocs);
 numberOfClasses = 17;
