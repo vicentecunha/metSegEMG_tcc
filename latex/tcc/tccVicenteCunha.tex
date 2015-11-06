@@ -82,7 +82,7 @@
    \vspace*{\fill}
    \centering
    \noindent
-   \textit{ A Gilberto, meu pai, torre de razão. \\ Acaso lo que digo no es verdadero, ojalá sea profético. } \vspace*{\fill}
+   \textit{ A Gilberto, mi padre, torre de razón y de firme fe; \\ e a todos aqueles que tomarem interesse neste estudo.} \vspace*{\fill}
 \end{dedicatoria}
 
 %=========================================================================
@@ -113,20 +113,20 @@
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
 
-	A segmentação de sinais de eletromiografia (EMG) é parte essencial de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses, separando trechos de interesse do sinal correspondentes a esforços musculares e descartando trechos de sinal com baixa atividade muscular. Neste estudo, quatro métodos para segmentação automática de sinais de EMG foram implementados em MATLAB. Os métodos foram aplicados aos sinais de EMG de superfície a base de dados do projeto Ninapro e aos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Uma rede neural artificial foi utilizada para classificar os movimentos realizados correspondentes aos sinais segmentados com os quatro métodos. TODO: RESULTADOS.
+	A segmentação de sinais de eletromiografia (EMG) é parte essencial de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses, separando trechos de interesse do sinal correspondentes a esforços musculares e descartando trechos de sinal com baixa atividade muscular. Neste estudo, quatro métodos para segmentação automática de sinais de EMG foram implementados em MATLAB. Os métodos foram aplicados aos sinais de EMG de superfície a base de dados do projeto NinaPro e aos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs) foram utilizadas para classificar os movimentos realizados relativos aos sinais segmentados com os quatro métodos. \textcolor{red}{TODO: RESULTADOS}.
 
 	\vspace{\onelineskip}
-	\textbf{Palavras-chave}: Eletromiografia. Segmentação. Base de dados Ninapro. Redes Neurais Artificiais.
+	\textbf{Palavras-chave}: Eletromiografia. Segmentação. Base de dados NinaPro. Redes Neurais Artificiais.
 \end{resumo}
 
 % resumo em inglês
 \begin{resumo}[Abstract]
  \begin{otherlanguage*}{english}
-	TRADUZIR RESUMO
+	\textcolor{red}{TODO: TRADUZIR RESUMO}.
 	
    \vspace{\onelineskip}
    \noindent 
-   \textbf{Keywords}: Eletromiography. Segmentation. MATLAB. Ninapro database. Artificial Neural Networks.
+   \textbf{Keywords}: Eletromiography. Segmentation. MATLAB. NinaPro database. Artificial Neural Networks.
  \end{otherlanguage*}
 \end{resumo}
 
@@ -147,6 +147,7 @@
 % inserir lista de abreviaturas e siglas
 \begin{siglas}
   	\item[EMG]		Eletromiografia
+	\item[NinaPro]	\emph{Non-Invasive Adaptive Prosthetics project}
 	\item[MU]		\emph{Motor Unit}
   	\item[MUAP]		\emph{Motor Unit Action Potencial}
 	\item[MUAPT]	\emph{Motor Unit Action Potencial Trains}
@@ -169,19 +170,17 @@ Sinais de EMG apresentam crescentes aplicações no controle de próteses mioel�
 
 As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais \cite{Hudgins1993}, classificador Bayesiano \cite{Englehart2003} e lógica \emph{fuzzy} \cite{Chan2000}. Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet \cite{Jun-UkChu2007}. 
 
-Neste trabalho, propõe-se e implementa-se em MATLAB quatro diferentes métodos de segmentação automática para sinais de EMG de superfície. Os métodos serão aplicados em sinais da base de dados número 2 do projeto Ninapro \cite{Atzori2014} - que contém sinais de EMG de superfície em 12 canais para 49 diferentes movimentos de mão e punho - e em sinais da base de dados similarmente adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica.
-
-Os primeiros dois métodos (que serão identificados neste estudo pelos mnemônicos MTD1 e MTD2) tratam da detecção de picos do sinal utilizando \emph{thresholding} e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável. Para as implementações dos métodos neste estudo, assume-se o conhecimento \emph{a priori} do número de segmentos de interesse contidos no sinal.
+Neste trabalho, propõe-se e implementa-se em MATLAB quatro diferentes métodos de segmentação automática para sinais de EMG de superfície. Os primeiros dois métodos (que serão identificados neste estudo pelas abreviações MTD1 e MTD2) tratam da detecção de picos do sinal utilizando \emph{thresholding} e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável.
 
 O primeiro método (MTD1) é baseado no método de segmentação utilizado em \cite{Chauvet2001}. Trata-se de método iterativo, identificando os picos do sinal a partir de \emph{threshold} de amplitude, segmentando o sinal em janelas de comprimento constante centradas nos picos. O valor de \emph{threshold} para a primeira iteração corresponde ao máximo absoluto do sinal. A cada nova iteração em que não se atinge um número desejado de segmentos, o novo \emph{threshold} é calculado como fração do \emph{threshold} da iteração anterior.
 
-O segundo método (MTD2) é baseado no método de segmentação utilizado em \cite{Katsis2006}. De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente de MTD1, MTD2 não é iterativo, utilizando o valor máximo e o comprimento do sinal para cálculo do valor de \emph{threshold}.
+O segundo método (MTD2) é baseado no método de segmentação utilizado em \cite{Katsis2006}. De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente de MTD1, MTD2 não é iterativo, utilizando relação entre valor máximo e comprimento do sinal para cálculo do valor de \emph{threshold}.
 
 O terceiro método (MTD3) é baseado no método de segmentação utilizado em \cite{Gut2000}. Uma janela deslizante percorre o sinal e identifica inícios de segmentos quando a declividade média no interior da janela excede determinado valor limite. Os finais dos segmentos são identificados quando a variação total do sinal no interior da janela é inferior a um segundo valor de \emph{threshold}.
 
 O quarto método (MTD4) é baseado no método de segmentação utilizado em \cite{Pattichis1995}. Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
 
-Utilizando valores de RMS, variância e frequência mediana dos sinais segmentados, uma rede neural artificial será treinada para classificar entre os 17 diferentes movimentos de mão e punho constantes do exercício 1 da database número 2 do projeto Ninapro \cite{Gijsberts2014}. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos (para possível uso em trabalhos futuros do laboratório de Instrumentação Eletro-Eletrônica) e fornecer avaliação comparativa entre métodos a respeito da taxa de acerto de classificação obtida com uso de RNA.
+Utilizando valores de RMS, variância e frequência mediana dos segmentos obtidos, redes neurais artificiais (RNAs) serão treinadas para classificar entre os 17 diferentes movimentos de mão e punho constantes do exercício 1 da base de dados número 2 do projeto NinaPro \cite{Gijsberts2014}. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos (para possível uso em trabalhos futuros do laboratório de Instrumentação Eletro-Eletrônica) e fornecer avaliação comparativa entre métodos a respeito da taxa de acerto de classificação obtida com uso de RNA.
 
 %=========================================================================
 % REVISÃO BIBLIOGRÁFICA
@@ -209,11 +208,13 @@ Dependendo do método utilizado para aquisição de EMG, é comum a captura da c
 	\legend{Fonte: adaptado de \cite{Kline2014}}
 \end{figure}
 
+\textcolor{red}{TODO: adicionar referência ao trabalho de Favieiro}.
+
 %-------------------------------------------------------------------------
 		\section{Métodos de Segmentação}
 %-------------------------------------------------------------------------
 \label{sec:MTDs}
-Esta seção descreve os métodos de segmentação que foram desenvolvidos neste trabalho, citando trabalhos da área que foram utilizados como base teórica para os métodos . Nota-se que nomes utilizados para variáveis e constantes (por exemplo, sinal a ser segmentado `$x$', \emph{threshold} `$T$', etc.) foram determinados pelo autor deste trabalho, não necessariamente sendo estes utilizados nos métodos citados.
+Esta seção descreve os métodos de segmentação desenvolvidos neste trabalho, citando os trabalhos da área que foram utilizados como base teórica para os métodos. Nota-se que nomes utilizados para variáveis e constantes (por exemplo, sinal a ser segmentado `$x$', \emph{threshold} `$T$', etc.) foram determinados pelo autor deste trabalho, não necessariamente sendo os mesmos utilizados nos trabalhos citados.
 
 Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos BEP (\emph{beginning extraction point}, ponto inicial de um segmento) e EEP (\emph{ending extraction point}, ponto final de um segmento), também utilizados em \cite{Pattichis1995}.
 	
@@ -272,7 +273,7 @@ Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a dir
 	\beta = \frac{1}{W}\sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})
 \end{equation}
 
-O EEP do correspondente segmento é então obtido como o ponto mais à direita da janela ($w_0 + W - 1$) quando a variação total $\gamma$, dado pela Equação (\ref{eq:varTotal}), do trecho de sinal contido pela janela for menor que um limite $C$.
+O EEP do correspondente segmento é então obtido como o ponto mais à direita da janela ($w_0 + W$) quando a variação total $\gamma$, dado pela Equação (\ref{eq:varTotal}), do trecho de sinal contido pela janela for menor que um limite $C$.
 
 \begin{equation}
 \label{eq:varTotal}
@@ -290,28 +291,51 @@ Este é o método de segmentação adaptado de \cite{Pattichis1995}. As definiç
 
 \input{./tables/MTD4_param_descriptions.tex}
 
-Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W - 1$ após as BEPs nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$.
+Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W$ após a identificação de uma BEP nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$.
 
-No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
+%No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
 
 \input{./flowcharts/MTD4.tex}
 
 %-------------------------------------------------------------------------
 		\section{Bases de Dados Utilizadas}
 %-------------------------------------------------------------------------
-Este trabalho faz uso de aquisições da base de dados número 2 da Ninapro \cite{Atzori2014} e a base de dados (que replica os mesmos métodos da Ninapro) em construção realizada pelo Laboratório de Instrumentação Eletro-Eletrônica (IEE).
+Este trabalho faz uso de aquisições para o exercício 1 da base de dados número 2 da NinaPro \cite{Gijsberts2014} e a base de dados em construção realizada pelo Laboratório de Instrumentação Eletro-Eletrônica. A base de dados do IEE busca replicar os métodos de aquisição utilizados pelo projeto NinaPro, contando com os mesmos movimentos realizados, mesmo posicionamento de eletrodos e mesmo período de amostragem (50 ms).
 
 %-------------------------------------------------------------------------
-			\subsection{Base de Dados Ninapro}
+			\subsection{Posicionamento de Eletrodos}
 %-------------------------------------------------------------------------
+Os sinais de EMG de superfície para ambas as bases são compostos por canais de aquisição de 12 eletrodos posicionados no braço direito de voluntários saudáveis (i.e. não amputados e sem desordens neuromusculares). Os primeiros 8 canais correspondem a eletrodos posicionados de forma a circundar o antebraço e a junção úmero-radial. O eletrodo do canal número 9 é posicionado sobre o músculo flexor superfícial dos dedos e o eletrodo do canal 10, em oposição, é posicionado sobre o músculo extensor dos dedos. Os últimos dois eletrodos, 11 e 12, são posicionados sobre o bíceps e o tríceps, respectivamente. A Figura \ref{fig:eletrodos} apresenta o posionamento para os doze eletrodos de superfície e a numeração de seus respectivos canais que compõem os sinais para ambas as bases de dados.
 
+\begin{figure}[htb]
+	\caption{\label{fig:eletrodos}Posicionamento de eletrodos de superfície no braço de um voluntário.}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/eletrodos.png}
+	\end{center}
+	\legend{Fonte: adaptado de \cite{Gijsberts2014}}
+\end{figure}
 
 %-------------------------------------------------------------------------
-				\subsubsection{Base de Dados Ninapro}
+			\subsection{Sistema de Aquisição IEE}
 %-------------------------------------------------------------------------
+\textcolor{red}{TODO: descrever o \emph{hardware} utilizado na aquisição do IEE}.
+
 %-------------------------------------------------------------------------
-			\subsection{Base de Dados do IEE}
+			\subsection{Realização de Movimentos}
 %-------------------------------------------------------------------------
+Após o posicionamento de eletrodos, os voluntários sentam-se em frente a um monitor e apoiam o braço direito de forma relaxada sobre uma superfície horizontal próxima à altura do cotovelo. O monitor exibe um vídeo com uma mão direita, digitalmente animada, realizando movimentos de interesse que devem ser mimicados pelos voluntários. A Figura \ref{fig:video} apresenta a mão digitalmente animada realizando alguns dos movimentos de interesse.
+
+\begin{figure}[htb]
+	\caption{\label{fig:video}Trechos do vídeo apresentado aos voluntários na aquisição do IEE.}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	\end{center}
+	%\legend{Fonte: adaptado de \cite{Gijsberts2014}}
+\end{figure}
+
+Primeiramente, realiza-se um ``treinamento'' com o voluntário, exibindo o vídeo e apresentando os movimentos que devem ser realizados (sem aquisição de sinal), de modo a reduzir possíveis erros na realização de movimentos para uma segunda exibição, quando os sinais de EMG serão devidamente adquiridos. Cada movimento apresentado em vídeo tem duração de 5 segundos, com um intervalo de 3 segundos de repouso entre movimentos. O voluntário realiza 6 repetições consecutivas para os 17 movimentos descritos na Tabela \ref{tab:movimentos}.
+
+\input{./tables/movimentos.tex}
 
 %=========================================================================
 % METODOLOGIA EXPERIMENTAL
@@ -328,7 +352,7 @@ Esta seção descreve a implementação dos métodos de segmentação desenvolvi
 %-------------------------------------------------------------------------
 				\subsubsection{Retificação Completa}
 %-------------------------------------------------------------------------
-Os sinais de eletromiografia para ambas as bases de dados (Ninapro e IEE) são armazenados mantendo sua polaridade original (\emph{i.e.} amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em Matlab, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
+Os sinais de eletromiografia para ambas as bases de dados (NinaPro e IEE) são armazenados mantendo sua polaridade original (i.e. amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em Matlab, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
 
 \begin{figure}[htb]
 	\caption{\label{fig:rectification} Retificação completa de trecho de sinal de eletromiografia.}
@@ -365,7 +389,7 @@ Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros a
 
 \input{./tables/combinacoes}
 
-Para os métodos que utilizam parâmetro de comprimento de segmento $l$ (\emph{i.e.} os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de $500 \mu s$), sendo a mesma duração dos segmentos de vídeo mimicados pelos voluntários. O valor de MTD1 para $r_{target}$ foi obtido utilizando o código do Apêndice \ref{ap:r_target} como valor mínimo da razão entre número de segmentos e comprimento de sinal para a base de dados Ninapro.
+Para os métodos que utilizam parâmetro de comprimento de segmento $l$ (i.e. os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de $500 \mu s$), sendo a mesma duração dos segmentos de vídeo mimicados pelos voluntários. O valor de MTD1 para $r_{target}$ foi obtido utilizando o código do Apêndice \ref{ap:r_target} como valor mínimo da razão entre número de segmentos e comprimento de sinal para a base de dados NinaPro.
 
 %-------------------------------------------------------------------------
 				\subsubsection{Identificação de segmentos utilizando \emph{k-means}}
@@ -415,7 +439,7 @@ O valor RMS ou \emph{root mean square} de um sinal discreto \emph{x} de comprime
 %-------------------------------------------------------------------------
 			\subsection{Movimentos Utilizados como Alvo}
 %-------------------------------------------------------------------------
-Obtém-se os movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados Ninapro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar a variável que servirá como resposta esperada no treinamento da RNA. 
+Obtém-se os movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados NinaPro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar a variável que servirá como resposta esperada no treinamento da RNA. 
 
 
 %=========================================================================
