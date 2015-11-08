@@ -271,7 +271,16 @@ Este é o método de segmentação utilizado em \cite{Gut2000}. As definições 
 
 \input{./tables/MTD3_param_descriptions.tex}
 
-Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. Caso a declividade média $\beta$ do trecho de sinal contido pela janela, calculado pela equação (\ref{eq:decMedia}), exceda um limite $B$, o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento. O EEP do correspondente segmento é então obtido como o ponto mais à direita ($w_0 + W$) da próxima janela na qual a variação total $\gamma$, dado pela equação (\ref{eq:varTotal}), do trecho de sinal contido pela janela for menor que um limite $C$. O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
+Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. Caso a variação total $V$ (equação (\ref{eq:varTotal})) do trecho de sinal contido pela janela exceda um limite $B$ (sendo $B > 0$), o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento. O EEP do correspondente segmento é então obtido como o ponto mais à direita ($w_0 + W$) da próxima janela na qual a variação total for menor que um limite $C$ (sendo $C < 0$). O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
+
+\begin{equation}
+\label{eq:varTotal}
+	V = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})
+\end{equation}
+
+\input{./flowcharts/MTD3.tex}
+
+No método original de \cite{Gut2000}, BEPs foram detectadas pelo cálculo da declividade média $\beta$ no interior da janela (equação (\ref{eq:decMedia})) nos pontos que excediam um limite $B$ (sendo $B > 0$), e EEPs pelo cálculo do módulo da variação total (equação (\ref{eq:absVarTotal})) quando esta era menor que um limite $C$ (sendo $C > 0$).
 
 \begin{equation}
 \label{eq:decMedia}
@@ -279,11 +288,11 @@ Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a dir
 \end{equation}
 
 \begin{equation}
-\label{eq:varTotal}
-	\gamma = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})
+\label{eq:absVarTotal}
+	\gamma = \left|\sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})\right|
 \end{equation}
 
-\input{./flowcharts/MTD3.tex}
+Nota-se que $\gamma = |W\beta| = |V|$. O MTD3 proposto, ao utilizar apenas a equação (\ref{eq:varTotal}) para detecção de BEPs e EEPs, explora tal relação para simplificar o método original, com a vantagem adicional de que os limites $B$ e $C$ passam a ser da mesma ordem de grandeza (com o método de \cite{Gut2000}, $B$ seria aproximadamente $W$ vezes menor que $C$). 
 
 %-------------------------------------------------------------------------
 			\subsection{Método 4 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando \emph{thresholding} (MTD4)}

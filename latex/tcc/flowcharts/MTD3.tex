@@ -34,7 +34,7 @@
 		\tikzset{
 		  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
 		  proc/.style={base, rectangle, text width=10em},
-		  test/.style={base, diamond, aspect=2, text width=6em},
+		  test/.style={base, diamond, aspect=3, text width=7em},
 		  term/.style={proc, rounded corners},
 		  % coord node style is used for placing corners of connecting lines
 		  coord/.style={coordinate, on chain, on grid, node distance=6mm and 25mm},
@@ -56,42 +56,54 @@
 		\node [test, join] (t1) {$w_0 + W > L$};
 		% -------------------------------------------------
 		% Node placement: column 2
-		\node [proc, fill=lcnorm!25, right=of t1] (beta) {$\beta = \frac{1}{W}\sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1}) $};
-		\node [test, join] (B) {$\beta > B$};
+		\node [proc, fill=lcnorm!25, right=of t1] (beta) {$V = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})$};
+		\node [test, join] (B) {$V > B$};
 		\node [proc, fill=lcfree!25] (BEP) {$w_0$ é BEP};
 		\node [proc, fill=lcnorm!25, join] (w01) {$w_0 \gets w_0 + 1$};
-		\node [test, join] (t2) {$w_0 + W > L$};
-		\node [proc, fill=lcnorm!25] (gamma) {$\gamma = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1}) $};
-		\node [test, join] (C) {$\gamma < C$};
+		\node [test, join] (t2) {$w_0+W > L$};
+		\node [test] (lMax) {$w_0+W > l_{máx}$};
+		\node [proc, fill=lcnorm!25] (gamma) {$V = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})$};
+		\node [test, join] (C) {($V < C$) e ($w_0+W > l_{mín}$)};
 		\node [proc, fill=lcfree!25] (EEP) {$w_0+W$ é EEP};
 		% -------------------------------------------------
+		% Node placement: column 3
+		\node [proc, fill=lcfree!25, right=of lMax] (el) {Elimina último BEP identificado};
+		% -------------------------------------------------
 		% Node placement: column 1
-		\node [proc, fill=lcfree!25, left=of gamma] (fin) {Segmentos limitados pelos BEPs e EEPs identificados};
+		
+		\node [proc, fill=lcfree!25, left=of gamma] (fin) {Pareamento de BEPs e EEPs identificados};
+		\node [proc, fill=lcfree!25, join] {Segmentos limitados pelos BEPs e EEPs pareados};
 		\node [term, densely dotted, it, fill=lccong!25, join] (fim) {FIM};
 		% -------------------------------------------------
 		% Coordinates
-		\node [coord, right=of B, xshift = 4em] (c1) {};
-		\node [coord, below=of t1, yshift = -17em] (c2) {};
+		\node [coord, right=of B, xshift = 15em] (c1) {};
+		\node [coord, below=of c1, yshift = -16em] (c4) {};
+		\node [coord, below=of t1, yshift = -15.5em] (c2) {};
 		\node [coord, right=of C, xshift = 2em] (c3) {};
 		% -------------------------------------------------
 		% Test connections
-		\path (t1.south) to node [near start, xshift=1em, yshift = 6em] {$sim$} (fin);
+		\path (t1.south) to node [near start, xshift=2em, yshift = 6em] {$sim$} (fin);
 			\draw [*->,lcnorm] (t1.south) -- (c2) -- (fin);
 		\path (t1.east) to node [near start, yshift=1em] {$não$} (beta);
 			\draw [o->,lcnorm] (t1.east) -- (beta);
 		\path (B.south) to node [near start, xshift=2em] {$sim$} (BEP);
 			\draw [*->,lcnorm] (B.south) -- (BEP);
-		\path (B.east) to node [near start, yshift=1em] {$não$} (c1);
+		\path (B.east) to node [near start, yshift=1em, xshift=-2em] {$não$} (c1);
 			\draw [o->,lcnorm] (B.east) -- (c1);
-		\path (t2.south) to node [near start, xshift=2em] {$não$} (gamma);
-			\draw [o->,lcnorm] (t2.south) -- (gamma);
+		\path (t2.south) to node [near start, xshift=2em] {$não$} (lMax);
+			\draw [o->,lcnorm] (t2.south) -- (lMax);
 		\path (t2.west) to node [near start, yshift=1em] {$sim$} (c2);
 			\draw [*->,lcnorm] (t2.west) -- (c2);
 			\draw [->,lcnorm] (EEP) -| (c1) |- (w0);
 		\path (C.south) to node [near start, xshift=2em] {$sim$} (EEP);
 			\draw [*->,lcnorm] (C.south) -- (EEP);
-		\path (C.east) to node [near start, yshift=1em] {$não$} (c3);
+		\path (C.east) to node [near start, xshift=1em] {$não$} (c3);
 			\draw [o->,lcnorm] (C.east) -- (c3) |- (w01);
+		\path (lMax.east) to node [near start, yshift=1em] {$sim$} (el);
+			\draw [*->,lcnorm] (lMax.east) -- (el);
+			\draw [->,lcnorm] (el) -- (c4);
+		\path (lMax.south) to node [near start, xshift=2em] {$não$} (gamma);
+			\draw [o->,lcnorm] (lMax.south) -- (gamma);
 		% -------------------------------------------------
 		\end{tikzpicture}
 	\end{center}
