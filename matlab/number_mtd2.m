@@ -1,4 +1,4 @@
-% Implementação do MTD1 com variação de parâmetros 
+% Implementação do MTD2 com variação de parâmetros 
 % e medida do número de segmentos obtidos por movimento
 close all
 clear
@@ -7,12 +7,12 @@ clear
 
 % Predeterminados
 l = 10e3;
-r_target = 5.6e-5;
 
 % Combinações a serem testadas
-q = [0.8 0.85 0.9 0.95];
-T_lim = [0.05 0.1 0.15 0.2];
-combinations = combvec(q, T_lim)';
+A = [20 30 40];
+B = [2 5 8];
+C = [2 5 8];
+combinations = combvec(A, B, C)';
 numberOfCombinations = length(combinations);
 
 %% Base de dados Ninapro
@@ -31,8 +31,8 @@ for currentSubject = 1:numberOfSubjects
             currentCombination, numberOfCombinations)
         % metodo de segmentacao
         [~, centerLocs] = ...
-            seg_mtd1(emg, l, combinations(currentCombination, 1), ...
-            r_target, combinations(currentCombination, 2));
+            seg_mtd2(emg, l, combinations(currentCombination, 1), ...
+            combinations(currentCombination,2),combinations(currentCombination,3));
         % identificacao do movimento correspondente a cada segmento
         targetClasses = identifyClasses(centerLocs, stimulus);
         % numero de segmentos obtidos por movimento
@@ -42,15 +42,4 @@ for currentSubject = 1:numberOfSubjects
         end
     end
 end
-save('./out/workspace/number_MTD1.mat') % salva a workspace atual
-
-%% Plot de resultados
-% média do número de segmentos para todos os voluntários
-segmentsNumberMean = squeeze(mean(numberOfSegments,2));
-lines = {'-';'--';':';'-';'--';':';'-';'--';':';'-';'--';':';'-';'--';':';'-'};
-markers={'+';'o';'*';'.';'x';'s';'d';'^';'v';'>';'<';'p';'h';'+';'o';'*'};
-figure(), hold on
-for currentCombination = 1:numberOfCombinations
-    plot(segmentsNumberMean(currentCombination,:)', ...
-        [markers{currentCombination} lines{currentCombination}]);
-end
+save('./out/workspace/number_MTD2.mat') % salva a workspace atual

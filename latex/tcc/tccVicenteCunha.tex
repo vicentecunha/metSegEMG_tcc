@@ -113,7 +113,7 @@
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
 
-	A segmentação de sinais de eletromiografia (EMG) é parte essencial de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses, separando trechos de interesse do sinal correspondentes a esforços musculares e descartando trechos de sinal com baixa atividade muscular. Neste estudo, quatro métodos para segmentação automática de sinais de EMG foram implementados em MATLAB. Os métodos foram aplicados aos sinais de EMG de superfície a base de dados do projeto NinaPro e aos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs) foram utilizadas para classificar os movimentos realizados relativos aos sinais segmentados com os quatro métodos. \textcolor{red}{TODO: RESULTADOS}.
+	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação possibilitam a separação automática de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície são propostos e implementados em MATLAB. Os métodos foram aplicados nos sinais da base de dados do projeto NinaPro e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs) foram utilizadas para classificar os sinais segmentados com os quatro métodos entre \textcolor{red}{XX} movimentos de mão e punho. \textcolor{red}{TODO: RESULTADOS}.
 
 	\vspace{\onelineskip}
 	\textbf{Palavras-chave}: Eletromiografia. Segmentação. Base de dados NinaPro. Redes Neurais Artificiais.
@@ -146,14 +146,17 @@
 
 % inserir lista de abreviaturas e siglas
 \begin{siglas}
+	\item[BEP]		\emph{Beginning Extraction Point}
+	\item[DBSCAN]	\emph{Density-Based Spatial Clustering of Applications with Noise}
+	\item[EEP]		\emph{Ending Extraction Point}
   	\item[EMG]		Eletromiografia
-	\item[NinaPro]	\emph{Non-Invasive Adaptive Prosthetics project}
+	\item[IEE]		Laboratório de Instrumentação Eletro-Eletrônica
 	\item[MU]		\emph{Motor Unit}
   	\item[MUAP]		\emph{Motor Unit Action Potencial}
 	\item[MUAPT]	\emph{Motor Unit Action Potencial Trains}
-	\item[MTD\#]	\emph{Método número \#}
-	\item[BEP]		\emph{Beginning Extraction Point}
-	\item[EEP]		\emph{Ending Extraction Point}
+	\item[MTD\#]	\emph{Método Número \#}
+	\item[NinaPro]	\emph{Non-Invasive Adaptive Prosthetics project}
+	\item[RNA]		Rede Neural Artificial
 \end{siglas}
 
 % inserir o sumario
@@ -166,21 +169,21 @@
 % INTRODUÇÃO
 	\chapter{Introdução}
 %=========================================================================
-Sinais de EMG apresentam crescentes aplicações no controle de próteses mioelétricas. Por exemplo, \cite{Hargrove2013} mostra o controle de uma prótese de perna de um amputado acima do joelho direito, enquanto \cite{Jun-UkChu2007} apresentou bons resultados de reconhecimento de padrões de EMG para desenvolvimento de uma prótese multifuncional de mão. Utilizando redes neurais artificiais, \cite{Pattichis1995} mostra realização de diagnósticos clínicos de desordens neuromusculares em sinais de EMG invasivo (adquirido por agulhas).
+Sinais de EMG apresentam crescentes aplicações no controle de próteses mioelétricas. \cite{Hargrove2013} mostram o controle de uma prótese de perna de um amputado acima do joelho direito, enquanto \cite{Jun-UkChu2007} apresentaram bons resultados de reconhecimento de padrões de EMG para desenvolvimento de uma prótese multifuncional de mão. Em área paralela ao controle de próteses, \cite{Pattichis1995} realizam diagnósticos clínicos de desordens neuromusculares com sinais de EMG e redes neurais artificiais.
 
-As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais \cite{Hudgins1993}, classificador Bayesiano \cite{Englehart2003} e lógica \emph{fuzzy} \cite{Chan2000}. Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet \cite{Jun-UkChu2007}. 
+As principais estratégias para caracterização de sinais de EMG e potenciais de ação das unidades motoras baseiam-se no uso de um método classificador. Métodos de classificação utilizados incluem - entre inúmeros outros - redes neurais artificiais \cite{Hudgins1993}, classificador Bayesiano \cite{Englehart2003}, lógica \emph{fuzzy} \cite{Chan2000} e \emph{neuro-fuzzy} \cite{Favieiro2011}. Tais sistemas de classificação necessitam, como parte do preprocessamento, segmentar os sinais de EMG adquiridos, para então realizar extração de características dos segmentos como amplitude, número de cruzamentos por zero, coeficientes de autoregressão, transformadas de Fourier e, mais recentemente, transformadas Wavelet \cite{Jun-UkChu2007}.
 
 Neste trabalho, propõe-se e implementa-se em MATLAB quatro diferentes métodos de segmentação automática para sinais de EMG de superfície. Os primeiros dois métodos (que serão identificados neste estudo pelas abreviações MTD1 e MTD2) tratam da detecção de picos do sinal utilizando \emph{thresholding} e produzem segmentos de comprimento constante centrados nestes picos. O terceiro (MTD3) e quarto (MTD4) métodos utilizam de janela deslizante para identificação de pontos iniciais e finais dos segmentos, produzindo segmentos de comprimento variável.
 
 O primeiro método (MTD1) é baseado no método de segmentação utilizado em \cite{Chauvet2001}. Trata-se de método iterativo, identificando os picos do sinal a partir de \emph{threshold} de amplitude, segmentando o sinal em janelas de comprimento constante centradas nos picos. O valor de \emph{threshold} para a primeira iteração corresponde ao máximo absoluto do sinal. A cada nova iteração em que não se atinge um número desejado de segmentos, o novo \emph{threshold} é calculado como fração do \emph{threshold} da iteração anterior.
 
-O segundo método (MTD2) é baseado no método de segmentação utilizado em \cite{Katsis2006}. De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente de MTD1, MTD2 não é iterativo, utilizando relação entre valor máximo e comprimento do sinal para cálculo do valor de \emph{threshold}.
+O segundo método (MTD2) é baseado no método de segmentação utilizado em \cite{Katsis2006}. De forma similar ao MTD1, também utiliza \emph{threshold} para detecção de picos do sinal e segmentação com janelas de comprimento constante em torno dos picos. Diferentemente do MTD1, MTD2 não é iterativo, utilizando relação entre valor máximo e comprimento do sinal para cálculo do valor de \emph{threshold}.
 
 O terceiro método (MTD3) é baseado no método de segmentação utilizado em \cite{Gut2000}. Uma janela deslizante percorre o sinal e identifica inícios de segmentos quando a declividade média no interior da janela excede determinado valor limite. Os finais dos segmentos são identificados quando a variação total do sinal no interior da janela é inferior a um segundo valor de \emph{threshold}.
 
 O quarto método (MTD4) é baseado no método de segmentação utilizado em \cite{Pattichis1995}. Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
 
-Utilizando valores de RMS, variância e frequência mediana dos segmentos obtidos, redes neurais artificiais (RNAs) serão treinadas para classificar entre os 17 diferentes movimentos de mão e punho constantes do exercício 1 da base de dados número 2 do projeto NinaPro \cite{Gijsberts2014}. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos (para possível uso em trabalhos futuros do laboratório de Instrumentação Eletro-Eletrônica) e fornecer avaliação comparativa entre métodos a respeito da taxa de acerto de classificação obtida com uso de RNA.
+Utilizando valores de RMS, variância e frequência mediana dos segmentos obtidos, redes neurais artificiais (RNAs) serão treinadas para classificar entre movimentos de mão e punho constantes do exercício 1 da base de dados número 2 do projeto NinaPro \cite{Gijsberts2014}. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos (para possível uso em trabalhos futuros do laboratório de Instrumentação Eletro-Eletrônica) e fornecer avaliação comparativa entre métodos a respeito da taxa de acerto de classificação obtida com uso de RNA.
 
 %=========================================================================
 % REVISÃO BIBLIOGRÁFICA
@@ -208,13 +211,15 @@ Dependendo do método utilizado para aquisição de EMG, é comum a captura da c
 	\legend{Fonte: adaptado de \cite{Kline2014}}
 \end{figure}
 
-\textcolor{red}{TODO: adicionar referência ao trabalho de Favieiro}.
+Para maiores detalhes sobre sinais de eletromiografia de superfície, conceitos sobre anatomia e fisiologia sugere-se a consulta de referências clássicas na área e adicionalmente as seguintes referências: \cite{Favieiro2009}, \cite{Lopes2014} e \cite{Schons2014}.
 
 %-------------------------------------------------------------------------
 		\section{Métodos de Segmentação}
 %-------------------------------------------------------------------------
 \label{sec:MTDs}
-Esta seção descreve os métodos de segmentação desenvolvidos neste trabalho, citando os trabalhos da área que foram utilizados como base teórica para os métodos. Nota-se que nomes utilizados para variáveis e constantes (por exemplo, sinal a ser segmentado `$x$', \emph{threshold} `$T$', etc.) foram determinados pelo autor deste trabalho, não necessariamente sendo os mesmos utilizados nos trabalhos citados.
+Esta seção descreve os métodos de segmentação desenvolvidos, citando os trabalhos da área que foram utilizados como base teórica para os métodos.
+
+Nota-se que nomes utilizados para variáveis e constantes (por exemplo, sinal a ser segmentado `$x$', \emph{threshold} `$T$', etc.) foram determinados pelo autor deste trabalho, não necessariamente sendo os mesmos utilizados nos trabalhos citados.
 
 Para as definições dos métodos 3 e 4 (MTD3 e MTD4) são utilizados os termos BEP (\emph{beginning extraction point}, ponto inicial de um segmento) e EEP (\emph{ending extraction point}, ponto final de um segmento), também utilizados em \cite{Pattichis1995}.
 	
@@ -225,7 +230,7 @@ Este método iterativo é adaptado do método de segmentação utilizado em \cit
 
 \input{./tables/MTD1_param_descriptions.tex}
 
-Inicialmente, determina-se o valor de \emph{threshold} $T_0$ equivalente ao máximo absoluto do sinal a ser segmentado $x$ (Equação (\ref{eq:mtd1t0})). O valor $T_k$ é atualizado em cada iteração $k$ como sendo uma fração $q$ de $T_{k-1}$ (Equação (\ref{eq:mtd1tk})). No trabalho de \cite{Chauvet2001}, este valor $q$ foi empiricamente determinado em 90\%.
+Inicialmente, determina-se o valor de \emph{threshold} $T_0$ equivalente ao máximo absoluto do sinal a ser segmentado $x$ (equação (\ref{eq:mtd1t0})). O valor $T_k$ é atualizado em cada iteração $k$ como sendo uma fração $q$ de $T_{k-1}$ (equação (\ref{eq:mtd1tk})). No trabalho de \cite{Chauvet2001}, este valor $q$ foi empiricamente determinado em 90\%.
 
 \begin{equation}
 \label{eq:mtd1t0}
@@ -251,7 +256,7 @@ Adicionalmente, o estabelecimento de um valor limite mínimo para \emph{threshol
 %-------------------------------------------------------------------------
 			\subsection{Método 2 - método não iterativo utilizando \emph{thresholding} para detecção de centros de segmentos de comprimento constante (MTD2)}
 %-------------------------------------------------------------------------
-Este é o método de segmentação utilizado por \cite{Katsis2006}, que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. O trabalho de \cite{Katsis2006} utiliza a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
+Este é o método de segmentação utilizado por \cite{Katsis2006}, que será descrito pelas definições da Tabela \ref{tab:mtd2params}. Primeiramente, seleciona-se entre dois métodos de cálculo de \emph{threshold} $T$: ou utiliza-se $T$ como múltiplo da média aritmética do sinal $x$; ou $T$ é uma fração do valor máximo do sinal $x$. No trabalho de \cite{Katsis2006} utilizaram a relação do fluxograma da Figura \ref{fig_mtd2flux} para o cálculo de \emph{threshold} $T$.
 
 \input{./tables/MTD2_param_descriptions.tex}
 
@@ -266,21 +271,17 @@ Este é o método de segmentação utilizado em \cite{Gut2000}. As definições 
 
 \input{./tables/MTD3_param_descriptions.tex}
 
-Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. Caso a declividade média $\beta$ do trecho de sinal contido pela janela, calculado pela Equação (\ref{eq:decMedia}), exceda um limite $B$, o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento.
+Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. Caso a declividade média $\beta$ do trecho de sinal contido pela janela, calculado pela equação (\ref{eq:decMedia}), exceda um limite $B$, o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento. O EEP do correspondente segmento é então obtido como o ponto mais à direita ($w_0 + W$) da próxima janela na qual a variação total $\gamma$, dado pela equação (\ref{eq:varTotal}), do trecho de sinal contido pela janela for menor que um limite $C$. O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 
 \begin{equation}
 \label{eq:decMedia}
 	\beta = \frac{1}{W}\sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})
 \end{equation}
 
-O EEP do correspondente segmento é então obtido como o ponto mais à direita da janela ($w_0 + W$) quando a variação total $\gamma$, dado pela Equação (\ref{eq:varTotal}), do trecho de sinal contido pela janela for menor que um limite $C$.
-
 \begin{equation}
 \label{eq:varTotal}
 	\gamma = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})
 \end{equation}
-
-O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 
 \input{./flowcharts/MTD3.tex}
 
@@ -291,16 +292,21 @@ Este é o método de segmentação adaptado de \cite{Pattichis1995}. As definiç
 
 \input{./tables/MTD4_param_descriptions.tex}
 
-Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W$ após a identificação de uma BEP nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$.
+Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W$ após a identificação de uma BEP nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
 
-%No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado). O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
+%No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado).
 
 \input{./flowcharts/MTD4.tex}
 
 %-------------------------------------------------------------------------
+		\section{Redes Neurais Artificiais}
+%-------------------------------------------------------------------------
+\textcolor{red}{TODO: explicar RNA e citar exemplos no controle de próteses}
+
+%-------------------------------------------------------------------------
 		\section{Bases de Dados Utilizadas}
 %-------------------------------------------------------------------------
-Este trabalho faz uso de aquisições para o exercício 1 da base de dados número 2 da NinaPro \cite{Gijsberts2014} e a base de dados em construção realizada pelo Laboratório de Instrumentação Eletro-Eletrônica. A base de dados do IEE busca replicar os métodos de aquisição utilizados pelo projeto NinaPro, contando com os mesmos movimentos realizados, mesmo posicionamento de eletrodos e mesmo período de amostragem (50 ms).
+Este trabalho faz uso de aquisições para o exercício 1 da base de dados número 2 do projeto NinaPro \cite{Gijsberts2014} e a base de dados em construção realizada pelo Laboratório de Instrumentação Eletro-Eletrônica (IEE). A base de dados do IEE busca replicar os métodos de aquisição utilizados pelo projeto NinaPro, contando com os mesmos movimentos realizados, mesmo posicionamento de eletrodos e mesmo período de amostragem (50 ms).
 
 %-------------------------------------------------------------------------
 			\subsection{Posicionamento de Eletrodos}
@@ -321,7 +327,7 @@ Os sinais de EMG de superfície para ambas as bases são compostos por canais de
 \textcolor{red}{TODO: descrever o \emph{hardware} utilizado na aquisição do IEE}.
 
 %-------------------------------------------------------------------------
-			\subsection{Realização de Movimentos}
+			\subsection{Movimentos de Interesse}
 %-------------------------------------------------------------------------
 Após o posicionamento de eletrodos, os voluntários sentam-se em frente a um monitor e apoiam o braço direito de forma relaxada sobre uma superfície horizontal próxima à altura do cotovelo. O monitor exibe um vídeo com uma mão direita, digitalmente animada, realizando movimentos de interesse que devem ser mimicados pelos voluntários. A Figura \ref{fig:video} apresenta a mão digitalmente animada realizando alguns dos movimentos de interesse.
 
@@ -341,9 +347,9 @@ Primeiramente, realiza-se um ``treinamento'' com o voluntário, exibindo o víde
 % METODOLOGIA EXPERIMENTAL
 	\chapter{Metodologia Experimental}
 %=========================================================================
-		\section{Implementação de Métodos de Segmentação}
+		\section{Métodos de Segmentação}
 %-------------------------------------------------------------------------
-Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. O fluxograma da Figura \ref{flow:MTDs} apresenta de forma resumida os passos comuns aos quatro métodos, que serão explanados nas subseções seguintes. Os códigos em Matlab criados para os quatro métodos são apresentados nos Apêndices A - D.
+Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. O fluxograma da Figura \ref{flow:MTDs} apresenta de forma resumida os passos comuns aos quatro métodos, que serão explanados nas subseções seguintes. Os códigos em MATLAB criados para os quatro métodos são apresentados nos Apêndices A - D.
 
 \input{./flowcharts/MTDsResumo.tex}
 
@@ -352,7 +358,7 @@ Esta seção descreve a implementação dos métodos de segmentação desenvolvi
 %-------------------------------------------------------------------------
 				\subsubsection{Retificação Completa}
 %-------------------------------------------------------------------------
-Os sinais de eletromiografia para ambas as bases de dados (NinaPro e IEE) são armazenados mantendo sua polaridade original (i.e. amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em Matlab, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
+Os sinais de eletromiografia para ambas as bases de dados (NinaPro e IEE) são armazenados mantendo sua polaridade original (i.e. amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em MATLAB, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
 
 \begin{figure}[htb]
 	\caption{\label{fig:rectification} Retificação completa de trecho de sinal de eletromiografia.}
@@ -381,23 +387,25 @@ Os sinais para cada canal de aquisição são normalizados de acordo com seu val
 \end{figure}
 
 %-------------------------------------------------------------------------
-			\subsection{Implementação dos Métodos de Segmentação}
+				\subsection{Parâmetros Ajustáveis}
 %-------------------------------------------------------------------------
-				\subsubsection{Parâmetros Utilizados}
-%-------------------------------------------------------------------------
-Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Tais parâmetros foram descritos anteriormentes na seção \ref{sec:MTDs}. Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, fixou-se alguns destes parâmetros e realizou-se uma lista de valores a serem explorados na aplicação de cada método, a fim de obter os parâmetros mais adequados para as duas bases de dados utilizadas. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua respectiva lista de valores explorados.
+Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Tais parâmetros foram descritos anteriormentes na seção \ref{sec:MTDs}. Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, fixou-se alguns destes parâmetros e realizou-se uma lista de valores a serem explorados na aplicação de cada método, a fim de obter os parâmetros mais adequados para cada uma das bases de dados, assim como avaliar quais classes de movimentos poderiam ser devidamente segmentados com cada método. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua respectiva lista de valores explorados.
 
 \input{./tables/combinacoes}
+
+Para cada movimento de interesse, o voluntário realiza 6 repetições; portanto, espera-se que os métodos de segmentação produzam 6 segmentos por classe de movimento. Para testar as diferentes combinações de parâmetros, utilizou-se os códigos nos apêndices E a H.
 
 Para os métodos que utilizam parâmetro de comprimento de segmento $l$ (i.e. os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de $500 \mu s$), sendo a mesma duração dos segmentos de vídeo mimicados pelos voluntários. O valor de MTD1 para $r_{target}$ foi obtido utilizando o código do Apêndice \ref{ap:r_target} como valor mínimo da razão entre número de segmentos e comprimento de sinal para a base de dados NinaPro.
 
 %-------------------------------------------------------------------------
-				\subsubsection{Identificação de segmentos utilizando \emph{k-means}}
+			\subsection{Grupamento das Posições de Segmentos de Diferentes Canais Utilizando DBSCAN}
 %-------------------------------------------------------------------------
-Os sinais para ambas as bases de dados são compostos por 12 canais de aquisição. Os métodos de segmentação são implementados individualmente aos doze canais. Para os métodos MTD1 e MTD2, as posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs. Tais posições são agrupadas utilizando o método de \emph{clustering k-means}. Este agrupamento permite a identificação dos segmentos obtidos nos diferentes canais que referem-se a um mesmo trecho de aumento da atividade muscular. Tomando a média de cada grupo, o sinal original pode então ser segmentado, de forma que os segmentos mantém coerência temporal entre canais. A Figura \ref{fig:kmeans1} exemplifica o grupamento das posições centrais de segmentos nos métodos MTD1 e MTD2 e a Figura \ref{fig:kmeans2} exemplifica o grupamento de BEPs e EEPs nos métodos MTD3 e MTD4.
+Os sinais para ambas as bases de dados são compostos por 12 canais de aquisição. Os métodos de segmentação são implementados individualmente aos doze canais. Para os métodos MTD1 e MTD2, as posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs.
+
+\textcolor{red}{TODO: explicar DBSCAN}
 
 \begin{figure}[htb]
-	\caption{\label{fig:kmeans1}\emph{Clustering} por \emph{k-means} dos centros de segmentos obtidos pelos métodos MTD1 e MTD2.}
+	\caption{\label{fig:kmeans1}Grupamento por DBSCAN dos centros de segmentos obtidos pelos métodos MTD1 e MTD2.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
 	\end{center}
@@ -405,7 +413,7 @@ Os sinais para ambas as bases de dados são compostos por 12 canais de aquisiç�
 \end{figure}
 
 \begin{figure}[htb]
-	\caption{\label{fig:kmeans2}\emph{Clustering} por \emph{k-means} de BEPs e EEPs de segmentos obtidos pelos métodos MTD3 e MTD4.}
+	\caption{\label{fig:kmeans2}Grupamentos por DBSCAN de BEPs e EEPs de segmentos obtidos pelos métodos MTD3 e MTD4.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
 	\end{center}
@@ -413,18 +421,18 @@ Os sinais para ambas as bases de dados são compostos por 12 canais de aquisiç�
 \end{figure}
 
 %-------------------------------------------------------------------------
-		\section{Rede Neural Artificial}
+		\section{Redes Neurais Artificiais}
 %-------------------------------------------------------------------------
-Esta seção descreve a utilização de RNA para classificação dos segmentos obtidos de acordo com movimentos de interesse. O processo de classificação é representado pelo fluxograma da Figura \ref{flow:RNAresumo}, que será explanado nas subseções seguintes.
+Esta seção descreve o uso de RNAs para classificação dos segmentos obtidos de acordo com movimentos de interesse. O processo de classificação é representado pelo fluxograma da Figura \ref{flow:RNAresumo}, que será explanado nas subseções seguintes.
 
 \input{./flowcharts/RNAresumo.tex}
 
 %-------------------------------------------------------------------------
 			\subsection{Características Utilizadas como Preditores}
 %-------------------------------------------------------------------------
-Os preditores (``entradas'') utilizados pela RNA são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultado para uso com RNA, como \cite{Favieiro2009}, \cite{Schons2014} e \cite{CeneXXXX}.
+Os preditores (``entradas'') das RNAs são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultado para uso com RNA, como \cite{Favieiro2009}, \cite{Schons2014} e \cite{Cene2015}.
 
-O valor RMS ou \emph{root mean square} de um sinal discreto \emph{x} de comprimento $L$ (em Matlab, função \emph{rms()}) é dada pela equação \ref{eq:rms} e a variância deste sinal (em Matlab, função \emph{var()}) é dada pela equação \ref{eq:var}, onde $\bar{x}$ é o valor médio do sinal. A frequência mediana é tal que a soma total da densidade de potência para frequências abaixo da frequência mediana é igual à soma total da densidade de potência para frequências acima da frequência mediana, sendo estimada pela função \emph{medfreq()} em Matlab.
+O valor RMS ou \emph{root mean square} de um sinal discreto \emph{x} de comprimento $L$ (em MATLAB, função \emph{rms()}) é dada pela equação \ref{eq:rms} e a variância deste sinal (em MATLAB, função \emph{var()}) é dada pela equação \ref{eq:var}, onde $\bar{x}$ é o valor médio do sinal. A frequência mediana é tal que a soma total da densidade de potência para frequências abaixo da frequência mediana é igual à soma total da densidade de potência para frequências acima da frequência mediana, sendo estimada pela função \emph{medfreq()} em MATLAB.
 
 \begin{equation}
 	\label{eq:rms}
@@ -437,15 +445,22 @@ O valor RMS ou \emph{root mean square} de um sinal discreto \emph{x} de comprime
 \end{equation}
 
 %-------------------------------------------------------------------------
-			\subsection{Movimentos Utilizados como Alvo}
+			\subsection{Classes de Movimentos Utilizados como Alvo}
 %-------------------------------------------------------------------------
-Obtém-se os movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados NinaPro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar a variável que servirá como resposta esperada no treinamento da RNA. 
-
+Obtém-se a identificação de movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados NinaPro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar a variável que servirá como resposta esperada no treinamento da RNA. 
 
 %=========================================================================
 % RESULTADOS E DISCUSSÕES
 	\chapter{Resultados e Discussões}
 %=========================================================================
+		\section{Número de Segmentos Obtidos por Movimento e Combinação de Parâmetros}
+%-------------------------------------------------------------------------
+Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:combinacoes_expanded}, as Tabelas \ref{tab:number_mtd1_nina} a \ref{tab:number_mtd4_iee}, apresentam o número médio de segmentos obtidos para todos os voluntários de cada base de dados utilizada. Como os voluntários realizam 6 repetições de cada movimento, os melhores parâmetros são aqueles que melhor conseguirem identificar este número de segmentos por classe de movimento.
+
+\input{./tables/combinacoes_expanded.tex}
+\input{./tables/numberOfSegments.tex}
+
+\textcolor{red}{TODO: analisar resultados, escolher melhores combinações de movimentos e parâmetros}
 
 %=========================================================================
 % CONCLUSÃO
@@ -468,25 +483,49 @@ Obtém-se os movimentos associados a cada segmento obtido a partir de sua posiç
 	\begin{apendicesenv}
 	\partapendices
 %=========================================================================
-\chapter{Função em Matlab para MTD1}
-\lstinputlisting{../../matlab/seg_mtd1.m}
+\chapter{Função em MATLAB para MTD1}
+\lstinputlisting{../../MATLAB/seg_mtd1.m}
+\label{ap:seg_mtd1}
 %-------------------------------------------------------------------------
-\chapter{Função em Matlab para MTD2}
-\lstinputlisting{../../matlab/seg_mtd2.m}
+\chapter{Função em MATLAB para MTD2}
+\lstinputlisting{../../MATLAB/seg_mtd2.m}
+\label{ap:seg_mtd2}
 %-------------------------------------------------------------------------
-%\chapter{Função em Matlab para MTD3}
-%\lstinputlisting{../../matlab/seg_mtd3.m}
+%\chapter{Função em MATLAB para MTD3}
+%\lstinputlisting{../../MATLAB/seg_mtd3.m}
+\label{ap:seg_mtd3}
 %%-------------------------------------------------------------------------
-%\chapter{Função em Matlab para MTD4}
-%\lstinputlisting{../../matlab/seg_mtd4.m}
+%\chapter{Função em MATLAB para MTD4}
+%\lstinputlisting{../../MATLAB/seg_mtd4.m}
+\label{ap:seg_mtd4}
+%-------------------------------------------------------------------------
+%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD1}
+%\lstinputlisting{../../MATLAB/num_mtd1.m}
+\label{ap:num_mtd1}
+%-------------------------------------------------------------------------
+%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD2}
+%\lstinputlisting{../../MATLAB/num_mtd2.m}
+\label{ap:num_mtd2}
+%-------------------------------------------------------------------------
+%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD3}
+%\lstinputlisting{../../MATLAB/num_mtd3.m}
+\label{ap:num_mtd3}
+%-------------------------------------------------------------------------
+%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD4}
+%\lstinputlisting{../../MATLAB/num_mtd4.m}
+\label{ap:num_mtd4}
+%-------------------------------------------------------------------------
+\chapter{Função em MATLAB para grupamento com DBSCAN}
+\label{ap:dbscan}
+\lstinputlisting{../../MATLAB/dbscan.m}
 %-------------------------------------------------------------------------
 \chapter{Código utilizado para determinação de $r_{target}$ do MTD1}
 \label{ap:r_target}
-\lstinputlisting{../../matlab/rtarget_mtd1.m}
+\lstinputlisting{../../MATLAB/rtarget_mtd1.m}
 %-------------------------------------------------------------------------
-\chapter{Função em Matlab para obtenção dos movimentos relacionados aos segmentos}
+\chapter{Função em MATLAB para obtenção dos movimentos relacionados aos segmentos}
 \label{ap:idMoves}
-\lstinputlisting{../../matlab/identifyClasses.m}
+\lstinputlisting{../../MATLAB/identifyClasses.m}
 %-------------------------------------------------------------------------
 \end{apendicesenv}
 

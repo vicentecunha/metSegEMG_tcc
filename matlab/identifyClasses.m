@@ -1,7 +1,3 @@
-%%
-%   Identificacao das classes de movimentos
-%%
-
 function targetDataArray = identifyClasses(centerLocs, stimulus)
 
 %% Remodela o vetor de estimulo, removendo trechos de 0

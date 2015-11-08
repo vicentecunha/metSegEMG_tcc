@@ -9,7 +9,7 @@ function [labs labscore] = dbscan(a,Eps,MinPts)
 % please, cite the original work:
 % Thanh N. Tran*, Klaudia Drab, Michal Daszykowski, "Revised DBSCAN algorithm 
 % to cluster data with dense adjacent clusters", Chemometrics and Intelligent 
-% Laboratory Systems, 120:92–96.
+% Laboratory Systems, 120:92-96.
 % DOI: 10.1016/j.chemolab.2012.11.006 
 
 

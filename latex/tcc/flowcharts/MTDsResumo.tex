@@ -49,10 +49,10 @@
 		}
 		% -------------------------------------------------
 		% Node placement: column 1
-		\node [proc, fill=lcfree!25] {Preprocessamento (retificação e normalização)};
-		\node [proc, fill=lcfree!25, join] {Identificação de segmentos para cada canal utilizando MTD\#};
-		\node [proc, fill=lcfree!25, join] {Grupamento de posições de segmentos utilizando \emph{k-means}};
-		\node [proc, fill=lcfree!25, join] {Segmentação do sinal original nas médias das posições agrupadas};
+		\node [proc, fill=lcfree!25] (pre) {Preprocessamento (retificação e normalização)};
+		\node [proc, fill=lcfree!25, right=of pre, xshift=-4em, join] (id) {Identificação de segmentos para cada canal utilizando MTD\#};
+		\node [proc, fill=lcfree!25, right=of id, xshift=-4em, join] (dbscan) {Grupamento de posições de segmentos utilizando DBSCAN};
+		\node [proc, fill=lcfree!25, right=of dbscan, xshift=-4em, join] {Segmentação do sinal nas médias das posições agrupadas};
 		% -------------------------------------------------
 		\end{tikzpicture}
 	\end{center}
