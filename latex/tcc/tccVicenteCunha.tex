@@ -271,7 +271,7 @@ Este é o método de segmentação utilizado em \cite{Gut2000}. As definições 
 
 \input{./tables/MTD3_param_descriptions.tex}
 
-Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. Caso a variação total $V$ (equação (\ref{eq:varTotal})) do trecho de sinal contido pela janela exceda um limite $B$ (sendo $B > 0$), o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento. O EEP do correspondente segmento é então obtido como o ponto mais à direita ($w_0 + W$) da próxima janela na qual a variação total for menor que um limite $C$ (sendo $C < 0$). O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
+Uma janela deslizante de comprimento $W$ percorre o sinal da esquerda para a direita. A cada incremento de $step$ amostras, caso a variação total $V$ (equação (\ref{eq:varTotal})) do trecho de sinal contido pela janela exceda um limite $B$ (sendo $B > 0$), o ponto mais à esquerda da janela $w_0$ determina a BEP de um segmento. O EEP do correspondente segmento é então obtido como o ponto mais à direita ($w_0 + W$) da próxima janela na qual a variação total for menor que um limite $C$ (sendo $C < 0$). O MTD3 pode ser representado pelo fluxograma da Figura \ref{fig_mtd3flux}.
 
 \begin{equation}
 \label{eq:varTotal}
@@ -292,7 +292,9 @@ No método original de \cite{Gut2000}, BEPs foram detectadas pelo cálculo da de
 	\gamma = \left|\sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})\right|
 \end{equation}
 
-Nota-se que $\gamma = |W\beta| = |V|$. O MTD3 proposto, ao utilizar apenas a equação (\ref{eq:varTotal}) para detecção de BEPs e EEPs, explora tal relação para simplificar o método original, com a vantagem adicional de que os limites $B$ e $C$ passam a ser da mesma ordem de grandeza (com o método de \cite{Gut2000}, $B$ seria aproximadamente $W$ vezes menor que $C$). 
+Nota-se que $\gamma = |W\beta| = |V|$. O MTD3 proposto, ao utilizar apenas a equação (\ref{eq:varTotal}) para detecção de BEPs e EEPs, explora tal relação para simplificar o método original, com a vantagem adicional de que os limites $B$ e $C$ passam a ser da mesma ordem de grandeza (com o método de \cite{Gut2000}, $B$ seria aproximadamente $W$ vezes menor que $C$).
+
+O incremento de $step$ amostras (ao invés do avanço de $w_0$ de uma em uma amostras) serve para reduzir o número de vezes em que é necessário cálculo de variação total $V$, simplificando processamento. Os limites de $l_{mín}$ e $l_{máx}$ são necessários para evitar identificação incorreta da EEP relacionada a uma BEP (i.e. $l_{máx}$ evita que o segmento BEP-EEP contenha sinal respectivo a mais de um movimento e $l_{mín}$ que o sinal seja segmentado em meio a um movimento).
 
 %-------------------------------------------------------------------------
 			\subsection{Método 4 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando \emph{thresholding} (MTD4)}
@@ -310,7 +312,21 @@ Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal d
 %-------------------------------------------------------------------------
 		\section{Redes Neurais Artificiais}
 %-------------------------------------------------------------------------
-\textcolor{red}{TODO: explicar RNA e citar exemplos no controle de próteses}
+Rede neural artificial (RNA) trata-se de um método computacional que, inspirado nos modelos de redes neurais biológicas, busca resolver problemas relacionados a reconhecimento de padrões \cite{yegnanarayana2009artificial}, apresentando aplicações em diversos tipo de sinais (e.g. sinais de áudio, imagem e, como é o caso deste trabalho, eletromiografia).
+
+Propostas de utilização de RNA com sinais de EMG para classificação de movimentos datam antes de 1990, a exemplo do trabalho de \cite{Hiraiwa1989}, que menciona a vantagem de RNA sobre outros mecanismos de aprendizado computacional na classificação de padrões que não apresentam separabilidade linear. Desde então, múltiplos trabalhos na área já utilizaram RNA para classificação de movimentos utilizando EMG (\cite{Hudgins1993}, \cite{Subasi2006}, \cite{Bu2003}), apresentando resultados satisfatórios para taxa de acerto de classificação.
+
+Uma RNA é modelada pelas comunicações de um conjunto de ``neurônios'' artificiais. Cada neurônio artificial, como mostrado na Figura \ref{fig:neuron}, trata-se de uma função matemática que soma de forma ponderada $r$ ``entradas'' com pesos $w_r$ e um valor de \emph{bias} $B$ e utiliza o resultado desta soma em uma função dita ``funlção de ativação'' para produzir um valor de saída.
+
+\begin{figure}[htb]
+	\caption{\label{fig:neuron} Modelo matemático de um neurônio artificial genérico}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/neuron.jpeg}
+	\end{center}
+	\legend{Fonte: adaptado de \cite{Tanikic2012}}
+\end{figure}
+
+A função de ativação 
 
 %-------------------------------------------------------------------------
 		\section{Bases de Dados Utilizadas}
@@ -478,7 +494,7 @@ Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:comb
 
 %=========================================================================
 % PROPOSTA DE TRABALHOS FUTUROS
-	\chapter{Propostas de Futuros Trabalhos}
+	\chapter{Propostas de Trabalhos Futuros}
 %=========================================================================
 
 %=========================================================================

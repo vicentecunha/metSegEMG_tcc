@@ -60,7 +60,7 @@
 		% -------------------------------------------------
 		% Node placement: column 2
 		\node [proc, fill=lcfree!25, right=of t1] (id) {Identificação de candidatos a centros de segmentos};
-		\node [test, join] (t2) {$\frac{N_k}{L} \geq r_{target}$};
+		\node [test, yshift=-0.2em, join] (t2) {$\frac{N_k}{L} \geq r_{target}$};
 		% -------------------------------------------------
 		% Test connections
 		\path (t1.south) to node [near start, xshift=2em] {$sim$} (fin);

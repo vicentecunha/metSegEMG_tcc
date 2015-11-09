@@ -52,14 +52,14 @@
 		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
 		\node [proc, fill=lcnorm!25, join] {$w_0 = 0$};
 		\node [proc, fill=lcfree!25, join] (W) {Janela de comprimento $W$, iniciando em $w_0$};
-		\node [proc, fill=lcnorm!25, join] (w0) {$w_0 \gets w_0 + 1$};
+		\node [proc, fill=lcnorm!25, join] (w0) {$w_0 \gets w_0 + step$};
 		\node [test, join] (t1) {$w_0 + W > L$};
 		% -------------------------------------------------
 		% Node placement: column 2
 		\node [proc, fill=lcnorm!25, right=of t1] (beta) {$V = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})$};
 		\node [test, join] (B) {$V > B$};
 		\node [proc, fill=lcfree!25] (BEP) {$w_0$ é BEP};
-		\node [proc, fill=lcnorm!25, join] (w01) {$w_0 \gets w_0 + 1$};
+		\node [proc, fill=lcnorm!25, join] (w01) {$w_0 \gets w_0 + step$};
 		\node [test, join] (t2) {$w_0+W > L$};
 		\node [test] (lMax) {$w_0+W > l_{máx}$};
 		\node [proc, fill=lcnorm!25] (gamma) {$V = \sum\limits_{i=w_0+1}^{w_0+W} (x_i - x_{i-1})$};

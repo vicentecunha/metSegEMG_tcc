@@ -9,19 +9,23 @@
 	\midrule \midrule
 	$x$ & Sinal a ser segmentado \\
 	\midrule
-	$l_{min}$ & Distância mínima esperada entre BEPs e EEPs de um mesmo segmento \\
+	$l_{min}$ & Distância mínima entre BEPs e EEPs de um mesmo segmento \\
 	\midrule
-	$l_{máx}$ & Distância máxima esperada entre BEPs e EEPs de um mesmo segmento\\
+	$l_{máx}$ & Distância máxima entre BEPs e EEPs de um mesmo segmento\\
 	\midrule
 	$W$ & Comprimento da janela deslizante utilizada pelo método \\
 	\midrule
 	$w_0$ & Número da amostra mais a esquerda da janela. Determina a posição instantânea da janela \\
 	\midrule
+	$step$ & Número de amostras para incrementar $w_0$ antes de novo cálculo de variação total \\
+	\midrule
+	$V$ & Variação total do sinal $x$ contido na janela deslizante \\
+	\midrule
 	$\beta$ & Declividade média do sinal $x$ contido na janela deslizante \\
 	\midrule
 	$B$ & Valor limite para declividade média que determina um BEP\\
 	\midrule
-	$\gamma$ & Variação total do sinal $x$ contido na janela deslizante \\
+	$\gamma$ & Módulo da variação total do sinal $x$ contido na janela deslizante \\
 	\midrule
 	$C$ & Valor limite para variação total que determina um EEP\\
 	\bottomrule
