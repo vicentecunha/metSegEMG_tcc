@@ -1,4 +1,4 @@
-function [x_seg, finalCenterLocs] = seg_mtd3(x, l_min, l_max, W, B, C)
+function [x_seg, finalCenterLocs] = seg_mtd3(x, l_min, l_max, st, W, B, C)
 %   MTD3 - metodo com janela deslizante para deteccao de BEP e EEP de segmentos
 %	utilizando variacao total                           		
 %                                                                
@@ -36,7 +36,7 @@ BEPsLocsCell = cell(1,numberOfChannels);
 EEPsLocsCell = cell(1,numberOfChannels);
 searchBEP = true(numberOfChannels,1);
 lastBEPloc = zeros(numberOfChannels,1);
-for w0 = 1:L-W % janela deslizante para cálculo de variação total
+for w0 = 1:st:L-W % janela deslizante para cálculo de variação total
     for currentChannel = 1:numberOfChannels
         totalVariation(w0, currentChannel) =...
             sum(diff(x_norm(w0:w0+W, currentChannel)));

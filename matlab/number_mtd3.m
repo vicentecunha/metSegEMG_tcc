@@ -8,6 +8,7 @@ clear
 % Predeterminados
 l_min = 7.5e3;
 l_max = 12.5e3;
+step = 100;
 W = 5e3;
 
 % Combinações a serem testadas
@@ -32,7 +33,7 @@ for currentSubject = 1:numberOfSubjects
             currentCombination, numberOfCombinations)
         % metodo de segmentacao
         [~, centerLocs] = ...
-            seg_mtd3(emg, l_min, l_max, W, combinations(currentCombination, 1), ...
+            seg_mtd3(emg,l_min,l_max,step,W,combinations(currentCombination, 1), ...
             combinations(currentCombination, 2));
         % identificacao do movimento correspondente a cada segmento
         targetClasses = identifyClasses(centerLocs, stimulus);
