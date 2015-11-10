@@ -163,4 +163,4 @@ for currentSubject = 1:numberOfSubjects
         end
     end
 end
-save('./out/workspace/number_MTD3_part2.mat') % salva a workspace atual
+save('./out/workspace/number_MTD3.mat') % salva a workspace atual

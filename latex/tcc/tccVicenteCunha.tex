@@ -113,7 +113,7 @@
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
 
-	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação possibilitam a separação automática de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície são propostos e implementados em MATLAB. Os métodos foram aplicados nos sinais da base de dados do projeto NinaPro e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs) foram utilizadas para classificar os sinais segmentados com os quatro métodos entre \textcolor{red}{XX} movimentos de mão e punho. \textcolor{red}{TODO: RESULTADOS}.
+	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação possibilitam a separação automática de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície são propostos e implementados em MATLAB. Os métodos foram aplicados nos sinais da base de dados do projeto NinaPro e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs) foram utilizadas para classificar os sinais segmentados com os quatro métodos entre 17 movimentos de mão e punho. \textcolor{red}{TODO: RESULTADOS}.
 
 	\vspace{\onelineskip}
 	\textbf{Palavras-chave}: Eletromiografia. Segmentação. Base de dados NinaPro. Redes Neurais Artificiais.
@@ -307,16 +307,18 @@ Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal d
 
 %No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado).
 
-\input{./flowcharts/MTD4.tex}
+\input{./flowcharts/MTD4_new.tex}
+
+\textcolor{red}{TODO: atualizar esta descrição com a versão final do método}
 
 %-------------------------------------------------------------------------
 		\section{Redes Neurais Artificiais}
 %-------------------------------------------------------------------------
 Rede neural artificial (RNA) trata-se de um método computacional que, inspirado nos modelos de redes neurais biológicas, busca resolver problemas relacionados a reconhecimento de padrões \cite{yegnanarayana2009artificial}, apresentando aplicações em diversos tipo de sinais (e.g. sinais de áudio, imagem e, como é o caso deste trabalho, eletromiografia).
 
-Propostas de utilização de RNA com sinais de EMG para classificação de movimentos datam antes de 1990, a exemplo do trabalho de \cite{Hiraiwa1989}, que menciona a vantagem de RNA sobre outros mecanismos de aprendizado computacional na classificação de padrões que não apresentam separabilidade linear. Desde então, múltiplos trabalhos na área já utilizaram RNA para classificação de movimentos utilizando EMG (\cite{Hudgins1993}, \cite{Subasi2006}, \cite{Bu2003}), apresentando resultados satisfatórios para taxa de acerto de classificação.
+Propostas de utilização de RNA com sinais de EMG para classificação de movimentos datam antes de 1990, a exemplo do trabalho de \cite{Hiraiwa1989}, que menciona a vantagem de RNA sobre outros mecanismos de aprendizado computacional na classificação de padrões que não apresentam separabilidade linear. Desde então, múltiplos trabalhos na área já utilizaram RNA para classificação de movimentos utilizando EMG (e.g. \cite{Hudgins1993}, \cite{Subasi2006}, \cite{Bu2003}), apresentando resultados satisfatórios para taxa de acerto de classificação.
 
-Uma RNA é modelada pelas comunicações de um conjunto de ``neurônios'' artificiais. Cada neurônio artificial, como mostrado na Figura \ref{fig:neuron}, trata-se de uma função matemática que soma de forma ponderada $r$ ``entradas'' com pesos $w_r$ e um valor de \emph{bias} $B$ e utiliza o resultado desta soma em uma função dita ``funlção de ativação'' para produzir um valor de saída.
+Uma RNA é modelada pelas comunicações de um conjunto de ``neurônios'' artificiais. Cada neurônio artificial, como mostrado na Figura \ref{fig:neuron}, trata-se de uma função matemática que soma de forma ponderada $r$ entradas com pesos $w_r$ e um valor de \emph{bias} $B$ e utiliza o resultado desta soma em uma função dita ``função de ativação''.
 
 \begin{figure}[htb]
 	\caption{\label{fig:neuron} Modelo matemático de um neurônio artificial genérico}
@@ -326,7 +328,31 @@ Uma RNA é modelada pelas comunicações de um conjunto de ``neurônios'' artifi
 	\legend{Fonte: adaptado de \cite{Tanikic2012}}
 \end{figure}
 
-A função de ativação 
+As RNAs utilizadas neste trabalho apresentam arquitetura chamada \emph{feedforward}, onde neurônios são estruturados em camadas consecutivas, de forma que neurônios de uma mesma camada recebem as saídas de neurônios da camada anterior. A Figura \ref{fig:feedforward} exemplifica a estrutura de uma rede neural \emph{feedforward} que utiliza $m$ entradas para produzir $n$ saídas, utilizando duas camadas de neurônios chamadas de ``camadas ocultas'' (i.e. a saída da camada é utilizada como entrada da próxima camada) e uma camada de saída.
+
+\begin{figure}[htb]
+	\caption{\label{fig:feedforward} Exemplo de RNA em arquitetura \emph{feedforward}}
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/feedforward.png}
+	\end{center}
+	\legend{Fonte: adaptado de \cite{BARBOSA2005}}
+\end{figure}
+
+\cite{Hornik1991} mostra que ao utilizar neurônios com função de ativação contínua, limitada e não constante, a taxa de acerto de classificação para uma RNA de arquitetura \emph{feedforward} depende somente do número de neurônios artificiais utilizados na camada escondida. Em aplicações de reconhecimento de padrões, normalmente utiliza-se uma função de ativação do tipo sigmoide (i.e. função cuja curva lembra a forma de ``S'').  A função de ativação utilizada para RNAs neste trabalho é a função sigmoide logística $logsig()$, dada pela equação \ref{eq:logsig}.
+
+\begin{equation}
+\label{eq:logsig}
+	logsig(x) = \frac{1}{1+e^{-x}}
+\end{equation}
+
+Uma RNA pode ser utilizada para resolver determinado problema após um processo de treinamento supervisionado. Conjuntos de dados de treinamento (entradas e respostas esperadas) são apresentados à RNA. Um algoritmo iterativo modifica os pesos e \emph{bias} dos neurônios buscando combinação que otimize a performance da RNA para os dados de treinamento. Às iterações do algoritmo de treinamento, em que os dados de treinamento são reapresentados à RNA, dá-se o nome de \emph{epoch}. O algoritmo utilizado para treinamento de RNAs neste trabalho chama-se \emph{scaled conjugate gradient backpropagation} \cite{Moller1993} (identificado em MATLAB como \emph{trainscg}), que apresenta boa performance em problemas de reconhecimento de padrões.
+
+Quando uma RNA é aplicada para classificação de séries temporais de sinais, as entradas (chamadas ``preditores'') utilizadas pela RNA são características extraídas de um trecho do sinal (e.g. número de cruzamentos por zero, valor médio, valor RMS). A extração de características tem o objetivo de reduzir a dimensionalidade do vetor de entradas da RNA (i.e. ao invés de um trecho de sinal com grande número de amostras, a entrada da RNA trata-se de um número arbitrariamente pequeno de preditores), o que apresenta vantagens em performance computacional e contorna problemas que surgem da classificação de sinais ruidosos \cite{Kim2000}.
+
+%=========================================================================
+% METODOLOGIA EXPERIMENTAL
+	\chapter{Metodologia Experimental}
+%=========================================================================
 
 %-------------------------------------------------------------------------
 		\section{Bases de Dados Utilizadas}
@@ -357,9 +383,9 @@ Os sinais de EMG de superfície para ambas as bases são compostos por canais de
 Após o posicionamento de eletrodos, os voluntários sentam-se em frente a um monitor e apoiam o braço direito de forma relaxada sobre uma superfície horizontal próxima à altura do cotovelo. O monitor exibe um vídeo com uma mão direita, digitalmente animada, realizando movimentos de interesse que devem ser mimicados pelos voluntários. A Figura \ref{fig:video} apresenta a mão digitalmente animada realizando alguns dos movimentos de interesse.
 
 \begin{figure}[htb]
-	\caption{\label{fig:video}Trechos do vídeo apresentado aos voluntários na aquisição do IEE.}
+	\caption{\label{fig:video}Cenas do vídeo apresentado aos voluntários na aquisição do IEE.}
 	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	    \includegraphics[width=0.75\linewidth]{./img/scenes.png}
 	\end{center}
 	%\legend{Fonte: adaptado de \cite{Gijsberts2014}}
 \end{figure}
@@ -368,35 +394,20 @@ Primeiramente, realiza-se um ``treinamento'' com o voluntário, exibindo o víde
 
 \input{./tables/movimentos.tex}
 
-%=========================================================================
-% METODOLOGIA EXPERIMENTAL
-	\chapter{Metodologia Experimental}
-%=========================================================================
+%-------------------------------------------------------------------------
 		\section{Métodos de Segmentação}
 %-------------------------------------------------------------------------
-Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. O fluxograma da Figura \ref{flow:MTDs} apresenta de forma resumida os passos comuns aos quatro métodos, que serão explanados nas subseções seguintes. Os códigos em MATLAB criados para os quatro métodos são apresentados nos Apêndices A - D.
+Esta seção descreve a implementação dos métodos de segmentação desenvolvidos. O fluxograma da Figura \ref{flow:MTDs} apresenta de forma resumida os passos comuns aos quatro métodos, que serão explanados nas subseções seguintes. Os códigos criados para os quatro métodos, escritos para MATLAB R2015a, são apresentados nos Apêndices \ref{ap:seg_mtd1} a \ref{ap:seg_mtd4}.
 
 \input{./flowcharts/MTDsResumo.tex}
 
 %-------------------------------------------------------------------------
 			\subsection {Preprocessamento}
 %-------------------------------------------------------------------------
-				\subsubsection{Retificação Completa}
-%-------------------------------------------------------------------------
-Os sinais de eletromiografia para ambas as bases de dados (NinaPro e IEE) são armazenados mantendo sua polaridade original (i.e. amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em MATLAB, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos. A Figura \ref{fig:rectification} exemplifica o resultado esperado para a retificação completa de um trecho de sinal de eletromiografia.
 
-\begin{figure}[htb]
-	\caption{\label{fig:rectification} Retificação completa de trecho de sinal de eletromiografia.}
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
-\end{figure}
+Os sinais de eletromiografia para ambas as bases de dados (NinaPro e IEE) são armazenados mantendo sua polaridade original (i.e. amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em MATLAB, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos.
 
-%-------------------------------------------------------------------------
-				\subsubsection{Normalização}
-%-------------------------------------------------------------------------
-Os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da equação \ref{eq:x_normalization}, onde $x$ é o sinal original para um canal e $x_{norm}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica a normalização para três canais de um trecho de sinal já retificado.
+Após retificação, os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da equação \ref{eq:x_normalization}, onde $x$ é o sinal original para um canal e $x_{norm}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica a retificação e normalização para o sinal de um canal de EMG.
 
 \begin{equation}
 	\label{eq:x_normalization}
@@ -404,9 +415,9 @@ Os sinais para cada canal de aquisição são normalizados de acordo com seu val
 \end{equation}
 
 \begin{figure}[htb]
-	\caption{\label{fig:normalization}Normalização de canais de eletromiografia de acordo com seu valor máximo.}
+	\caption{\label{fig:normalization}Retificação e normalização de trecho de sinal de EMG.}
 	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+	    \includegraphics[width=0.75\linewidth]{./img/matlab/prettyRaw.eps}
 	\end{center}
 	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
 \end{figure}
@@ -414,41 +425,31 @@ Os sinais para cada canal de aquisição são normalizados de acordo com seu val
 %-------------------------------------------------------------------------
 				\subsection{Parâmetros Ajustáveis}
 %-------------------------------------------------------------------------
-Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Tais parâmetros foram descritos anteriormentes na seção \ref{sec:MTDs}. Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, fixou-se alguns destes parâmetros e realizou-se uma lista de valores a serem explorados na aplicação de cada método, a fim de obter os parâmetros mais adequados para cada uma das bases de dados, assim como avaliar quais classes de movimentos poderiam ser devidamente segmentados com cada método. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua respectiva lista de valores explorados.
+Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Tais parâmetros foram descritos anteriormentes na seção \ref{sec:MTDs} (Tabelas \ref{tab:mtd1params} a \ref{tab:mtd4params}). Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, listou-se valores a serem explorados na aplicação de cada método, a fim de obter os parâmetros mais adequados para cada uma das bases de dados, assim como avaliar quais classes de movimentos poderiam ser devidamente segmentados com cada método. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua respectiva lista de valores explorados.
 
 \input{./tables/combinacoes}
 
-Para cada movimento de interesse, o voluntário realiza 6 repetições; portanto, espera-se que os métodos de segmentação produzam 6 segmentos por classe de movimento. Para testar as diferentes combinações de parâmetros, utilizou-se os códigos nos apêndices E a H.
+Para cada movimento de interesse, o voluntário realiza 6 repetições; portanto, espera-se que os métodos de segmentação produzam 6 segmentos por classe de movimento. Para testar as diferentes combinações de parâmetros, utilizou-se os códigos apresentados nos apêndices \ref{ap:num_mtd1} a \ref{ap:num_mtd4}.
 
-Para os métodos que utilizam parâmetro de comprimento de segmento $l$ (i.e. os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de $500 \mu s$), sendo a mesma duração dos segmentos de vídeo mimicados pelos voluntários. O valor de MTD1 para $r_{target}$ foi obtido utilizando o código do Apêndice \ref{ap:r_target} como valor mínimo da razão entre número de segmentos e comprimento de sinal para a base de dados NinaPro.
+Para os métodos que necessitam parâmetro de comprimento de segmento $l$ (i.e. os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de $500 \mu s$), sendo a mesma duração dos segmentos de vídeo mimicados pelos voluntários. O valor de MTD1 para $r_{target}$ foi obtido utilizando o código do apêndice \ref{ap:r_target} como valor mínimo da razão entre número de segmentos e comprimento de sinal para a base de dados NinaPro.
+
+Para os métodos que utilizam janela deslizante (MTD3 e MTD4), utilizou-se comprimento de janela $W$ de 5000 amostras, de modo que o comprimento temporal da janela (2,5 segundos) equivale à metade da duração do segmento de vídeo, com incrementos $step$ de 500 amostras, ou um décimo do comprimento da janela. Os parâmetros de $l_{mín}$ e $l_{máx}$ utilizados foram de 7500 e 12500 amostras, respectivamente.
 
 %-------------------------------------------------------------------------
 			\subsection{Grupamento das Posições de Segmentos de Diferentes Canais Utilizando DBSCAN}
 %-------------------------------------------------------------------------
-Os sinais para ambas as bases de dados são compostos por 12 canais de aquisição. Os métodos de segmentação são implementados individualmente aos doze canais. Para os métodos MTD1 e MTD2, as posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs.
+Os sinais para ambas as bases de dados são compostos por 12 canais de aquisição. Os métodos de segmentação são implementados individualmente aos doze canais. Para os métodos MTD1 e MTD2, as posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs. Tais posições de diferentes canais são identificadas como pertencendo a um mesmo segmento através do algoritmo de grupamento DBSCAN (\emph{Density-Based Spatial Clustering of Applications with Noise}).
 
-\textcolor{red}{TODO: explicar DBSCAN}
+DBSCAN foi inicialmente proposto em \cite{Ester1996} para grupamento de pontos utilizando dois parâmetros: $\epsilon$, que define uma vizinhança em torno do valor de cada ponto, e $minPts$, que determina o número mínimo de pontos pertencentes à mesma vizinhança para formação do ``núcleo'' de um grupo. Para mais detalhes sobre DBSCAN, sugere-se o artigo original \cite{Ester1996} e a revisão do método \cite{Thanh2013}, cujo código em MATLAB foi utilizado (apêndice \ref{ap:dbscan}).
 
-\begin{figure}[htb]
-	\caption{\label{fig:kmeans1}Grupamento por DBSCAN dos centros de segmentos obtidos pelos métodos MTD1 e MTD2.}
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
-\end{figure}
+O algoritmo DBSCAN foi escolhido para esta aplicação por dois motivos principais. Primeiramente, ao contrário de métodos de grupamento como \emph{k-means}, DBSCAN não necessita parâmetro que especifique número de grupos, no caso, número de segmentos a serem obtidos. Além disto, este método é capaz de descartar posições \emph{outliers} que venham a identificadas para algum canal. Sendo assim, o algoritmo DBSCAN é capaz de robustecer os métodos de segmentação, tornando-os implementáveis a sinais de múltiplos canais.
 
-\begin{figure}[htb]
-	\caption{\label{fig:kmeans2}Grupamentos por DBSCAN de BEPs e EEPs de segmentos obtidos pelos métodos MTD3 e MTD4.}
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
-\end{figure}
+Após o grupamento de posições de segmentos obtidos nos diferentes canais, tomam-se as médias de cada grupo como as posições nas quais o sinal deve ser segmentado (para os métodos MTD1 e MTD2, as médias dos grupos indicam posições centrais de segmentos e para métodos MTD3 e MTD4 indicam posições de BEPs e EEPs). O sinal é segmentado nestas posições para os doze canais, mantendo a coerência temporal entre canais.
 
 %-------------------------------------------------------------------------
 		\section{Redes Neurais Artificiais}
 %-------------------------------------------------------------------------
-Esta seção descreve o uso de RNAs para classificação dos segmentos obtidos de acordo com movimentos de interesse. O processo de classificação é representado pelo fluxograma da Figura \ref{flow:RNAresumo}, que será explanado nas subseções seguintes.
+Esta seção descreve o uso de RNAs para classificação dos segmentos obtidos de acordo com movimentos de interesse. O processo de classificação é representado pelo fluxograma da Figura \ref{flow:RNAs}, que será explanado nas subseções seguintes.
 
 \input{./flowcharts/RNAresumo.tex}
 
@@ -470,9 +471,31 @@ O valor RMS ou \emph{root mean square} de um sinal discreto \emph{x} de comprime
 \end{equation}
 
 %-------------------------------------------------------------------------
-			\subsection{Classes de Movimentos Utilizados como Alvo}
+			\subsection{Classes de Movimentos Utilizadas como Resposta}
 %-------------------------------------------------------------------------
-Obtém-se a identificação de movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados NinaPro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar a variável que servirá como resposta esperada no treinamento da RNA. 
+Realiza-se a identificação de movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados NinaPro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no apêndice \ref{ap:idMoves} para criar o vetor de respostas esperadas no treinamento da RNA.
+
+\textcolor{red}{TODO: explicar o equivalente realizado para a base de dados IEE}
+
+%-------------------------------------------------------------------------
+			\subsection{Separação de Grupos de Treino, Validação e Teste para Treinamento}
+%-------------------------------------------------------------------------
+Os grupos de segmentos utilizadas no treinamento da rede neural são tais que:
+
+\begin{itemize}
+\item grupo de treino: primeiros quatro segmentos obtidos para uma mesma classe de movimento
+\item grupo de validação: quinto segmento obtido para cada classe de movimento
+\item grupo de teste: demais segmentos
+\end{itemize}
+
+Optou-se por este controle da divisão por indexação (método de divisão chamado em MATLAB de $divideind$) ao invés de métodos de divisão aleatória de grupos ($dividerand$) para evitar possíveis situações particulares nas quais todos (ou, na situação oposta e igualmente incômoda, nenhum) segmentos para determinada classe de movimento seria incluso no grupo ``treino'', as quais viciariam resultados de classificação.
+
+%-------------------------------------------------------------------------
+			\subsection{Estrutura de RNAs utilizada}
+%-------------------------------------------------------------------------
+As RNAs utilizadas para todos os métodos são do tipo \emph{feedforward}, compostas por uma camada oculta e uma camada de saída, sendo a camada oculta formada por dez neurônios com função de ativação $logsig()$ (equação \ref{eq:logsig}) e a camada de saída
+\textcolor{red}{TODO: finalizar esta subseção; adicionar imagem do matlab mostran a arquitetura da RNA}
+
 
 %=========================================================================
 % RESULTADOS E DISCUSSÕES
@@ -480,12 +503,38 @@ Obtém-se a identificação de movimentos associados a cada segmento obtido a pa
 %=========================================================================
 		\section{Número de Segmentos Obtidos por Movimento e Combinação de Parâmetros}
 %-------------------------------------------------------------------------
-Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:combinacoes_expanded}, as Tabelas \ref{tab:number_mtd1_nina} a \ref{tab:number_mtd4_iee}, apresentam o número médio de segmentos obtidos para todos os voluntários de cada base de dados utilizada. Como os voluntários realizam 6 repetições de cada movimento, os melhores parâmetros são aqueles que melhor conseguirem identificar este número de segmentos por classe de movimento.
+Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:combinacoes_expanded}, as Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee} \textcolor{red}{TODO: adicionar demais tabelas} apresentam o número médio de segmentos obtidos para todos os voluntários de cada base de dados utilizada.
+
+Como os voluntários realizam 6 repetições de cada movimento, os melhores parâmetros são aqueles que melhor conseguirem identificar este número de segmentos por classe de movimento. Nas Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee}, indica-se em verde as combinações de parâmetros e movimentos que foram apropriadamente segmentados para mais de 75\% dos voluntários e em vermelho para menos de 25\% dos voluntários.
 
 \input{./tables/combinacoes_expanded.tex}
 \input{./tables/numberOfSegments.tex}
 
-\textcolor{red}{TODO: analisar resultados, escolher melhores combinações de movimentos e parâmetros}
+Na base de dados NinaPro, os métodos com segmentos de comprimento constante (MTD1 e MTD2) obtiveram boa segmentação do movimento 5 (abdução de todos os dedos) em diferentes combinações de parâmetros. No MTD2 não foi possível encontrar combinação de parâmetros apropriada para segmentação do movimento 11 (rotação de punho em torno do dedo mínimo). O MTD3 foi o método capaz de realizar segmentações apropriadas para um maior número de movimentos distintos. Percebe-se que os métodos MTD1 - MTD3 todos apresentaram dificuldades na segmentação dos movimentos 1 (polegar esticado) e 7 (extensão do indicador).
+
+\textcolor{red}{TODO: finalizar análise após obtenção de mais resultados}
+
+%-------------------------------------------------------------------------
+		\section{Classificação de Movimentos Utilizando RNAs}
+%-------------------------------------------------------------------------
+Para os resultados de segmentação obtidos com diferentes parâmetros testados apresentados nas Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee}, identificou-se as combinações de parâmetros que apresentaram os resultados de segmentação mais satisfatórios (i.e. parâmetros que segmentaram em seis partes cada movimento para o maior número possível de voluntários da base) para serem usados nos nos códigos dos apêndices \ref{ap:rna_mtd1} a \ref{ap:rna_mtd4}, que realizam segmentação e classificação de movimentos utilizando RNA. As combinações de parâmetros selecionadas são apresentadas na Tabela \ref{tab:chosen_params}.
+
+\input{./tables/chosen_params.tex}
+
+%=========================================================================
+% ORIENTAÇÃO
+	\chapter{Capítulo Temporário: Orientação}
+%=========================================================================
+Caro professor Balbinot,
+
+As rotinas experimentais já estão na reta final. No momento estou realizando alguns testes para parâmetros do MTD4, e o próximo passo após implementação do MTD4 na base NinaPro é obtenção de resultados para a base de dados do IEE. Os códigos para testes de diferentes combinações de parâmetros exigem certo tempo de execução, mas até o próximo final de semana devo ter em mãos todos os resultados necessários (para ambas as bases).
+
+Após isto, questão de analisar resultados e obter conclusões. As conclusões serão a respeito do quão adequadamente os métodos propostos segmentam tipos diferentes de movimentos e sobre a existência de influência do método usado na taxa de acerto de classificação de movimentos. Também pretendo realizar análise daquilo que for comum aos conjuntos MTD1-MTD2 (métodos que criam segmentos de comprimento constante) e MTD3-MTD4 (métodos com janela deslizante que criam segmentos de comprimento variável).
+
+Ainda não inclui resultados para taxas de acerto, mas meus primeiros resultados mostram que os métodos de comprimento constante MTD1 e MTD2 apresentam bons resultados para classificação entre todos os movimentos (em torno de 90\%), mas o método MTD3 em comparação tem classificação péssima (em torno de 30\%, com o melhor resultado para um voluntário chegando a 56\%), mas taxas melhores para alguns movimentos específicos (e.g. movimento 17).
+
+Atenciosamente,
+Vicente
 
 %=========================================================================
 % CONCLUSÃO
@@ -496,6 +545,8 @@ Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:comb
 % PROPOSTA DE TRABALHOS FUTUROS
 	\chapter{Propostas de Trabalhos Futuros}
 %=========================================================================
+
+\textcolor{red}{PROPOSTAS: tradução dos códigos para outras linguagens (e.g. C++, Python); adaptação dos métodos para versões causais; aplicação no controle de prótese}
 
 %=========================================================================
 % REFERÊNCIAS BIBLIOGRÁFICAS
@@ -516,29 +567,45 @@ Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:comb
 \lstinputlisting{../../MATLAB/seg_mtd2.m}
 \label{ap:seg_mtd2}
 %-------------------------------------------------------------------------
-%\chapter{Função em MATLAB para MTD3}
-%\lstinputlisting{../../MATLAB/seg_mtd3.m}
+\chapter{Função em MATLAB para MTD3}
+\lstinputlisting{../../MATLAB/seg_mtd3.m}
 \label{ap:seg_mtd3}
 %%-------------------------------------------------------------------------
-%\chapter{Função em MATLAB para MTD4}
+\chapter{Função em MATLAB para MTD4}
 %\lstinputlisting{../../MATLAB/seg_mtd4.m}
 \label{ap:seg_mtd4}
 %-------------------------------------------------------------------------
-%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD1}
-%\lstinputlisting{../../MATLAB/num_mtd1.m}
+\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD1}
+\lstinputlisting{../../MATLAB/number_mtd1.m}
 \label{ap:num_mtd1}
 %-------------------------------------------------------------------------
-%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD2}
-%\lstinputlisting{../../MATLAB/num_mtd2.m}
+\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD2}
+\lstinputlisting{../../MATLAB/number_mtd2.m}
 \label{ap:num_mtd2}
 %-------------------------------------------------------------------------
-%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD3}
-%\lstinputlisting{../../MATLAB/num_mtd3.m}
+\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD3}
+\lstinputlisting{../../MATLAB/number_mtd3.m}
 \label{ap:num_mtd3}
 %-------------------------------------------------------------------------
-%\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD4}
-%\lstinputlisting{../../MATLAB/num_mtd4.m}
+\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD4}
+%\lstinputlisting{../../MATLAB/number_mtd4.m}
 \label{ap:num_mtd4}
+%-------------------------------------------------------------------------
+\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD1}
+\lstinputlisting{../../MATLAB/rna_mtd1.m}
+\label{ap:rna_mtd1}
+%-------------------------------------------------------------------------
+\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD2}
+\lstinputlisting{../../MATLAB/rna_mtd2.m}
+\label{ap:rna_mtd2}
+%-------------------------------------------------------------------------
+\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD3}
+\lstinputlisting{../../MATLAB/rna_mtd3.m}
+\label{ap:rna_mtd3}
+%-------------------------------------------------------------------------
+\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD4}
+%\lstinputlisting{../../MATLAB/rna_mtd4.m}
+\label{ap:rna_mtd4}
 %-------------------------------------------------------------------------
 \chapter{Função em MATLAB para grupamento com DBSCAN}
 \label{ap:dbscan}

@@ -1,6 +1,4 @@
-%%
-%   Determinacao de r_target para MTD1
-%%
+% Determinacao de r_target para MTD1
 
 %% Base de dados Ninapro
 

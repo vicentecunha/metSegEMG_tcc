@@ -1,7 +1,62 @@
+% Set up a few colours
+\colorlet{lcfree}{green}
+\colorlet{lcnorm}{blue}
+\colorlet{lccong}{red}
+% -------------------------------------------------
+% Set up a new layer for the debugging marks, and make sure it is on
+% top
+\pgfdeclarelayer{marx}
+\pgfsetlayers{main,marx}
+% A macro for marking coordinates (specific to the coordinate naming
+% scheme used here). Swap the following 2 definitions to deactivate
+% marks.
+\providecommand{\cmark}[2][]{%
+  \begin{pgfonlayer}{marx}
+    \node [nmark] at (c#2#1) {#2};
+  \end{pgfonlayer}{marx}
+  } 
+\providecommand{\cmark}[2][]{\relax} 
+% -------------------------------------------------
+% Start the picture
 \begin{figure}[htb]
-	\caption{\label{flow:RNAresumo}\emph{Clustering} por \emph{k-means} de BEPs e EEPs de segmentos obtidos pelos métodos MTD3 e MTD4.}
+	\caption{\label{flow:RNAs} Fluxograma da classificação de movimentos com RNAs.}
 	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/placeholder.png}
+		\begin{tikzpicture}[%
+			>=triangle 60,              % Nice arrows; your taste may be different
+			start chain=going below,    % General flow is top-to-bottom
+			node distance=6mm and 60mm, % Global setup of box spacing
+			every join/.style={norm},   % Default linetype for connecting boxes
+			]
+		% ------------------------------------------------- 
+		% A few box styles 
+		% <on chain> *and* <on grid> reduce the need for manual relative
+		% positioning of nodes
+		\tikzset{
+		  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
+		  proc/.style={base, rectangle, text width=8em},
+		  test/.style={base, diamond, aspect=2, text width=8em},
+		  term/.style={proc, rounded corners},
+		  % coord node style is used for placing corners of connecting lines
+		  coord/.style={coordinate, on chain, on grid, node distance=6mm and 25mm},
+		  % nmark node style is used for coordinate debugging marks
+		  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+		  % -------------------------------------------------
+		  % Connector line styles for different parts of the diagram
+		  norm/.style={->, draw, lcnorm},
+		  free/.style={->, draw, lcfree},
+		  cong/.style={->, draw, lccong},
+		  it/.style={font={\small\itshape}}
+		}
+		% -------------------------------------------------
+		% Node placement: column 1
+		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
+		\node [proc, fill=lcfree!25, right=of init, xshift=-4em, join] (pre) {Segmentar o sinal com o MTD\#};
+		\node [proc, fill=lcfree!25, right=of pre, xshift=-4em, join] (id) {Identificação de movimento associado a cada segmento (vetor de respostas)};
+		\node [proc, fill=lcfree!25, right=of id, xshift=-4em, join] (dbscan) {Extração de características dos segmentos};
+		\node [proc, fill=lcfree!25, join] (sep) {Separação de segmentos em grupos para treino, validação e teste};
+		\node [proc, fill=lcfree!25, join, left=of sep, xshift=2em] (train) {Treinamento da RNA};
+		\node [proc, fill=lcfree!25, join, left=of train, xshift=2em] {Obtenção de resultados de para todos os segmentos};
+		% -------------------------------------------------
+		\end{tikzpicture}
 	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
 \end{figure}

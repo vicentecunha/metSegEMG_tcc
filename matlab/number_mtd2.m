@@ -1,14 +1,14 @@
-% Implementação do MTD2 com variação de parâmetros 
-% e medida do número de segmentos obtidos por movimento
+% Implementacao do MTD2 com variacao de parametros 
+% e medida do numero de segmentos obtidos por movimento
 close all
 clear
 
-%% Parâmetros utilizados
+%% Parametros utilizados
 
 % Predeterminados
 l = 10e3;
 
-% Combinações a serem testadas
+% Combinacoes a serem testadas
 A = [20 30 40];
 B = [2 5 8];
 C = [2 5 8];
@@ -21,7 +21,7 @@ ninaproList = ls('database/ninapro2/S*_E1*');
 numberOfSubjects = length(ninaproList);
 numberOfClasses = 17;
 
-%% Teste das diferentes combinações
+%% Teste das diferentes combinacoes
 numberOfSegments = zeros(numberOfCombinations,numberOfSubjects,numberOfClasses);
 for currentSubject = 1:numberOfSubjects    
     fprintf('currentSubject = %i / %i\n', currentSubject, numberOfSubjects)

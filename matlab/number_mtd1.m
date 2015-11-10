@@ -1,15 +1,13 @@
-% Implementação do MTD1 com variação de parâmetros 
-% e medida do número de segmentos obtidos por movimento
+% Implementacao do MTD1 com variacao de parametros 
+% e medida do numero de segmentos obtidos por movimento
 close all
 clear
 
-%% Parâmetros utilizados
-
+%% Parametros utilizados
 % Predeterminados
 l = 10e3;
 r_target = 5.6e-5;
-
-% Combinações a serem testadas
+% Combinacoes a serem testadas
 q = [0.8 0.85 0.9 0.95];
 T_lim = [0.05 0.1 0.15 0.2];
 combinations = combvec(q, T_lim)';
@@ -21,7 +19,7 @@ ninaproList = ls('database/ninapro2/S*_E1*');
 numberOfSubjects = length(ninaproList);
 numberOfClasses = 17;
 
-%% Teste das diferentes combinações
+%% Teste das diferentes combinacoes
 numberOfSegments = zeros(numberOfCombinations,numberOfSubjects,numberOfClasses);
 for currentSubject = 1:numberOfSubjects    
     fprintf('currentSubject = %i / %i\n', currentSubject, numberOfSubjects)
@@ -43,14 +41,3 @@ for currentSubject = 1:numberOfSubjects
     end
 end
 save('./out/workspace/number_MTD1.mat') % salva a workspace atual
-
-%% Plot de resultados
-% média do número de segmentos para todos os voluntários
-segmentsNumberMean = squeeze(mean(numberOfSegments,2));
-lines = {'-';'--';':';'-';'--';':';'-';'--';':';'-';'--';':';'-';'--';':';'-'};
-markers={'+';'o';'*';'.';'x';'s';'d';'^';'v';'>';'<';'p';'h';'+';'o';'*'};
-figure(), hold on
-for currentCombination = 1:numberOfCombinations
-    plot(segmentsNumberMean(currentCombination,:)', ...
-        [markers{currentCombination} lines{currentCombination}]);
-end
