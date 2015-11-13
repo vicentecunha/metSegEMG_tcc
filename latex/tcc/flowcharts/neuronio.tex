@@ -1,0 +1,51 @@
+%------------------------------------------------------------------------------		
+% Styles:
+%------------------------------------------------------------------------------
+\tikzstyle{io} = [circle, minimum width=0.1cm, draw=black, fill=black]
+\tikzstyle{sum} = [circle, minimum width=1cm, draw=black]
+\tikzstyle{func}= [rectangle, minimum width=1cm, minimum height=1cm, draw=black]
+
+\begin{figure}[htb]
+	\caption{\label{fig:neuron} Diagrama representativo do modelo de um neurônio artificial genérico.}
+	\begin{center}
+		\begin{tikzpicture}[>=triangle 60]
+%------------------------------------------------------------------------------
+% Node placement
+%------------------------------------------------------------------------------
+			\node[io](x1){}; \node[left=of x1, xshift=2em]{$x_1$};
+			\node[io, below=of x1](x2){}; \node[left=of x2, xshift=2em]{$x_2$};
+			\node[io, below=of x2](x3){}; \node[left=of x3, xshift=2em]{$x_3$};
+			\node[below=of x3, yshift=2em]{...};			
+			\node[io, below=of x3](xn){}; \node[left=of xn, xshift=2em]{$x_n$};
+			
+			\node[sum, right=of x2, xshift = 2em, yshift = -1.5em](sum){$\sum$};
+			
+			\node[io, below=of sum](B){}; \node[right=of B, xshift=-2em]{B};
+			
+			\node[func, right=of sum](f){$f$}; \node[above=of f, align=left, yshift=-2em]{Função de \\ Ativação};
+			
+			\node[right=of f](out){}; \node[right=of out, xshift=-3em]{$y$};
+			
+%------------------------------------------------------------------------------
+% Connections
+%------------------------------------------------------------------------------
+			\draw [->,black] (x1) -- (sum);
+			\path (x1) to node [near start, xshift=1em]{$w_1$}(sum);
+			
+			\draw [->,black] (x2) -- (sum);                                
+			\path (x2) to node [near start, xshift=1em, yshift=0.3em]{$w_2$}(sum);
+			
+			\draw [->,black] (x3) -- (sum);                                
+			\path (x3) to node [near start, xshift=1em, yshift=-0.1em]{$w_3$}(sum);
+			
+			\draw [->,black] (xn) -- (sum);                                
+			\path (xn) to node [near start, xshift=1em]{$w_n$}(sum);
+			
+			\draw [->,black] (B) -- (sum);
+			\draw [->,black] (sum) -- (f);
+			\draw [->,black] (f) -- (out);
+
+		\end{tikzpicture}
+	\end{center}
+%	\legend{Fonte: adaptado de \cite{Tanikic2012}}
+\end{figure}
