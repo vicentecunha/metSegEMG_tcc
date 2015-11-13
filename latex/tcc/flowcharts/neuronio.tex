@@ -12,11 +12,11 @@
 %------------------------------------------------------------------------------
 % Node placement
 %------------------------------------------------------------------------------
-			\node[io](x1){}; \node[left=of x1, xshift=2em]{$x_1$};
-			\node[io, below=of x1](x2){}; \node[left=of x2, xshift=2em]{$x_2$};
-			\node[io, below=of x2](x3){}; \node[left=of x3, xshift=2em]{$x_3$};
+			\node[io](x1){}; \node[left=of x1, xshift=2em]{$in_1$};
+			\node[io, below=of x1](x2){}; \node[left=of x2, xshift=2em]{$in_2$};
+			\node[io, below=of x2](x3){}; \node[left=of x3, xshift=2em]{$in_3$};
 			\node[below=of x3, yshift=2em]{...};			
-			\node[io, below=of x3](xn){}; \node[left=of xn, xshift=2em]{$x_n$};
+			\node[io, below=of x3](xn){}; \node[left=of xn, xshift=2em]{$in_n$};
 			
 			\node[sum, right=of x2, xshift = 2em, yshift = -1.5em](sum){$\sum$};
 			
@@ -24,7 +24,7 @@
 			
 			\node[func, right=of sum](f){$f$}; \node[above=of f, align=left, yshift=-2em]{Função de \\ Ativação};
 			
-			\node[right=of f](out){}; \node[right=of out, xshift=-3em]{$y$};
+			\node[right=of f](out){}; \node[right=of out, xshift=-3em]{$out$};
 			
 %------------------------------------------------------------------------------
 % Connections

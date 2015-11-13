@@ -19,7 +19,7 @@
 % -------------------------------------------------
 % Start the picture
 \begin{figure}[htb]
-	\caption{\label{flow:RNAs} Fluxograma da classificação de movimentos com RNAs.}
+	\caption{\label{flow:RNAs} Diagrama de blocos para processo de classificação de movimentos com RNAs.}
 	\begin{center}
 		\begin{tikzpicture}[%
 			>=triangle 60,              % Nice arrows; your taste may be different
@@ -50,12 +50,12 @@
 		% -------------------------------------------------
 		% Node placement: column 1
 		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
-		\node [proc, fill=lcfree!25, right=of init, xshift=-4em, join] (pre) {Segmentar o sinal com o MTD\#};
+		\node [proc, fill=lcfree!25, right=of init, xshift=-4em, join] (pre) {Segmentar sinal com MTD\#};
 		\node [proc, fill=lcfree!25, right=of pre, xshift=-4em, join] (id) {Identificação de movimento associado a cada segmento (vetor de respostas)};
 		\node [proc, fill=lcfree!25, right=of id, xshift=-4em, join] (dbscan) {Extração de características dos segmentos};
 		\node [proc, fill=lcfree!25, join] (sep) {Separação de segmentos em grupos para treino, validação e teste};
 		\node [proc, fill=lcfree!25, join, left=of sep, xshift=2em] (train) {Treinamento da RNA};
-		\node [proc, fill=lcfree!25, join, left=of train, xshift=2em] {Obtenção de resultados de para todos os segmentos};
+		\node [proc, fill=lcfree!25, join, left=of train, xshift=2em] {Obtenção de resultados de classificação para todos os segmentos};
 		% -------------------------------------------------
 		\end{tikzpicture}
 	\end{center}

@@ -19,7 +19,7 @@
 % -------------------------------------------------
 % Start the picture
 \begin{figure}[htb]
-	\caption{\label{flow:MTDs} Fluxograma geral para os métodos de segmentação MTD1 - MTD4.}
+	\caption{\label{flow:MTDs} Diagrama de blocos geral para os métodos de segmentação MTD1 - MTD4.}
 	\begin{center}
 		\begin{tikzpicture}[%
 			>=triangle 60,              % Nice arrows; your taste may be different
@@ -51,7 +51,7 @@
 		% Node placement: column 1
 		\node [proc, fill=lcfree!25] (pre) {Preprocessamento (retificação e normalização)};
 		\node [proc, fill=lcfree!25, right=of pre, xshift=-4em, join] (id) {Identificação de segmentos para cada canal utilizando MTD\#};
-		\node [proc, fill=lcfree!25, right=of id, xshift=-4em, join] (dbscan) {Grupamento de posições de segmentos utilizando DBSCAN};
+		\node [proc, fill=lcfree!25, right=of id, xshift=-4em, join] (dbscan) {Agrupamento de posições de segmentos utilizando DBSCAN};
 		\node [proc, fill=lcfree!25, right=of dbscan, xshift=-4em, join] {Segmentação do sinal nas médias das posições agrupadas};
 		% -------------------------------------------------
 		\end{tikzpicture}

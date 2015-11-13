@@ -12,11 +12,11 @@
 %------------------------------------------------------------------------------
 % Node placement
 %------------------------------------------------------------------------------
-			\node[io](x1){}; \node[left=of x1](x1in){$x_1$};
-			\node[io, below=of x1](x2){}; \node[left=of x2](x2in){$x_2$};
-			\node[io, below=of x2](x3){}; \node[left=of x3](x3in){$x_3$};
+			\node[io](x1){}; \node[left=of x1](x1in){$in_1$};
+			\node[io, below=of x1](x2){}; \node[left=of x2](x2in){$in_2$};
+			\node[io, below=of x2](x3){}; \node[left=of x3](x3in){$in_3$};
 			\node[below=of x3, yshift=2em]{...};
-			\node[io, below=of x3](x4){}; \node[left=of x4](x4in){$x_m$};
+			\node[io, below=of x3](x4){}; \node[left=of x4](x4in){$in_m$};
 
 			\node[neuron, right=of x1, xshift=2em, yshift=2em](n1){$N_1$};
 			\node[neuron, below=of n1](n2){$N_2$};
@@ -35,9 +35,9 @@
 			\node[below=of nt2, yshift=2em]{...};
 			\node[neuron, below=of nt2](nt3){$N_n$};
 			
-			\node[right=of nt1](y1){$y_1$};
-			\node[right=of nt2](y2){$y_2$};
-			\node[right=of nt3](y3){$y_n$};
+			\node[right=of nt1](y1){$out_1$};
+			\node[right=of nt2](y2){$out_2$};
+			\node[right=of nt3](y3){$out_n$};
 			
 			\node[section, above=of n1,  minimum height=7.2cm, yshift=-8.1cm, draw=red](s1){};
 			\node[below=of s1, align=left, yshift=2em]{Primeira \\ Camada \\ Oculta};
