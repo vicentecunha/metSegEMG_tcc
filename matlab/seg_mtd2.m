@@ -4,14 +4,10 @@ function [x_seg, finalCenterLocs] = seg_mtd2(x, l, A, B, C)
 %                                                                           
 % Argumentos: (para mais detalhes, refira a descricao do MTD2)                                                              
 %   x - matriz cujas colunas sao canais do sinal a ser segmentado           
-%   l - comprimento desejado para os segmentos
-%       (deve ser inteiro maior que zero)                             
+%   l - comprimento desejado para os segmentos                          
 %   A - coeficiente utilizado para decisao de metodo de calculo de threshold
-%       (deve ser maior ou igual a 1)
 %   B - multiplo da media aritmetica do sinal x para obtencao de threshold
-%       (deve ser maior ou igual a 1)	
 %   C - fracao do valor maximo do sinal x para calculo de threshold	
-%       (deve ser maior ou igual a 1)
 %                                                                           
 % Retorno:                                                                   
 %   x_seg - cell array com os canais segmentados

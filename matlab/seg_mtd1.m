@@ -4,15 +4,11 @@ function [x_seg, finalCenterLocs] = seg_mtd1(x, l, q, r_target, T_lim)
 %                                                                           
 % Argumentos: (para mais detalhes, refira a descricao do MTD1)
 %   x - matriz cujas colunas sao canais do sinal a ser segmentado           
-%   l - comprimento desejado para os segmentos
-%       (deve ser inteiro maior que zero)                             
-%   q - razao de atualizacao entre iteracoes para valor de threshold
-%       (deve ser entre 0 e 1)       
+%   l - comprimento desejado para os segmentos                          
+%   q - razao de atualizacao entre iteracoes para valor de threshold     
 %   r_target - razao minima esperada entre numero de segmentos e comprimento
-%       total de sinal
-%       (deve ser maior que zero)                       
-%   T_lim - fracao do maximo do sinal para limite inferior de threshold
-%       (deve ser entre 0 e 1)                        
+%       total de sinal               
+%   T_lim - fracao do maximo do sinal para limite inferior de threshold                   
 %                                                                           
 % Retorno:                                                                     
 %   x_seg - cell array com canais segmentados

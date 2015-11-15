@@ -8,11 +8,8 @@ function [x_seg, finalCenterLocs] = seg_mtd3(x, l_min, l_max, step, W, B, C)
 %   l_max - compimento maximo para segmentos
 %   step - numero de amostras a incrementr posicao de janela
 %	W - comprimento da janela deslizante utilizada pelo metodo
-%       (deve ser inteiro maior que zero)
 %   B - valor limite para variacao total que determina um BEP
-%       (deve ser maior que zero)
 %   C - valor limite para variacao total que determina um EEP
-%       (deve ser menor que zero)
 %                                                                
 % Retorno:                                                       
 %   x_seg - cell array com os canais segmentados
@@ -37,7 +34,6 @@ EEPsLocsCell = cell(1,numberOfChannels);
 searchBEP = true(numberOfChannels,1);
 lastBEPloc = zeros(numberOfChannels,1);
 for w0 = 1:step:L-W % janela deslizante para calculo de variacao total
-    fprintf('\tw0 = %i / %i\n', w0, L-W)
     for currentChannel = 1:numberOfChannels
         totalVariation(w0, currentChannel) =...
             sum(diff(x_norm(w0:w0+W, currentChannel)));
@@ -45,18 +41,18 @@ for w0 = 1:step:L-W % janela deslizante para calculo de variacao total
         switch searchBEP(currentChannel)
             case true % deteccao de BEPs
                 if totalVariation(w0, currentChannel) > B
-                    BEPsLocsFlags(w0,currentChannel) = true;
+                    BEPsLocsFlags(w0, currentChannel) = true;
                     lastBEPloc(currentChannel) = w0;
                     searchBEP(currentChannel) = false;
                 end
             case false % deteccao de EEPs
-                if (w0+W-lastBEPloc(currentChannel))>l_max
+                if (w0+W-lastBEPloc(currentChannel)) > l_max
                     % segmento excederia comprimento maximo
                     BEPsLocsFlags(lastBEPloc(currentChannel),currentChannel) = false;
                     searchBEP(currentChannel) = true;
                 else if (totalVariation(w0, currentChannel) < C) && ...
-                            (w0+W-lastBEPloc(currentChannel)>l_min)
-                        EEPsLocsFlags(w0+W,currentChannel)=true;
+                            (w0+W-lastBEPloc(currentChannel) > l_min)
+                        EEPsLocsFlags(w0+W,currentChannel) = true;
                         searchBEP(currentChannel) = true;
                     end
                 end
@@ -88,32 +84,24 @@ for currentCluster = 1:numberOfEEPs
         round(mean(EEPsLocsArray(labscoreEEPs == currentCluster)));
 end
 
-%% Pareamento final de BEPs e EEPs (devem ocorrer alternadamente)
+%% Pareamento final de BEPs e EEPs
+% (devem ocorrer alternadamente e atender requisitos de l_min e l_max)
 
-allLocs = sortrows([meanBEPs,true(length(meanBEPs),1); ...
-    meanEEPs,false(length(meanEEPs),1)]);
-lastLocWasBEP = false;
-currentLoc = 1;
-while true
-    if currentLoc > length(allLocs(:,1))
-        break;
+allLocs = sortrows([meanBEPs,true(length(meanBEPs),1);meanEEPs,false(length(meanEEPs),1)]);
+locsDelta = diff(allLocs,1);
+numberOfDeltas = length(locsDelta(:,1));
+finalBEPsFlags = false(numberOfDeltas+1,1);
+finalEEPsFlags = false(numberOfDeltas+1,1);
+for currentDelta = 1:numberOfDeltas
+    if (locsDelta(currentDelta,1) > l_min) && ...
+            (locsDelta(currentDelta,1) < l_max) && ...
+            locsDelta(currentDelta,2) == -1; % par BEP-EEP valido
+        finalBEPsFlags(currentDelta) = true;
+        finalEEPsFlags(currentDelta+1) = true;
     end
-    currentLocIsBEP = allLocs(currentLoc,2);
-    if currentLocIsBEP && lastLocWasBEP % BEPs repetidos
-        allLocs(currentLoc-1,:) = [];
-    else if ~currentLocIsBEP && ~lastLocWasBEP % EEPs repetidos
-            allLocs(currentLoc,:) = [];
-        else
-            currentLoc = currentLoc + 1; % avanca indice
-        end
-    end
-    lastLocWasBEP = currentLocIsBEP;
 end
-if lastLocWasBEP % deteccao de BEP sem EEP ao final do sinal
-    allLocs(end,:) = [];
-end
-finalBEPs = allLocs(allLocs(:,2) == true, 1);
-finalEEPs = allLocs(allLocs(:,2) == false, 1);
+finalBEPs = allLocs(finalBEPsFlags,1);
+finalEEPs = allLocs(finalEEPsFlags, 1);
 
 %% Segmentacao
 
@@ -123,7 +111,7 @@ x_seg = cell(numberOfSegments,numberOfChannels);
 for currentChannel = 1:numberOfChannels
     for currentSegment = 1:numberOfSegments
         x_seg{currentSegment,currentChannel} = ...
-            x(finalBEPs(currentSegment):finalEEPs(currentSegment));
+            x(finalBEPs(currentSegment):finalEEPs(currentSegment),currentChannel);
         finalCenterLocs(currentSegment) = ...
             round(mean([finalBEPs(currentSegment),finalEEPs(currentSegment)]));
     end
