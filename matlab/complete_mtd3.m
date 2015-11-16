@@ -25,7 +25,7 @@ parfor currentSubject = 1:numberOfSubjects
     
     % Combinacoes a serem testadas
     B = 0.05:0.05:0.25;
-    C = -0.05:-0.05:-0.025;
+    C = -0.05:-0.05:-0.25;
     combinations = combvec(B, C)';
 
     for currentCombination = 1:numberOfCombinations
@@ -37,9 +37,14 @@ parfor currentSubject = 1:numberOfSubjects
         targetClasses = identifyClasses(centerLocs, S.stimulus);
         targetsOutput{currentCombination, currentSubject} = targetClasses;
         
-        % Divisao de dados para treinamento
-        numberOfSegments = length(targetClasses);
-        numberOfTrainPerClass = round(0.7*sum(targetClasses));
+        % Divisao de grupos para treinamento
+        numberOfSegments = length(centerLocs);
+        numberOfTrainPerClass = sum(targetClasses,1);
+        numberOfTrainPerClass(numberOfTrainPerClass == 2) = ...
+            numberOfTrainPerClass(numberOfTrainPerClass == 2) - 1;
+        numberOfTrainPerClass(numberOfTrainPerClass > 2) = ...
+            numberOfTrainPerClass(numberOfTrainPerClass > 2) - 2;
+        
         trainIndFlags = false(numberOfSegments,1);
         valIndFlags = false(numberOfSegments,1);
         testIndFlags = false(numberOfSegments,1);

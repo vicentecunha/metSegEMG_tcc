@@ -4,8 +4,8 @@ clear
 numberOfSubjects = 40;
 per = zeros(27,40,17,4,2);
 
-for currentMethod = 3:4
-    load(['./out/workspace/complete_MTD' num2str(currentMethod) '_onlyRMS'])
+for currentMethod = 1:2
+    load(['./out/workspace/complete_MTD' num2str(currentMethod)])
     if currentMethod == 2
         numberOfCombinations = 27;
     else
