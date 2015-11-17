@@ -106,4 +106,5 @@ for currentSubject = 1:numberOfSubjects
     end
 end
 meanNumberOfSeg = squeeze(mean(numberOfSegPerClass,2));
+modeNumberOfSeg = squeeze(mode(numberOfSegPerClass,2));
 save('./out/workspace/complete_MTD1.mat') % salva a workspace atual

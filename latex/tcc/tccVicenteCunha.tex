@@ -337,6 +337,7 @@ Quando uma RNA é aplicada para classificação de séries temporais de sinais, 
 
 Para maiores detalhes sobre RNAs e outros métodos computacionais, sugere-se consulta das seguintes referências. \textcolor{red}{TODO: referências de RNA.}
 
+
 %=========================================================================
 % METODOLOGIA EXPERIMENTAL
 	\chapter{Metodologia Experimental}
@@ -481,8 +482,55 @@ Optou-se por este controle da divisão por indexação (método de divisão cham
 %-------------------------------------------------------------------------
 			\subsection{Estrutura de RNAs utilizada}
 %-------------------------------------------------------------------------
-As RNAs utilizadas para todos os métodos são do tipo \emph{feedforward}, compostas por uma camada oculta e uma camada de saída, sendo a camada oculta formada por dez neurônios com função de ativação $logsig()$ (Equação (\ref{eq:logsig})) e a camada de saída
+As RNAs utilizadas para todos os métodos são do tipo \emph{feedforward}, compostas por uma camada oculta e uma camada de saída, sendo a camada oculta formada por 40 neurônios com função de ativação $logsig()$ (Equação (\ref{eq:logsig})) e camada de saída por 17 neurônios, um para cada classe de movimento, de forma que o neurônio com saída de maior valor indica qual a classe de movimento em que foi classificado o segmento. 
+
 \textcolor{red}{TODO: finalizar esta subseção; adicionar imagem do matlab mostran a arquitetura da RNA}
+
+%-------------------------------------------------------------------------
+			\subsection{Sensitividade de RNAs}
+%-------------------------------------------------------------------------
+Para avaliação de taxas de acerto de um sistema classificador, costumeiramente utiliza-se uma tabela conhecida como ``matriz de confusão''. A Tabela \ref{tab:conf_example} exemplifica uma matriz de confusão genérica.
+
+\begin{table}[htb]
+\IBGEtab{%
+	\caption{Exemplo de matriz de confusão.}%
+	\label{tab:conf_example}
+}{%
+	\begin{tabular}{cc|c|c}
+	\toprule
+	&&\multicolumn{2}{c}{Classificação obtida}\\
+	\midrule
+	&& Negativa & Positiva\\
+	\midrule \midrule
+	Classificação&Negativa&$a$&$b$\\
+	\cline{2-4}
+	esperada&Positiva&$c$&$d$\\
+	\bottomrule
+\end{tabular}%
+}{%
+	$a$: verdadeiros negativos\\
+	$b$: falsos positivos     \\
+	$c$: falsos negativos     \\
+	$d$: verdadeiros positivos\\
+	Fonte: adaptado de \cite{Kubat1998}.
+}
+\end{table}
+
+No caso das RNAs deste trabalho, que realizam classificação entre 17 classes de movimentos, a Tabela \ref{tab:conf_example} pode ser obtida para cada uma das classes, onde ``Positivo'' indica a ocorrência da classe de movimento e ``Negativo'' a não-ocorrência da mesma. A taxa de acerto $T_a$ para determinada classe de movimento é definida pela razão da soma de casos de verdadeiros positivos e verdadeiros negativos entre todos os casos classificados, como na equação (\ref{eq:taxaAcerto}).
+
+\begin{equation}
+\label{eq:taxaAcerto}
+	T_a = \frac{a+d}{a+b+c+d}
+\end{equation}
+
+Entretanto, utilizar (\ref{eq:taxaAcerto}) para quantificar a performance de classificação dos segmentos não é adequado para aplicações em que casos ``negativos'' e ``positivos'' não são igualmente distribuídos para uma série de dados de treino (e.g. se em 1000 casos espera-se 995 classificações negativas e 5 classificações positivas, se a RNA classificar todos os casos como negativos, errando classificação de todos os casos positivos, $T_a$ terá valor 99,5\%) \cite{Kubat1998}.
+
+Como cada série de treino corresponde à realização de 17 classes movimentos distintos em 6 repetições, o número de casos esperados negativos é, para cada classe, superior a dez vezes o número de casos esperados positivos. Para melhor quantificar a performance de classificação das RNAs, foi utilizada medida de sensitividade $r$ (equação (\ref{eq:sensitividade})), definida como a fração de classificações verdadeiramente positivas entre todos os casos esperados positivos.
+
+\begin{equation}
+\label{eq:sensitividade}
+	r = \frac{d}{c+d}
+\end{equation}
 
 
 %=========================================================================
@@ -496,7 +544,7 @@ Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:comb
 Como os voluntários realizam 6 repetições de cada movimento, os melhores parâmetros são aqueles que melhor conseguirem identificar este número de segmentos por classe de movimento. Nas Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee}, indica-se em verde as combinações de parâmetros e movimentos que foram apropriadamente segmentados para mais de 75\% dos voluntários e em vermelho para menos de 25\% dos voluntários.
 
 \input{./tables/combinacoes_expanded.tex}
-\input{./tables/numberOfSegments.tex}
+%\input{./tables/resultsMTD1-nina.tex}
 
 Na base de dados NinaPro, os métodos com segmentos de comprimento constante (MTD1 e MTD2) obtiveram boa segmentação do movimento 5 (abdução de todos os dedos) em diferentes combinações de parâmetros. No MTD2 não foi possível encontrar combinação de parâmetros apropriada para segmentação do movimento 11 (rotação de punho em torno do dedo mínimo). O MTD3 foi o método capaz de realizar segmentações apropriadas para um maior número de movimentos distintos. Percebe-se que os métodos MTD1 - MTD3 todos apresentaram dificuldades na segmentação dos movimentos 1 (polegar esticado) e 7 (extensão do indicador).
 
@@ -508,21 +556,6 @@ Na base de dados NinaPro, os métodos com segmentos de comprimento constante (MT
 Para os resultados de segmentação obtidos com diferentes parâmetros testados apresentados nas Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee}, identificou-se as combinações de parâmetros que apresentaram os resultados de segmentação mais satisfatórios (i.e. parâmetros que segmentaram em seis partes cada movimento para o maior número possível de voluntários da base) para serem usados nos nos códigos dos apêndices \ref{ap:rna_mtd1} a \ref{ap:rna_mtd4}, que realizam segmentação e classificação de movimentos utilizando RNA. As combinações de parâmetros selecionadas são apresentadas na Tabela \ref{tab:chosen_params}.
 
 \input{./tables/chosen_params.tex}
-
-%=========================================================================
-% ORIENTAÇÃO
-	\chapter{Capítulo Temporário: Orientação}
-%=========================================================================
-Caro professor Balbinot,
-
-As rotinas experimentais já estão na reta final. No momento estou realizando alguns testes para parâmetros do MTD4, e o próximo passo após implementação do MTD4 na base NinaPro é obtenção de resultados para a base de dados do IEE. Os códigos para testes de diferentes combinações de parâmetros exigem certo tempo de execução, mas até o próximo final de semana devo ter em mãos todos os resultados necessários (para ambas as bases).
-
-Após isto, questão de analisar resultados e obter conclusões. As conclusões serão a respeito do quão adequadamente os métodos propostos segmentam tipos diferentes de movimentos e sobre a existência de influência do método usado na taxa de acerto de classificação de movimentos. Também pretendo realizar análise daquilo que for comum aos conjuntos MTD1-MTD2 (métodos que criam segmentos de comprimento constante) e MTD3-MTD4 (métodos com janela deslizante que criam segmentos de comprimento variável).
-
-Ainda não inclui resultados para taxas de acerto, mas meus primeiros resultados mostram que os métodos de comprimento constante MTD1 e MTD2 apresentam bons resultados para classificação entre todos os movimentos (em torno de 90\%), mas o método MTD3 em comparação tem classificação péssima (em torno de 30\%, com o melhor resultado para um voluntário chegando a 56\%), mas taxas melhores para alguns movimentos específicos (e.g. movimento 17).
-
-Atenciosamente,
-Vicente
 
 %=========================================================================
 % CONCLUSÃO

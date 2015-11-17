@@ -97,7 +97,6 @@ parfor currentSubject = 1:numberOfSubjects
     end
     S = []; % libera espaco da memoria
 end
-save('./out/workspace/numbers/complete_MTD2.mat') % salva a workspace atual
 numberOfSegPerClass = zeros(numberOfCombinations,numberOfSubjects,numberOfClasses);
 for currentSubject = 1:numberOfSubjects
     for currentCombination = 1:numberOfCombinations
@@ -105,5 +104,4 @@ for currentSubject = 1:numberOfSubjects
             sum(targetsOutput{currentCombination,currentSubject});
     end
 end
-meanNumberOfSeg = squeeze(mean(numberOfSegPerClass,2));
 save('./out/workspace/complete_MTD2.mat') % salva a workspace atual

@@ -1,10 +1,13 @@
-close all
-clear
+% close all
+% clear
 
 numberOfSubjects = 40;
-per = zeros(27,40,17,4,2);
+per = zeros(27,40,17,4,4);
+truePositivesCell = cell(4,1);
+trueNegativesCell = cell(4,1);
+c = zeros(27,40,4);
 
-for currentMethod = 1:2
+for currentMethod = 1:4
     load(['./out/workspace/complete_MTD' num2str(currentMethod)])
     if currentMethod == 2
         numberOfCombinations = 27;
@@ -14,7 +17,7 @@ for currentMethod = 1:2
     for currentSubject = 1:numberOfSubjects
         for currentCombination = 1:numberOfCombinations
             if ~isempty(classificationOutput{currentCombination,currentSubject})
-                [~,~,~,per(currentCombination,currentSubject,:,:,currentMethod)] = ...
+                [c(currentCombination,currentSubject,currentMethod),~,~,per(currentCombination,currentSubject,:,:,currentMethod)] = ...
                     confusion(targetsOutput{currentCombination,currentSubject}',...
                     classificationOutput{currentCombination,currentSubject});
             end
@@ -24,5 +27,10 @@ for currentMethod = 1:2
     falseNegatives = squeeze(meanPer(:,:,1,:));
     falsePositives = squeeze(meanPer(:,:,2,:));
     truePositives = squeeze(meanPer(:,:,3,:));
-    trueNegatives = squeeze(meanPer(:,:,3,:));
+    trueNegatives = squeeze(meanPer(:,:,4,:));
+    
+    truePositivesCell{currentMethod,1} = round(100*truePositives(:,:,currentMethod),1);
+    trueNegativesCell{currentMethod,1} = round(100*trueNegatives(:,:,currentMethod),1);
+    notConfusion = ()
 end
+
