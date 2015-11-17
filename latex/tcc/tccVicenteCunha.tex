@@ -55,12 +55,12 @@
     \vspace*{\fill}
    \end{center}
         
-   Trabalho aprovado. \imprimirlocal, XX de XXXXXX de 2015:
+   Trabalho aprovado. \imprimirlocal, 03 de dezembro de 2015:
 
    \assinatura{\textbf{\imprimirorientador} \\ Orientador} 
    \assinatura{\textbf{Prof. Dr. Eng. Altamiro Susin} \\ Convidado}
    \assinatura{\textbf{M.ª Eng. Gabriela Favieiro} \\ Convidada}
-   \assinatura{\textbf{Eng. Vinicius Cene} \\ Convidado}
+   \assinatura{\textbf{Eng. Vinicius Cene} \\ Suplente}
    %\assinatura{\textbf{Professor} \\ Convidado 4}
       
 %   \begin{center}
@@ -112,7 +112,7 @@
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
 
-	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação possibilitam a separação automática de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície são propostos e implementados em MATLAB. Os métodos foram aplicados nos sinais da base de dados do projeto NinaPro e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs) foram utilizadas para classificar os sinais segmentados com os quatro métodos entre 17 movimentos de mão e punho. \textcolor{red}{TODO: RESULTADOS}.
+	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação automática possibilitam a individualização de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície, adaptados de outros trabalhos na área, foram propostos e implementados em MATLAB R2015a. Os métodos foram aplicados nos sinais da base de dados do projeto NinaPro e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNAs)foram utilizadas para classificar os sinais segmentados com os quatro métodos entre 17 movimentos de mão e punho. \textcolor{red}{TODO: RESULTADOS}.
 
 	\vspace{\onelineskip}
 	\textbf{Palavras-chave}: Eletromiografia de Superfície. Segmentação de Sinais. Redes Neurais Artificiais.
@@ -183,7 +183,7 @@ O terceiro método (MTD3) é baseado no método de segmentação utilizado em \c
 
 O quarto método (MTD4) é baseado no método de segmentação utilizado em \cite{Pattichis1995}. Os pontos de início do segmento são tais que, em uma janela à esquerda do ponto, o sinal mantém-se abaixo de determinado \emph{threshold}. Os pontos de final de segmento, de forma similar, são tais que, em uma janela à direita do ponto, o sinal mantém-se abaixo do \emph{threshold}.
 
-Utilizando valores de RMS, variância e frequência mediana dos segmentos obtidos, Redes Neurais Artificiais (RNAs) foram treinadas para classificar entre 17 movimentos de mão e punho. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos e fornecer avaliação comparativa entre métodos a respeito da taxa de acerto de classificação obtida com uso de RNA.
+Utilizando valores de RMS, variância e frequência mediana dos segmentos obtidos, Redes Neurais Artificiais (RNAs) foram treinadas para classificar entre 17 movimentos de mão e punho. Os objetivos finais deste trabalho são a implementação dos métodos de segmentação propostos e fornecer avaliação comparativa entre métodos quando utilizados para classificação com uso de RNA.
 
 %=========================================================================
 % REVISÃO BIBLIOGRÁFICA

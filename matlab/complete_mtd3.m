@@ -9,9 +9,18 @@ l_max = 12.5e3;
 step = 100;
 W = 5e3;
 
-%% Base de dados Ninapro
-ninaproList = ls('database/ninapro2/S*_E1*');
-numberOfSubjects = 40;
+%% Seleção da base de dados (manter uma opção comentada)
+% Base de dados Ninapro
+% path = 'database/ninapro2/';
+% subjectList = ls([path 'S*_E1*']);
+% numberOfSubjects = 40;
+
+% Base de dados IEE
+path = 'database/IEE/';
+subjectList = ls([path '*.mat']);
+numberOfSubjects = 10;
+
+%% Implementação
 numberOfClasses = 17;
 numberOfCombinations = 25;
 numberOfChannels = 12;
@@ -21,7 +30,7 @@ predictorsOutput = cell(numberOfCombinations, numberOfSubjects);
 
 parfor_progress(numberOfSubjects);
 parfor currentSubject = 1:numberOfSubjects
-    S = load (['database/ninapro2/' ninaproList(currentSubject,:)]);
+    S = load ([path subjectList(currentSubject,:)]);
     
     % Combinacoes a serem testadas
     B = 0.05:0.05:0.25;
@@ -99,7 +108,7 @@ parfor currentSubject = 1:numberOfSubjects
     S = []; % libera espaco da memoria
     parfor_progress; % exibe progresso do parfor
 end
-save('./out/workspace/numbers/complete_MTD3.mat') % salva a workspace atual
+save('./out/workspace/numbers/complete_MTD3_IEE.mat') % salva a workspace atual
 numberOfSegPerClass = zeros(numberOfCombinations,numberOfSubjects,numberOfClasses);
 for currentSubject = 1:numberOfSubjects
     for currentCombination = 1:numberOfCombinations
@@ -108,4 +117,4 @@ for currentSubject = 1:numberOfSubjects
     end
 end
 meanNumberOfSeg = squeeze(mean(numberOfSegPerClass,2));
-save('./out/workspace/complete_MTD3.mat') % salva a workspace atual
+save('./out/workspace/complete_MTD3_IEE.mat') % salva a workspace atual
