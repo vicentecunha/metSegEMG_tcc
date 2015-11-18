@@ -12,7 +12,7 @@ p = cell(27,numberOfSubjects,4);
 f = cell(27,numberOfSubjects,4);
 
 for currentMethod = 1:4
-    load(['./out/workspace/complete_MTD' num2str(currentMethod)])
+    load(['./out/workspace/complete_MTD' num2str(currentMethod) '_IEE'])
     
     segMean{currentMethod,1} = squeeze(mean(numberOfSegPerClass,2));
     segMode{currentMethod,1} = squeeze(mode(numberOfSegPerClass,2));
@@ -118,11 +118,11 @@ for currentMethod = 1:4
     end
     h = figure()
     [ax, h1, h2] = plotyy(1:numberOfCombinations,concat{currentMethod,1},1:numberOfCombinations,...
-       [rMeanMean(1:numberOfCombinations,currentMethod) pMeanMean(1:numberOfCombinations,currentMethod) fMeanMean(1:numberOfCombinations,currentMethod)],'bar','plot');
-    title(['Método de Segmentação: MTD' num2str(currentMethod) '; Base de Dados: NinaPro'])
+       fMeanMean(1:numberOfCombinations,currentMethod),'bar','plot');
+    title(['Método de Segmentação: MTD' num2str(currentMethod) '; Base de Dados: IEE'])
     xlabel('Índice da Combinação de Parâmetros')
-    ylabel(ax(1),'Número de Segmentos por Movimento')
-    ylabel(ax(2),'Sensitividade de RNAs')
+    ylabel(ax(1),'Número de Segmentos Obtidos por Classe')
+    ylabel(ax(2),'Valor F Médio')
     set(ax(1),'YLim',[0 10])
     set(ax(1),'YTick',0:1:10)
     set(ax(2),'YLim',[0 1])
