@@ -340,9 +340,9 @@ Para maiores detalhes sobre RNAs e outros métodos de aprendizado computacional,
 	\chapter{Metodologia Experimental}
 %=========================================================================
 
-%-------------------------------------------------------------------------
+%=========================================================================
 		\section{Bases de Dados Utilizadas}
-%-------------------------------------------------------------------------
+%=========================================================================
 Este trabalho faz uso de aquisições para o exercício 1 da base de dados número 2 do projeto NinaPro \cite{Gijsberts2014} e a base de dados em construção realizada pelo Laboratório de Instrumentação Eletro-Eletrônica (IEE). A base de dados do IEE busca replicar os métodos de aquisição utilizados pelo projeto NinaPro, contando com os mesmos movimentos realizados, mesmo posicionamento de eletrodos e mesmo período de amostragem (500 $\mu s$).
 
 %-------------------------------------------------------------------------
@@ -384,9 +384,9 @@ Primeiramente, realiza-se um ``treinamento'' com o voluntário, exibindo o víde
 
 \input{./tables/movimentos.tex}
 
-%-------------------------------------------------------------------------
+%=========================================================================
 		\section{Métodos de Segmentação}
-%-------------------------------------------------------------------------
+%=========================================================================
 Esta seção descreve a implementação dos métodos de segmentação propostos. O diagrama de blocos da Figura \ref{flow:MTDs} apresenta de forma resumida os passos comuns aos quatro métodos, que serão explanados nas subseções seguintes. Os códigos criados para os quatro métodos, escritos para MATLAB R2015a, encontram-se nos Apêndices \ref{ap:seg_mtd1} a \ref{ap:seg_mtd4}.
 
 \input{./flowcharts/MTDsResumo.tex}
@@ -438,9 +438,9 @@ O algoritmo DBSCAN foi escolhido para esta aplicação por dois motivos principa
 
 Após o agrupamento de posições de segmentos obtidos nos diferentes canais, tomam-se as médias de cada grupo como as posições nas quais o sinal deve ser segmentado (para os métodos MTD1 e MTD2, as médias dos grupos indicam posições centrais de segmentos e para métodos MTD3 e MTD4 indicam posições de BEPs e EEPs). O sinal é segmentado nestas posições para os doze canais, mantendo a coerência temporal entre canais.
 
-%-------------------------------------------------------------------------
+%=========================================================================
 		\section{Classificação de Segmentos com Redes Neurais Artificiais}
-%-------------------------------------------------------------------------
+%=========================================================================
 Esta seção descreve o uso de RNAs para classificação dos segmentos obtidos de acordo com movimentos de interesse. O processo de classificação é representado pelo diagrama de blocos da Figura \ref{flow:RNAs}, que será explanado nas subseções seguintes.
 
 \input{./flowcharts/RNAresumo.tex}
@@ -448,7 +448,7 @@ Esta seção descreve o uso de RNAs para classificação dos segmentos obtidos d
 %-------------------------------------------------------------------------
 			\subsection{Características Utilizadas como Preditores}
 %-------------------------------------------------------------------------
-Os preditores (``entradas'') das RNAs são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no Laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultados em métodos de iteligência computacional, como \cite{Favieiro2009}, \cite{Schons2014} e \cite{Cene2015}.
+Os preditores (``entradas'') das RNAs são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no Laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultados em métodos de inteligência computacional, como \cite{Favieiro2009}, \cite{Schons2014} e \cite{Cene2015}.
 
 O valor RMS ou \emph{Root Mean Square} de um sinal discreto \emph{x} de comprimento $L$ (em MATLAB, função \emph{rms()}) é dada pela Equação (\ref{eq:rms}) e a variância deste sinal (em MATLAB, função \emph{var()}) é dada pela Equação (\ref{eq:var}), onde $\bar{x}$ é o valor médio do sinal. A frequência mediana é tal que a soma total da densidade de potência para frequências abaixo da frequência mediana é igual à soma total da densidade de potência para frequências acima da frequência mediana, sendo estimada pela função \emph{medfreq()} em MATLAB.
 
@@ -465,22 +465,28 @@ O valor RMS ou \emph{Root Mean Square} de um sinal discreto \emph{x} de comprime
 %-------------------------------------------------------------------------
 			\subsection{Classes de Movimentos Utilizadas como Resposta}
 %-------------------------------------------------------------------------
-Realiza-se a identificação de movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que durante a aquisição de dados os movimentos são realizados na mesma sequência para todos os voluntários. A base de dados NinaPro apresenta um vetor \emph{stimulus} que indica os instantes em que foram apresentados cada movimento a ser replicado pelo volunário. A partir deste vetor e das posições dos segmentos dentro do sinal original, utiliza-se o código apresentado no Apêndice \ref{ap:idMoves} para criar o vetor de respostas esperadas no treinamento da RNA.
+Realiza-se a identificação de movimentos associados a cada segmento obtido a partir de sua posição temporal no sinal original, já que em ambas as bases de dados os movimentos são realizados na mesma sequência para todos os voluntários.
 
-\textcolor{red}{TODO: explicar o equivalente realizado para a base de dados IEE}
+A base de dados NinaPro contém um \emph{array stimulus} que indica os instantes em que foi exibida em vídeo cada classe de movimentos a serem replicados pelo voluntário. Este \emph{array} é utilizado para obter a relação entre posições de segmentos e classes de movimentos.
+
+A base de dados IEE não contém tal \emph{array}. A classe de movimento associada ao segmento é identificada a partir da posição do segmento relativa ao comprimento total do sinal - considera-se que cada décima-sétima parte do comprimento total do sinal corresponde a uma classe de movimentos distina.
+
+A função apresentada no Apêndice \ref{ap:idMoves} é utilizada para criar o vetor de respostas esperadas no treinamento da RNA, tendo como argumentos as posições centrais de segmentos (para os métodos MTD3 e MTD4, calcula-se média dos pares BEP-EEP), uma \emph{string} identificadora da base de dados utilizada e, dependendo da base utilizada, \emph{array stimulus} ou o comprimento total do sinal $L$.
 
 %-------------------------------------------------------------------------
 			\subsection{Separação de Grupos de Treino, Validação e Teste para Treinamento}
 %-------------------------------------------------------------------------
-Os grupos de segmentos utilizadas no treinamento da rede neural são tais que:
+Sendo $N_i$ o número de segmentos obtidos por classe de movimentos $i$, os grupos de segmentos utilizados nos treinamentos de RNAs são tais que: 
 
 \begin{itemize}
-\item grupo de treino: primeiros quatro segmentos obtidos para uma mesma classe de movimento
-\item grupo de validação: quinto segmento obtido para cada classe de movimento
-\item grupo de teste: demais segmentos
+\item grupo de treino: primeiros $N_i-2$ segmentos obtidos de todas as classes de movimentos
+\item grupo de validação: segmento obtido de índice $N_i-1$ de todas as classes de movimentos
+\item grupo de teste: $N_i$-ésimo segmento obtido de todas as classes de movimentos
+\item Para $N_i=2$, o primeiro segmento identificado da classe $i$ entra no grupo de treino e o segundo segmento no grupo de validação.
+\item Para $N_i=1$, o segmento identificado da classe $i$ entra no grupo de treino.
 \end{itemize}
 
-Optou-se por este controle da divisão por indexação (método de divisão chamado em MATLAB de $divideind$) ao invés de métodos de divisão aleatória de grupos ($dividerand$) para evitar possíveis situações particulares nas quais todos (ou, na situação oposta e igualmente incômoda, nenhum) segmentos para determinada classe de movimento seria incluso no grupo ``treino'', as quais viciariam resultados de classificação.
+Optou-se por este controle da divisão por indexação (método de divisão chamado em MATLAB de $divideind$) ao invés de métodos de divisão aleatória de grupos ($dividerand$) devido ao número reduzido de repetições por classe de movimento (6 repetições). Utilizar divisão aleatória de grupos apresentaria alta chance de situações particulares em que nenhum (ou, na situação oposta e igualmente indesejada, todos) segmentos de determinada classe estariam inclusos no grupo ``treino'', viciando resultados de classificação.
 
 %-------------------------------------------------------------------------
 			\subsection{Estrutura de RNAs utilizada}
