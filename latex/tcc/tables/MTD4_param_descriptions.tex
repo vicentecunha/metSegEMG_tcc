@@ -1,6 +1,6 @@
 \begin{table}[htb]
 \IBGEtab{%
-	\caption{Parâmetros utilizados para definir o MTD4.}%
+	\caption{Parâmetros utilizados para definir o MTD3.}%
 	\label{tab:mtd4params}
 }{%
 	\begin{tabular}{ccc}
@@ -9,11 +9,17 @@
 	\midrule \midrule
 	$x$ & Sinal a ser segmentado \\
 	\midrule
-	$L$ & Comprimento total do sinal $x$ \\
+	$l_{min}$ & Distância mínima entre BEPs e EEPs de um mesmo segmento \\
+	\midrule
+	$l_{máx}$ & Distância máxima entre BEPs e EEPs de um mesmo segmento\\
 	\midrule
 	$W$ & Comprimento da janela deslizante utilizada pelo método \\
 	\midrule
-	$T$ & Valor de \emph{threshold} \\
+	$w_0$ & Número da amostra mais a esquerda da janela. Determina a posição instantânea da janela \\
+	\midrule
+	$step$ & Número de amostras para incrementar $w_0$ antes de novo cálculo de variação total \\
+	\midrule
+	$T$ & Valor de \emph{threshold} para o sinal contido na janela \\
 	\bottomrule
 \end{tabular}%
 }{%

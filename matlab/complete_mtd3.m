@@ -11,11 +11,13 @@ W = 5e3;
 
 %% Seleção da base de dados (manter uma opção comentada)
 % Base de dados Ninapro
+% database = 'ninapro';
 % path = 'database/ninapro2/';
 % subjectList = ls([path 'S*_E1*']);
 % numberOfSubjects = 40;
 
 % Base de dados IEE
+database = 'iee';
 path = 'database/IEE/';
 subjectList = ls([path '*.mat']);
 numberOfSubjects = 10;
@@ -31,6 +33,7 @@ predictorsOutput = cell(numberOfCombinations, numberOfSubjects);
 parfor_progress(numberOfSubjects);
 parfor currentSubject = 1:numberOfSubjects
     S = load ([path subjectList(currentSubject,:)]);
+    L = length(S.emg);
     
     % Combinacoes a serem testadas
     B = 0.05:0.05:0.25;
@@ -43,7 +46,11 @@ parfor currentSubject = 1:numberOfSubjects
             seg_mtd3(S.emg, l_min, l_max, step, W, ...
             combinations(currentCombination,1), combinations(currentCombination,2));
         % identificacao do movimento correspondente a cada segmento
-        targetClasses = identifyClasses(centerLocs, S.stimulus);
+        if strcmp(database, 'ninapro')
+            targetClasses = identifyClasses(centerLocs, database, S.stimulus);
+        else
+            targetClasses = identifyClasses(centerLocs, database, L);
+        end        
         targetsOutput{currentCombination, currentSubject} = targetClasses;
         
         % Divisao de grupos para treinamento

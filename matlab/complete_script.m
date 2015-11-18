@@ -1,5 +1,5 @@
-fprintf('Starting complete_mtd1.')
-complete_mtd1
+% fprintf('Starting complete_mtd1.')
+% complete_mtd1
 fprintf('Starting complete_mtd2.')
 complete_mtd2
 fprintf('Starting complete_mtd3.')

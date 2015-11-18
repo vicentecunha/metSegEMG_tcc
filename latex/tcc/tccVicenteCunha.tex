@@ -146,6 +146,7 @@
 % inserir lista de abreviaturas e siglas
 \begin{siglas}
 	\item[BEP]		\emph{Beginning Extraction Point}
+	\item[DAQ]		\emph{Data Acquisition}
 	\item[DBSCAN]	\emph{Density-Based Spatial Clustering of Applications with Noise}
 	\item[EEP]		\emph{Ending Extraction Point}
   	\item[EMG]		Eletromiografia
@@ -155,6 +156,7 @@
   	\item[MUAP]		\emph{Motor Unit Action Potencial}
 	\item[MUAPT]	\emph{Motor Unit Action Potencial Trains}
 	\item[MTD\#]	\emph{Método Número \#}
+	\item[NI]		\emph{National Instruments}
 	\item[NinaPro]	\emph{Non-Invasive Adaptive Prosthetics project}
 	\item[RNA]		Rede Neural Artificial
 \end{siglas}
@@ -297,22 +299,18 @@ O incremento de $step$ amostras (ao invés do avanço de $w_0$ de uma em uma amo
 %-------------------------------------------------------------------------
 			\subsection{Método 4 - método com janela deslizante para detecção de BEP e EEP de segmentos utilizando \emph{thresholding} (MTD4)}
 %-------------------------------------------------------------------------
-Este é o método de segmentação adaptado de \cite{Pattichis1995}. As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
+Este método de segmentação é adaptado de \cite{Pattichis1995}. As definições da Tabela \ref{tab:mtd4params} serão utilizados para descrever este método.
 
 \input{./tables/MTD4_param_descriptions.tex}
 
-Uma janela deslizante de comprimento $W$ com início em $w_0$ percorre o sinal da esquerda para a direita. Os BEPs dos segmentos são pontos $w_0$ tais que o valor máximo do sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. Para sequências de pontos consecutivos que atendam esta especificação, seleciona-se o último ponto (ponto mais à direita). As EEPs são identificadas de forma similar, sendo os primeiros pontos $w_0 + W$ após a identificação de uma BEP nos quais o sinal contido pela janela permanece abaixo do valor de \emph{threshold} $T$. O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
-
-%No trabalho de \cite{Pattichis1995}, utilizou-se janelas de comprimento $W$ correspondente a 3 $ms$ de aquisição e \emph{threshold} $T$ de $\pm$ 40 $\mu V$ (o sinal de EMG segmentado não era retificado).
+Uma janela deslizante de comprimento $W$, com início em $w_0$, percorre o sinal da esquerda para a direita. As BEPs de segmentos são os primeiros pontos $w_0$ em que o máximo valor de sinal $x$ contido na janela supera o valor de \emph{threshold} $T$. As EEPs associadas às BEPs são as posições $w_0 + W$ em que tal valor máximo volta a ser inferior a $T$. Assim como no MTD3, restrições para comprimento mínimo e máximo ($l_{mín}$ e $l_{máx}$) de segmentos são utilazadas. O fluxograma da Figura \ref{fig_mtd4flux} representa o MTD4.
 
 \input{./flowcharts/MTD4_new.tex}
-
-\textcolor{red}{TODO: atualizar esta descrição com a versão final do método}
 
 %-------------------------------------------------------------------------
 		\section{Princípios Básicos sobre Redes Neurais Artificiais}
 %-------------------------------------------------------------------------
-Rede Neural Artificial (RNA) trata-se de um método computacional que, inspirado nos modelos de redes neurais biológicas, ``aprende'' a resolver determinados problemas \cite{yegnanarayana2009artificial}, apresentando aplicações em diversos tipos de sinais (e.g. sinais de áudio, imagem e, como é o caso deste trabalho, eletromiografia).
+Rede Neural Artificial (RNA) trata-se de um método computacional que, inspirado nos modelos de redes neurais biológicas, ``aprende'' a resolver determinados problemas \cite{YEGNANARAYANA2009}, apresentando aplicações em diversos tipos de sinais (e.g. sinais de áudio, imagem e, como é o caso deste trabalho, eletromiografia).
 
 Propostas de utilização de RNA com sinais de EMG para classificação de movimentos datam antes de 1990, a exemplo do trabalho de \cite{Hiraiwa1989}, que menciona a vantagem de RNA sobre outros mecanismos de aprendizado computacional na classificação de padrões que não apresentam separabilidade linear. Desde então, múltiplos trabalhos na área já utilizaram RNA para classificação de movimentos utilizando EMG (e.g. \cite{Hudgins1993}, \cite{Subasi2006}, \cite{Bu2003}), apresentando resultados satisfatórios para taxa de acerto de classificação.
 
@@ -335,8 +333,7 @@ Uma RNA pode ser utilizada para resolver determinado problema após um processo 
 
 Quando uma RNA é aplicada para classificação de séries temporais de sinais, as entradas (chamadas ``preditores'') utilizadas pela RNA são características extraídas de um trecho do sinal (e.g. número de cruzamentos por zero, valor médio, valor RMS). A extração de características tem o objetivo de reduzir a dimensionalidade do vetor de entradas da RNA (i.e. ao invés de um trecho de sinal com grande número de amostras, a entrada da RNA trata-se de um número arbitrariamente pequeno de preditores), o que apresenta vantagens em desempenho computacional e contorna problemas que surgem da classificação de sinais ruidosos \cite{Kim2000}.
 
-Para maiores detalhes sobre RNAs e outros métodos computacionais, sugere-se consulta das seguintes referências. \textcolor{red}{TODO: referências de RNA.}
-
+Para maiores detalhes sobre RNAs e outros métodos de aprendizado computacional, sugere-se consulta das seguintes referências. \cite{YEGNANARAYANA2009}, \cite{Abraham2005} e \cite{Drew20003}.
 
 %=========================================================================
 % METODOLOGIA EXPERIMENTAL
@@ -364,7 +361,9 @@ Os sinais de EMG de superfície para ambas as bases utilizadas neste trabalho s�
 %-------------------------------------------------------------------------
 			\subsection{Sistema para Aquisição de EMGs no IEE}
 %-------------------------------------------------------------------------
-\textcolor{red}{TODO: descrever o \emph{hardware} utilizado na aquisição do IEE}.
+Para aquisições realizadas no IEE, os eletrodos são conectados a dois sistemas de aquisição EMG 830C, produzidos pela empresa ``EMG \emph{System} do Brasil'', de oito canais cada (os canais de número 1 a 8, que circundam a junção úmero-radial, são conectados ao primeiro sistema e os canais 9 a 12 ao segundo sistema). Os sinais de referência para os sistemas são tomados de eletrodos posicionados na testa do volutário. Os sistemas EMG 830C são conectados a um computador pelo conjunto de \emph{Data Acquisition} (DAQ) NI SCB-68A e NI USB-6289. O computador executa uma rotina de aquisição de sinais implementada em NI LabView que é também responsável por exibir um vídeo com movimentos a serem replicados pelo voluntário. O diagrama da Figura \ref{fig:daq} resume o sistema de aquisição para a base de dados do IEE.
+
+\input{./flowcharts/daq.tex}
 
 %-------------------------------------------------------------------------
 			\subsection{Movimentos de Interesse}
@@ -487,7 +486,7 @@ As RNAs utilizadas para todos os métodos são do tipo \emph{feedforward}, compo
 \textcolor{red}{TODO: finalizar esta subseção; adicionar imagem do matlab mostran a arquitetura da RNA}
 
 %-------------------------------------------------------------------------
-			\subsection{Sensitividade de RNAs}
+			\subsection{Valor F de RNAs}
 %-------------------------------------------------------------------------
 Para avaliação de taxas de acerto de um sistema classificador, costumeiramente utiliza-se uma tabela conhecida como ``matriz de confusão''. A Tabela \ref{tab:conf_example} exemplifica uma matriz de confusão genérica.
 
@@ -516,37 +515,50 @@ Para avaliação de taxas de acerto de um sistema classificador, costumeiramente
 }
 \end{table}
 
-No caso das RNAs deste trabalho, que realizam classificação entre 17 classes de movimentos, a Tabela \ref{tab:conf_example} pode ser obtida para cada uma das classes, onde ``Positivo'' indica a ocorrência da classe de movimento e ``Negativo'' a não-ocorrência da mesma. A taxa de acerto $T_a$ para determinada classe de movimento é definida pela razão da soma de casos de verdadeiros positivos e verdadeiros negativos entre todos os casos classificados, como na equação (\ref{eq:taxaAcerto}).
+No caso das RNAs deste trabalho, que realizam classificação entre 17 classes de movimentos, a Tabela \ref{tab:conf_example} pode ser obtida para cada uma das classes, onde ``Positivo'' indica a ocorrência da classe de movimento e ``Negativo'' a não-ocorrência da mesma. O valor $F$ da RNA para uma determinada classes de movimento é definida como a média harmônica entre precisão $p$ (equação(\ref{eq:precisao})) e a sensitividade $r$ (equação(\ref{eq:sensitividade})), conforme a equação (\ref{eq:fscore}).
 
 \begin{equation}
-\label{eq:taxaAcerto}
-	T_a = \frac{a+d}{a+b+c+d}
+\label{eq:precisao}
+	p = \frac{d}{b+d}
 \end{equation}
-
-Entretanto, utilizar (\ref{eq:taxaAcerto}) para quantificar a performance de classificação dos segmentos não é adequado para aplicações em que casos ``negativos'' e ``positivos'' não são igualmente distribuídos para uma série de dados de treino (e.g. se em 1000 casos espera-se 995 classificações negativas e 5 classificações positivas, se a RNA classificar todos os casos como negativos, errando classificação de todos os casos positivos, $T_a$ terá valor 99,5\%) \cite{Kubat1998}.
-
-Como cada série de treino corresponde à realização de 17 classes movimentos distintos em 6 repetições, o número de casos esperados negativos é, para cada classe, superior a dez vezes o número de casos esperados positivos. Para melhor quantificar a performance de classificação das RNAs, foi utilizada medida de sensitividade $r$ (equação (\ref{eq:sensitividade})), definida como a fração de classificações verdadeiramente positivas entre todos os casos esperados positivos.
 
 \begin{equation}
 \label{eq:sensitividade}
 	r = \frac{d}{c+d}
 \end{equation}
 
+\begin{equation}
+\label{eq:fscore}
+	F = 2 \times \frac{p \times r}{p+r}
+\end{equation}
+
+Como cada série de dados avaliada pelas RNAs refere-se à realização de 17 classes movimentos distintos em 6 repetições, o número de casos esperados negativos é, para cada classe, 16 vezes maior que o número de casos esperados positivos. O valor $F$, ao não utilizar número de classificações verdadeiramente negativas $a$, não é diretamente viciado por esta disparidade no número de casos positivos e negativos.
 
 %=========================================================================
 % RESULTADOS E DISCUSSÕES
 	\chapter{Resultados e Discussões}
 %=========================================================================
-		\section{Número de Segmentos Obtidos por Movimento e Combinação de Parâmetros}
+		\section{Número de Segmentos Obtidos por Movimento e Sensitividade}
 %-------------------------------------------------------------------------
-Para as diferentes combinações de parâmetros listadas na Tabela \ref{tab:combinacoes_expanded}, as Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee} \textcolor{red}{TODO: adicionar demais tabelas} apresentam o número médio de segmentos obtidos para todos os voluntários de cada base de dados utilizada.
-
-Como os voluntários realizam 6 repetições de cada movimento, os melhores parâmetros são aqueles que melhor conseguirem identificar este número de segmentos por classe de movimento. Nas Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee}, indica-se em verde as combinações de parâmetros e movimentos que foram apropriadamente segmentados para mais de 75\% dos voluntários e em vermelho para menos de 25\% dos voluntários.
+As diferentes combinações de parâmetros testadas foram indexadas por método de segmentação de acordo com a Tabela \ref{tab:combinacoes_expanded}. As Figuras \ref{fig:mtd1-nina} a \ref{fig:mtd4-iee} apresentam resultados para média e moda do número de segmentos obtidos por classe de movimento com a implementação de cada combinação de parâmetros dos métodos a todos os voluntários de cada base de dados. Também apresenta-se resultados para sensitividade média para classificação por RNAs. 
 
 \input{./tables/combinacoes_expanded.tex}
-%\input{./tables/resultsMTD1-nina.tex}
 
-Na base de dados NinaPro, os métodos com segmentos de comprimento constante (MTD1 e MTD2) obtiveram boa segmentação do movimento 5 (abdução de todos os dedos) em diferentes combinações de parâmetros. No MTD2 não foi possível encontrar combinação de parâmetros apropriada para segmentação do movimento 11 (rotação de punho em torno do dedo mínimo). O MTD3 foi o método capaz de realizar segmentações apropriadas para um maior número de movimentos distintos. Percebe-se que os métodos MTD1 - MTD3 todos apresentaram dificuldades na segmentação dos movimentos 1 (polegar esticado) e 7 (extensão do indicador).
+\begin{figure}[htb]
+	\caption{\label{fig:normalization}Média e moda do número de segmentos obtidos por classe de movimento e sensitividade média de RNAs. Método de segmentação: MTD1. Base de dados: NinaPro}.
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd1_nina.eps}
+	\end{center}
+	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\end{figure}
+
+\begin{figure}[htb]
+	\caption{\label{fig:normalization}Média e moda do número de segmentos obtidos por classe de movimento e sensitividade média de RNAs. Método de segmentação: MTD2. Base de dados: NinaPro}.
+	\begin{center}
+	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd2_nina.eps}
+	\end{center}
+	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\end{figure}
 
 \textcolor{red}{TODO: finalizar análise após obtenção de mais resultados}
 
