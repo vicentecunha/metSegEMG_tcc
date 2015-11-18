@@ -3,27 +3,30 @@
 {
 	\begin{tabular}{cllc}
 		\toprule
-		Método 					& Parâmetros	& Valores utilizados						& Número total de combinações \\
-		\midrule \midrule					
-		\multirow{4}{*}{MTD1}	& $l$			& $10 \times 10^3$							& \multirow{4}{*}{16} \\
-								& $r_{target}$	& $5,6 \times 10^{-5}$						& \\
-								& $q$			& $[0,8 \quad 0,85 \quad 0,9 \quad 0,95]$	& \\
-								& $T_{lim`}$	& $[0,05 \quad 0,1 \quad 0,15 \quad 0,2]$	& \\
-		\midrule
-		\multirow{4}{*}{MTD2}	& $l$			& $10 \times 10^3$							& \multirow{4}{*}{27} \\
-								& $A$			& $[20 \quad 30 \quad 40]$					& \\
-								& $B$			& $[2 \quad 5 \quad 8]$						& \\
-								& $C$			& $[2 \quad 5 \quad 8]$						& \\
-		\midrule					
-		\multirow{6}{*}{MTD3}	& $W$			& $5 \times 10^3$							& \multirow{6}{*}{16} \\
-								& $step$		& $500$										& \\
-								& $l_{mín}$		& $7,5 \times 10^3$							& \\
-								& $l_{máx}$		& $12,5 \times 10^3$						& \\
-								& $B$			& [0,1 \quad 0,2 \quad 0,3 \quad 0,4]		& \\
-								& $C$			& [-0,1 \quad -0,2 \quad -0,3 \quad -0,4]	& \\
-		\midrule					
-		\multirow{2}{*}{MTD4}	& \textcolor{red}{TODO}	& \textcolor{red}{TODO}				& \multirow{2}{*}{\textcolor{red}{TODO}} \\
-								& \textcolor{red}{TODO}	& \textcolor{red}{TODO}				& \\
+		Método 					& Parâmetros	& Valores utilizados											& Número total de combinações \\
+		\midrule \midrule										
+		\multirow{4}{*}{MTD1}	& $l$			& $10 \times 10^3$												& \multirow{4}{*}{25} \\
+								& $r_{target}$	& NinaPro: $5,6 \times 10^{-5}$; IEE: $6,1 \times 10^{-5}$		& \\
+								& $q$			& $[0,75 \quad 0,80 \quad 0,85 \quad 0,90 \quad 0,95]$			& \\
+								& $T_{lim}$		& $[0,05 \quad 0,10 \quad 0,15 \quad 0,20 \quad 0,75]$			& \\
+		\midrule		
+		\multirow{4}{*}{MTD2}	& $l$			& $10 \times 10^3$												& \multirow{4}{*}{27} \\
+								& $A$			& $[20 \quad 30 \quad 40]$										& \\
+								& $B$			& $[2 \quad 5 \quad 8]$											& \\
+								& $C$			& $[2 \quad 5 \quad 8]$											& \\
+		\midrule										
+		\multirow{6}{*}{MTD3}	& $W$			& $5 \times 10^3$												& \multirow{6}{*}{25} \\
+								& $step$		& $100$															& \\
+								& $l_{mín}$		& $7,5 \times 10^3$												& \\
+								& $l_{máx}$		& $12,5 \times 10^3$											& \\
+								& $B$			& [0,05 \quad 0,10 \quad 0,15 \quad 0,20 \quad 0,25]			& \\
+								& $C$			& [-0,05 \quad -0,10 \quad -0,15 \quad -0,20 \quad -0,25]		& \\
+		\midrule										
+		\multirow{5}{*}{MTD4}	& $W$			& $5 \times 10^3$												& \multirow{5}{*}{25} \\
+								& $step$		& $100$															& \\
+								& $l_{mín}$		& $7,5 \times 10^3$												& \\
+								& $l_{máx}$		& $12,5 \times 10^3$											& \\
+								& $T$			& [0,01 \quad 0,02 \quad 0,03 \quad ... \quad 0,24 \quad 0,25]	& \\
 		\bottomrule
 	\end{tabular}
 }{}

@@ -314,7 +314,7 @@ Rede Neural Artificial (RNA) trata-se de um método computacional que, inspirado
 
 Propostas de utilização de RNA com sinais de EMG para classificação de movimentos datam antes de 1990, a exemplo do trabalho de \cite{Hiraiwa1989}, que menciona a vantagem de RNA sobre outros mecanismos de aprendizado computacional na classificação de padrões que não apresentam separabilidade linear. Desde então, múltiplos trabalhos na área já utilizaram RNA para classificação de movimentos utilizando EMG (e.g. \cite{Hudgins1993}, \cite{Subasi2006}, \cite{Bu2003}), apresentando resultados satisfatórios para taxa de acerto de classificação.
 
-Uma RNA é modelada pelas comunicações de um conjunto de ``neurônios'' artificiais. Cada neurônio artificial, como mostrado na Figura \ref{fig:neuron}, trata-se de uma função matemática que soma de forma ponderada $n$ entradas com pesos $w_n$ e um valor de \emph{bias} $B$ e utiliza o resultado desta soma em uma função dita ``função de ativação'' (\cite{Tanikic2012}).
+Uma RNA é modelada pelas comunicações de um conjunto de ``neurônios'' artificiais. Cada neurônio artificial, como mostrado na Figura \ref{fig:neuron}, trata-se de uma função matemática que soma de forma ponderada $n$ entradas com pesos $w_n$ e um valor de \emph{bias} $B$ e utiliza o resultado desta soma em uma função dita ``função de ativação'' \cite{Tanikic2012}.
 
 \input{./flowcharts/neuronio.tex}
 
@@ -361,7 +361,9 @@ Os sinais de EMG de superfície para ambas as bases utilizadas neste trabalho s�
 %-------------------------------------------------------------------------
 			\subsection{Sistema para Aquisição de EMGs no IEE}
 %-------------------------------------------------------------------------
-Para aquisições realizadas no IEE, os eletrodos são conectados a dois sistemas de aquisição EMG 830C, produzidos pela empresa ``EMG \emph{System} do Brasil'', de oito canais cada (os canais de número 1 a 8, que circundam a junção úmero-radial, são conectados ao primeiro sistema e os canais 9 a 12 ao segundo sistema). Os sinais de referência para os sistemas são tomados de eletrodos posicionados na testa do volutário. Os sistemas EMG 830C são conectados a um computador pelo conjunto de \emph{Data Acquisition} (DAQ) NI SCB-68A e NI USB-6289. O computador executa uma rotina de aquisição de sinais implementada em NI LabView que é também responsável por exibir um vídeo com movimentos a serem replicados pelo voluntário. O diagrama da Figura \ref{fig:daq} resume o sistema de aquisição para a base de dados do IEE.
+Para aquisições realizadas no IEE, os eletrodos são conectados a dois sistemas de aquisição EMG 830C, produzidos pela empresa ``EMG \emph{System} do Brasil'', de oito canais cada (os canais de número 1 a 8, que circundam a junção úmero-radial, são conectados ao primeiro sistema e os canais 9 a 12 ao segundo sistema). Os sinais de referência para os canais são tomados de eletrodos posicionados na testa do volutário.
+
+Os sistemas EMG 830C são conectados a um computador pelo conjunto de \emph{Data Acquisition} (DAQ) NI SCB-68A e NI USB-6289. O computador executa uma rotina de aquisição de sinais implementada em NI LabView que é também responsável por exibir um vídeo com movimentos a serem replicados pelo voluntário. O diagrama da Figura \ref{fig:daq} resume o sistema de aquisição para a base de dados do IEE.
 
 \input{./flowcharts/daq.tex}
 
@@ -413,24 +415,26 @@ Após a etapa de retificação, os sinais para cada canal de aquisição são no
 %-------------------------------------------------------------------------
 				\subsection{Parâmetros Ajustáveis}
 %-------------------------------------------------------------------------
-Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Tais parâmetros foram descritos anteriormentes na Seção \ref{sec:MTDs} (Tabelas \ref{tab:mtd1params} a \ref{tab:mtd4params}). Após investigações iniciais das segmentações obtidas com diferentes valores de parâmetros, listou-se valores a serem explorados na aplicação de cada método, a fim de obter os parâmetros mais adequados para cada uma das bases de dados, assim como avaliar quais classes de movimentos poderiam ser devidamente segmentados com cada método. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua respectiva lista de valores explorados.
+Cada método de segmentação MTD1 - MTD4 apresenta um conjunto de parâmetros ajustáveis. Tais parâmetros foram descritos anteriormentes na Seção \ref{sec:MTDs} (Tabelas \ref{tab:mtd1params} a \ref{tab:mtd4params}). Após investigações iniciais de segmentações obtidas com diferentes valores de parâmetros, listou-se valores a serem explorados na aplicação de cada método. A Tabela \ref{tab:combinacoes} apresenta os parâmetros ajustáveis de cada método e sua respectiva lista de valores explorados.
 
 \input{./tables/combinacoes}
 
-Para cada movimento de interesse, o voluntário realiza 6 repetições; portanto, espera-se que os métodos de segmentação produzam 6 segmentos por classe de movimento. Para testar as diferentes combinações de parâmetros, utilizou-se os códigos apresentados nos Apêndices \ref{ap:num_mtd1} a \ref{ap:num_mtd4}.
+Para os métodos que necessitam parâmetro de comprimento de segmento $l$ (i.e. os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de 500 $\mu s$), sendo a mesma duração dos segmentos de vídeo replicados pelos voluntários.
 
-Para os métodos que necessitam parâmetro de comprimento de segmento $l$ (i.e. os métodos que produzem segmentos de comprimento de janela constante, MTD1 e MTD2) utilizou-se valor de $l$ como $10 \times 10^3$, que corresponde a 5 cinco segundos de aquisição para ambas as bases de dados (período de amostragem para ambas é de 500 $\mu s$), sendo a mesma duração dos segmentos de vídeo replicados pelos voluntários. O valor de MTD1 para $r_{target}$ foi obtido utilizando o código do Apêndice \ref{ap:r_target} como valor mínimo da razão entre número de segmentos e comprimento de sinal para as base de dados da NinaPro e IEE.
+Para os métodos que utilizam janela deslizante (MTD3 e MTD4), utilizou-se comprimento de janela $W$ de 5000 amostras, de modo que o comprimento temporal da janela (2,5 segundos) equivale à metade da duração do segmento de vídeo, com incrementos $step$ de 100 amostras. Os parâmetros de $l_{mín}$ e $l_{máx}$ utilizados foram de 7500 e 12500 amostras, respectivamente.
 
-Para os métodos que utilizam janela deslizante (MTD3 e MTD4), utilizou-se comprimento de janela $W$ de 5000 amostras, de modo que o comprimento temporal da janela (2,5 segundos) equivale à metade da duração do segmento de vídeo, com incrementos $step$ de 500 amostras, ou um décimo do comprimento da janela. Os parâmetros de $l_{mín}$ e $l_{máx}$ utilizados foram de 7500 e 12500 amostras, respectivamente.
+O valor de $r_{target}$  para o MTD1 foi obtido utilizando o código do Apêndice \ref{ap:r_target} como sendo valor mínimo da razão entre número de segmentos e comprimento de sinal para os voluntários de cada base de dados da NinaPro e IEE.
 
 %-------------------------------------------------------------------------
 			\subsection{Agrupamento das Posições de Segmentos de Diferentes Canais Utilizando DBSCAN}
 %-------------------------------------------------------------------------
-Os sinais para ambas as bases de dados são compostos por 12 canais de aquisição. Os métodos de segmentação são implementados individualmente para os doze canais. Para os métodos MTD1 e MTD2, as posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs. Tais posições de diferentes canais são identificadas como pertencendo a um mesmo segmento através do algoritmo de grupamento DBSCAN (\emph{Density-Based Spatial Clustering of Applications with Noise}).
+Como já mencionado, os sinais para ambas as bases de dados são compostos por doze canais de aquisição. Os métodos de segmentação são implementados individualmente para os doze canais. Para os métodos MTD1 e MTD2, posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs. Tais posições de diferentes canais são identificadas como pertencendo a um mesmo segmento através do algoritmo de grupamento DBSCAN (\emph{Density-Based Spatial Clustering of Applications with Noise}).
 
-DBSCAN foi inicialmente proposto em \cite{Ester1996} para grupamento de pontos utilizando dois parâmetros: $\epsilon$, que define uma vizinhança em torno do valor de cada ponto, e $minPts$, que determina o número mínimo de pontos pertencentes à mesma vizinhança para formação do ``núcleo'' de um grupo. Para mais detalhes sobre DBSCAN, sugere-se o artigo original \cite{Ester1996} e a revisão do método \cite{Thanh2013}, cujo código em MATLAB foi utilizado (Apêndice \ref{ap:dbscan}).
+DBSCAN foi inicialmente proposto em \cite{Ester1996} para grupamento de pontos utilizando dois parâmetros: $\epsilon$, que define uma vizinhança em torno do valor de cada ponto, e $minPts$, que determina o número mínimo de pontos pertencentes à mesma vizinhança para formação do ``núcleo'' de um grupo. Para mais detalhes sobre DBSCAN, sugere-se o artigo original \cite{Ester1996} e a revisão do método \cite{Thanh2013}, cujo código em MATLAB foi utilizado (Apêndice \ref{ap:dbscan}). 
 
-O algoritmo DBSCAN foi escolhido para esta aplicação por dois motivos principais. Primeiramente, ao contrário de métodos de grupamento como \emph{k-means}, DBSCAN não necessita parâmetro que especifique número de grupos, no caso, número de segmentos a serem obtidos. Além disto, este método é capaz de descartar posições \emph{outliers} que venham a ser identificadas para algum canal. Sendo assim, o algoritmo DBSCAN é capaz de tornar mais robusto os métodos de segmentação e implementáveis a sinais de múltiplos canais.
+Na implementação dos quatro métodos, utilizou-se $\epsilon = 2000$ amostras e $minPts = 3$ canais. Em outras palavras, isto significa que para a identificação de um centro de segmento (métodos MTD1 e MTD2) ou de BEPs e EEPs (métodos MTD3 e MTD4) é necessário que as posições identificadas, em pelo menos 3 diferentes canais, pertençam a uma vizinhança bilateral de 4000 amostras (2 segundos de aquisição).
+
+O algoritmo DBSCAN foi escolhido para esta aplicação por dois motivos principais. Primeiramente, ao contrário de métodos de grupamento como \emph{k-means}, DBSCAN não necessita parâmetro que especifique número de grupos, no caso, número de segmentos a serem obtidos, o que mantém o caráter ``automático'' dos métodos de segmentação. Além disto, o parâmetro $minPts$ faz com que este método seja capaz de descartar posições \emph{outliers} que venham a ser identificadas por canal. Sendo assim, o algoritmo DBSCAN é capaz de tornar mais robusto os métodos de segmentação e implementáveis a sinais de múltiplos canais.
 
 Após o agrupamento de posições de segmentos obtidos nos diferentes canais, tomam-se as médias de cada grupo como as posições nas quais o sinal deve ser segmentado (para os métodos MTD1 e MTD2, as médias dos grupos indicam posições centrais de segmentos e para métodos MTD3 e MTD4 indicam posições de BEPs e EEPs). O sinal é segmentado nestas posições para os doze canais, mantendo a coerência temporal entre canais.
 
@@ -515,7 +519,7 @@ Para avaliação de taxas de acerto de um sistema classificador, costumeiramente
 }
 \end{table}
 
-No caso das RNAs deste trabalho, que realizam classificação entre 17 classes de movimentos, a Tabela \ref{tab:conf_example} pode ser obtida para cada uma das classes, onde ``Positivo'' indica a ocorrência da classe de movimento e ``Negativo'' a não-ocorrência da mesma. O valor $F$ da RNA para uma determinada classes de movimento é definida como a média harmônica entre precisão $p$ (equação(\ref{eq:precisao})) e a sensitividade $r$ (equação(\ref{eq:sensitividade})), conforme a equação (\ref{eq:fscore}).
+No caso das RNAs deste trabalho, que realizam classificação entre 17 classes de movimentos, a Tabela \ref{tab:conf_example} pode ser obtida para cada uma das classes, onde ``Positivo'' indica a ocorrência da classe de movimento e ``Negativo'' a não-ocorrência da mesma. O valor $F$ da RNA para uma determinada classes de movimento é definida como a média harmônica entre precisão $p$ (Equação(\ref{eq:precisao})) e a sensitividade $r$ (Equação(\ref{eq:sensitividade})), conforme a Equação (\ref{eq:fscore}).
 
 \begin{equation}
 \label{eq:precisao}
@@ -605,53 +609,28 @@ Para os resultados de segmentação obtidos com diferentes parâmetros testados 
 \label{ap:seg_mtd3}
 %%-------------------------------------------------------------------------
 \chapter{Função em MATLAB para MTD4}
-%\lstinputlisting{../../MATLAB/seg_mtd4.m}
+\lstinputlisting{../../MATLAB/seg_mtd4.m}
 \label{ap:seg_mtd4}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD1}
-\lstinputlisting{../../MATLAB/number_mtd1.m}
-\label{ap:num_mtd1}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD2}
-\lstinputlisting{../../MATLAB/number_mtd2.m}
-\label{ap:num_mtd2}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD3}
-\lstinputlisting{../../MATLAB/number_mtd3.m}
-\label{ap:num_mtd3}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Medida de Número de Segmentos Obtidos para Diferentes Parâmetros com MTD4}
-%\lstinputlisting{../../MATLAB/number_mtd4.m}
-\label{ap:num_mtd4}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD1}
-\lstinputlisting{../../MATLAB/rna_mtd1.m}
-\label{ap:rna_mtd1}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD2}
-\lstinputlisting{../../MATLAB/rna_mtd2.m}
-\label{ap:rna_mtd2}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD3}
-\lstinputlisting{../../MATLAB/rna_mtd3.m}
-\label{ap:rna_mtd3}
-%-------------------------------------------------------------------------
-\chapter{Código Utilizado para Obtenção de Resultados de Classificação Utilizando RNA com MTD4}
-%\lstinputlisting{../../MATLAB/rna_mtd4.m}
-\label{ap:rna_mtd4}
 %-------------------------------------------------------------------------
 \chapter{Código utilizado para determinação de $r_{target}$ do MTD1}
 \label{ap:r_target}
 \lstinputlisting{../../MATLAB/rtarget_mtd1.m}
-%-------------------------------------------------------------------------
-\chapter{Função em MATLAB para agrupamento com DBSCAN}
-\label{ap:dbscan}
-\lstinputlisting{../../MATLAB/dbscan.m}
 %-------------------------------------------------------------------------
 \chapter{Função em MATLAB para obtenção dos movimentos relacionados aos segmentos}
 \label{ap:idMoves}
 \lstinputlisting{../../MATLAB/identifyClasses.m}
 %-------------------------------------------------------------------------
 \end{apendicesenv}
+
+%=========================================================================
+% ANEXOS
+	\begin{anexosenv}
+	\partanexos
+%=========================================================================
+\chapter{Função em MATLAB para agrupamento com DBSCAN \cite{Thanh2013}}
+\label{ap:dbscan}
+\lstinputlisting{../../MATLAB/dbscan.m}
+%-------------------------------------------------------------------------
+\end{anexosenv}
 
 \end{document}

@@ -1,4 +1,4 @@
-% Implementacao do MTD3 com variacao de parametros 
+% Implementacao do MTD3 com variacao de parametros
 % e resultados para calssificacao utilizando RNA
 close all
 clear
@@ -39,18 +39,19 @@ parfor currentSubject = 1:numberOfSubjects
     B = 0.05:0.05:0.25;
     C = -0.05:-0.05:-0.25;
     combinations = combvec(B, C)';
-
+    
     for currentCombination = 1:numberOfCombinations
         % metodo de segmentacao
         [x_seg, centerLocs] = ...
             seg_mtd3(S.emg, l_min, l_max, step, W, ...
-            combinations(currentCombination,1), combinations(currentCombination,2));
+            combinations(currentCombination,1),...
+            combinations(currentCombination,2));
         % identificacao do movimento correspondente a cada segmento
         if strcmp(database, 'ninapro')
             targetClasses = identifyClasses(centerLocs, database, S.stimulus);
         else
             targetClasses = identifyClasses(centerLocs, database, L);
-        end        
+        end
         targetsOutput{currentCombination, currentSubject} = targetClasses;
         
         % Divisao de grupos para treinamento
@@ -100,7 +101,7 @@ parfor currentSubject = 1:numberOfSubjects
                     medfreq(x_seg{currentSegment, currentChannel});
             end
         end
-        predictorsOutput{currentCombination, currentSubject} = predictors; 
+        predictorsOutput{currentCombination, currentSubject} = predictors;
         
         % Treinamento de rede neural
         net = patternnet(40,'trainscg');

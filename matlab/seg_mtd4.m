@@ -44,7 +44,7 @@ for w0 = 1:step:L-W % janela deslizante para calculo de variacao total
             case false % deteccao de EEPs
                 if (w0+W-lastBEPloc(currentChannel)) > l_max
                     % segmento excederia comprimento maximo
-                    BEPsLocsFlags(lastBEPloc(currentChannel),currentChannel) = false;
+                    BEPsLocsFlags(lastBEPloc(currentChannel),currentChannel)=false;
                     searchBEP(currentChannel) = true;
                 else if (max(x_norm(w0:w0+W, currentChannel)) < T) && ...
                             (w0+W-lastBEPloc(currentChannel) > l_min)
@@ -83,7 +83,8 @@ end
 %% Pareamento final de BEPs e EEPs
 % (devem ocorrer alternadamente e atender requisitos de l_min e l_max)
 
-allLocs = sortrows([meanBEPs,true(length(meanBEPs),1);meanEEPs,false(length(meanEEPs),1)]);
+allLocs = sortrows([meanBEPs,true(length(meanBEPs),1);...
+    meanEEPs,false(length(meanEEPs),1)]);
 locsDelta = diff(allLocs,1);
 numberOfDeltas = length(locsDelta(:,1));
 finalBEPsFlags = false(numberOfDeltas+1,1);

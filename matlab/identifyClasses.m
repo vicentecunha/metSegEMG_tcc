@@ -33,5 +33,4 @@ for currentSegment = 1:numberOfSegments
     targetDataArray(currentSegment,...
         classLabel(centerLocs(currentSegment))) = true;
 end
-
 end
