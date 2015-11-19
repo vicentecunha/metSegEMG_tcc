@@ -33,6 +33,54 @@
 \imprimircapa
 \imprimirfolhaderosto*
 
+% ---
+% Inserir a ficha bibliografica
+% ---
+
+% Isto é um exemplo de Ficha Catalográfica, ou ``Dados internacionais de
+% catalogação-na-publicação''. Você pode utilizar este modelo como referência. 
+% Porém, provavelmente a biblioteca da sua universidade lhe fornecerá um PDF
+% com a ficha catalográfica definitiva após a defesa do trabalho. Quando estiver
+% com o documento, salve-o como PDF no diretório do seu projeto e substitua todo
+% o conteúdo de implementação deste arquivo pelo comando abaixo:
+%
+% \begin{fichacatalografica}
+%     \includepdf{fig_ficha_catalografica.pdf}
+% \end{fichacatalografica}
+
+\begin{fichacatalografica}
+	\sffamily
+	\vspace*{\fill}					% Posição vertical
+	\begin{center}					% Minipage Centralizado
+	\fbox{\begin{minipage}[c][8cm]{13.5cm}		% Largura
+	\small
+	\imprimirautor
+	%Sobrenome, Nome do autor
+	
+	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
+	\imprimirlocal, \imprimirdata-
+	
+	\hspace{0.5cm} \pageref{LastPage} p. : il. (algumas color.) ; 30 cm.\\
+	
+	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador\\
+	
+	\hspace{0.5cm}
+	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
+	\imprimirdata.}\\
+	
+	\hspace{0.5cm}
+		1. Palavra-chave1.
+		2. Palavra-chave2.
+		2. Palavra-chave3.
+		I. Orientador.
+		II. Universidade xxx.
+		III. Faculdade de xxx.
+		IV. Título 			
+	\end{minipage}}
+	\end{center}
+\end{fichacatalografica}
+% ---
+
 %=========================================================================
 % FOLHA DE APROVAÇÃO
 %=========================================================================
@@ -432,7 +480,7 @@ Os sistemas EMG 830C são conectados a um computador pelo conjunto de \emph{Data
 Após o posicionamento de eletrodos, os voluntários sentam-se em frente a um monitor e apoiam o braço direito de forma relaxada sobre uma superfície horizontal próxima à altura do cotovelo. O monitor exibe um vídeo com uma mão direita, digitalmente animada, realizando movimentos de interesse que devem ser replicados pelos voluntários. A Figura \ref{fig:video} apresenta a mão digitalmente animada realizando alguns dos movimentos de interesse deste trabalho.
 
 \begin{figure}[htb]
-	\caption{\label{fig:video}Cenas do vídeo apresentado aos voluntários na aquisição do Laboratório IEE.}
+	\caption{\label{fig:video}Cenas do vídeo apresentado aos voluntários na aquisição do IEE.}
 	\begin{center}
 	    \includegraphics[width=0.75\linewidth]{./img/scenes.png}
 	\end{center}
@@ -482,10 +530,12 @@ Para os métodos que necessitam parâmetro de comprimento de segmento $l$ (i.e. 
 
 Para os métodos que utilizam janela deslizante (MTD3 e MTD4), utilizou-se comprimento de janela $W$ de 5000 amostras, de modo que o comprimento temporal da janela (2,5 segundos) equivale à metade da duração do segmento de vídeo, com incrementos $step$ de 100 amostras. Os parâmetros de $l_{mín}$ e $l_{máx}$ utilizados foram de 7500 e 12500 amostras, respectivamente.
 
-O valor de $r_{target}$  para o MTD1 foi obtido utilizando o código do Apêndice \ref{ap:r_target} como sendo valor mínimo da razão entre número de segmentos e comprimento de sinal para os voluntários de cada base de dados da NinaPro e IEE.
+O valor de $r_{target}$ utilizado em cada base de dados no MTD1 foi obtido utilizando o código do Apêndice \ref{ap:r_target} como sendo valor mínimo da razão entre número de segmentos e comprimento de sinal para os voluntários de cada base de dados da NinaPro e IEE.
+
+Os valores de $A$ para o MTD2 foram escolhidos utilizando o código do Apêdice \ref{ap:Avalue} de modo a estarem em torno da mediana para razão entre valor máximo e valor médio de sinais. Desta forma, assegura-se que que cálculo de $threshold$ deste método apresente situações numericamente representativas para uso de ambos parâmetros $B$ e $C$.
 
 %-------------------------------------------------------------------------
-			\subsection{Agrupamento das Posições de Segmentos de Diferentes Canais Utilizando DBSCAN}
+			\subsection{Agrupamento das Posições de Segmentos de Diferentes Canais com DBSCAN}
 %-------------------------------------------------------------------------
 Como já mencionado, os sinais para ambas as bases de dados são compostos por doze canais de aquisição. Os métodos de segmentação são implementados individualmente para os doze canais. Para os métodos MTD1 e MTD2, posições centrais dos segmentos obtidas em cada canal são armazenadas, enquanto que para os métodos MTD3 e MT4 armazena-se as posições de BEPs e EEPs. Tais posições de diferentes canais são identificadas como pertencendo a um mesmo segmento através do algoritmo de grupamento DBSCAN (\emph{Density-Based Spatial Clustering of Applications with Noise}).
 
@@ -567,84 +617,109 @@ A Figura \ref{fig:matlabRNA} mostra a representação esquemática realizada pel
 % RESULTADOS E DISCUSSÕES
 	\chapter{Resultados e Discussões}
 %=========================================================================
-		\section{Número de Segmentos por Classe de Movimentos Obtidos com os Métodos MTD1 a MTD4 e Valor $F$ em Diferentes Combinações de Parâmetros}
+		\section{Número de Segmentos Obtidos por Combinação de Parâmetros}
 %-------------------------------------------------------------------------
-As diferentes combinações de parâmetros testadas nos métodos MTD1 a MTD4 foram indexadas por método de segmentação de acordo com a Tabela \ref{tab:combinacoes_expanded}. As Figuras \ref{fig:mtd1Nina} a \ref{fig:mtd4Iee} apresentam resultados de média e moda de número de segmentos obtidos por classe de movimento com a implementação de cada combinação de parâmetros dos métodos a todos os voluntários de cada base de dados. Também apresenta-se resultados para valor $F$ médio entre todos as classes de movimentos e todos os voluntários de uma mesma base de dados.
+As diferentes combinações de parâmetros testadas nos métodos MTD1 a MTD4 foram indexadas por método de segmentação de acordo com a Tabela \ref{tab:combinacoes_expanded}.As Figuras \ref{fig:mtd1plot1} a \ref{fig:mtd4plot1} apresentam resultados de média e moda de número de segmentos obtidos por classe de movimento com a implementação de cada combinação de parâmetros dos métodos a todos os voluntários de cada base de dados. Também apresenta-se resultados para valor $F$ médio entre todos as classes de movimentos e todos os voluntários de uma mesma base de dados. Lembrando que no método experimental cada voluntário realiza seis repetições por classe de movimento.
 
 \input{./tables/combinacoes_expanded.tex}
 
 \begin{figure}[htb]
-	\caption{\label{fig:mtd1Nina}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD1. Base de dados: NinaPro}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd1_nina.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\IBGEtab{
+	\caption{\label{fig:mtd1plot1}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs com diferentes combinações de parâmetros. Método de segmentação: MTD1.}.
+}
+{
+	\begin{tabular}{c}
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd1_nina.eps} \\
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd1_iee.eps} \\
+	\end{tabular}
+}{}
 \end{figure}
 
 \begin{figure}[htb]
-	\caption{\label{fig:mtd1Iee}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD1. Base de dados: IEE}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd1_iee.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\IBGEtab{
+	\caption{\label{fig:mtd2plot1}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs com diferentes combinações de parâmetros. Método de segmentação: MTD2.}.
+}
+{
+	\begin{tabular}{c}
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd2_nina.eps} \\
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd2_iee.eps} \\
+	\end{tabular}
+}{}
 \end{figure}
 
 \begin{figure}[htb]
-	\caption{\label{fig:mtd2Nina}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD2. Base de dados: NinaPro}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd2_nina.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\IBGEtab{
+	\caption{\label{fig:mtd3plot1}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs com diferentes combinações de parâmetros. Método de segmentação: MTD3.}.
+}
+{
+	\begin{tabular}{c}
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd3_nina.eps} \\
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd3_iee.eps} \\
+	\end{tabular}
+}{}
 \end{figure}
 
 \begin{figure}[htb]
-	\caption{\label{fig:mtd2Iee}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD2. Base de dados: IEE}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd2_iee.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\IBGEtab{
+	\caption{\label{fig:mtd4plot1}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs com diferentes combinações de parâmetros. Método de segmentação: MTD4.}.
+}
+{
+	\begin{tabular}{c}
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd4_nina.eps} \\
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/mtd4_iee.eps} \\
+	\end{tabular}
+}{}
 \end{figure}
+
+Para discussão sobre a influência de valores utilizados em cada parâmetro específico no número de segmentos obtidos, a Tabela \ref{tab:correlation} apresenta coeficientes de correlação calculados entre o número médio de segmentos obtido por classe de movimento e parâmetros utilizados.
+
+ \input{./tables/correlation.tex}
+
+Para o método de segmentação MTD1 e MTD2, percebe-se que a moda de número de segmentos por classe de movimento manteve-se de forma consistente em 6 para a grande variedade de combinações de parâmetros utilizados em ambas as bases de dados.
+
+No MTD1, pode-se perceber forte correlação entre a média de número de segmentos obtidos por classe e o valor utilizado para $T_{lim}$ - combinações com maior $T_{lim}$ apresentaram menor média de número de segmentos obtidos por classe de movimento. Isto pode ser justificado pelo fato de $T_{lim}$ ser também um parâmetro para interrupção do método iterativo do MTD1 (quanto maior $T_{lim}$, menor o número máximo de iterações do método e por consequência, menor o número de segmentos identificados) e indica que para a maioria das execuções do MTD1 o limite mínimo de \emph{threshold} $T_{lim}$ é atingido antes de obter-se a razão mínima desejada $r_{target}$ entre número de segmentos e comprimento total de sinal.
+
+Para o MTD2, evidenciou-se forte correlação entre o número médio de segmentos obtidos por classe de movimento e o parâmetros $C$, indicando que determinar valor de \emph{threshold} como uma fração do valor máximo do sinal tem alta influência nos resultados de segmentação.
+
+Para o MTD3 e o MTD4, apenas algumas combinações de parâmetros testadas conseguiram apresentar moda 6 para número de segmentos por classe de movimento na base de dados NinaPro; e nenhuma combinação de parâmetro atingiu moda 6 na base de dados IEE.
+
+Para o MTD3, em ambas as bases de dados, evidencia-se correlações moderadas entre número médio de segmentos obtidos e parâmetros utilizados, sendo que para o parâmetro $C$ o coeficiente de correlação apresentou sinais opostos para diferentes bases de dados. Estes resultados para correlação neste método são, portanto, inconclusivos.
+
+Para o MTD4 existe forte correlação positiva entre o valor de \emph{threshold} utilizado e o número de segmentos obtido para a base de dados IEE; e correlação moderada-fraca de sinal oposto para a base de dados NinaPro. Como não foi possível atingir moda 6 para nenhuma combinação de parâmetros na base de dados IEE, isto é um indicativo de que o MTD4 ou é inadequado para segmentar os sinais adquiridos no IEE (possivelmente por diferenças em nível de ruído da aquisição), ou a faixa de parâmetros testada não inclui valores adqueados para esta base de dados.
+
+Em todos os métodos de segmentação, é possível perceber uma correlação gráfica entre o desempenho de classificação de RNAs (indicado pelo valor $F$ médio) e a média de número de segmentos obtidos por classe de movimento. 
+
+%-------------------------------------------------------------------------
+		\section{Valor $F$ por Classe de Movimentos}
+%-------------------------------------------------------------------------
+Para avaliação de desempenho de classificação para cada classe de movimento em cada método de segmentação, foram selecionadas as combinações de parâmetros apresentadas na Tabela \ref{tab:chosen_params}, que, dentre as combinações testadas, apresentaram o número médio de segmentos por classe de movimento mais próximo de 6.
+
+\input{./tables/chosen_params.tex}
+
+A Figura \ref{fig:fperclass} e a Tabela \ref{tab:fperclass} apresentam resultados para valor $F$ de classificação de cada classe de movimento (indexados como de acordo com a Tabela \ref{tab:movimentos}), utilizando os métodos de segmentação e parâmetros indicados na Tabela \ref{tab:chosen_params}.
 
 \begin{figure}[htb]
-	\caption{\label{fig:mtd3Nina}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD3. Base de dados: NinaPro}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd3_nina.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
+\IBGEtab{
+	\caption{\label{fig:fperclass}Valor $F$ médio por classe de movimento para cada base de dados, utilizando parâmetros selecionados em cada método de segmentação.}.
+}
+{
+	\begin{tabular}{c}
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/fvalue_nina.eps} \\
+	\includegraphics[width=0.9\linewidth]{./img/matlab/results/fvalue_iee.eps} \\
+	\end{tabular}
+}{}
 \end{figure}
 
-\begin{figure}[htb]
-	\caption{\label{fig:mtd3Iee}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD1. Base de dados: IEE}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd3_iee.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
-\end{figure}
+\input{./tables/fvalue.tex}
 
-\begin{figure}[htb]
-	\caption{\label{fig:mtd4Nina}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD4. Base de dados: NinaPro}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd4_nina.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
-\end{figure}
+Para a base de dados NinaPro, os piores desempenhos de classificação foram verificados para a classe de movimento 1 (polegar esticado) e 7 (extensão do indicador); os melhores desempenhos para esta base foram verificados nas classes 13 (flexão de punho) e 17 (extensão de punho com a mão cerrada). Um total de 11 classes de movimentos (3, 6, 9 - 17) apresentaram 
+valor $F$ médio superior a 0,90.
 
-\begin{figure}[htb]
-	\caption{\label{fig:mtd4Iee}Média e moda do número de segmentos obtidos por classe de movimento e valor $F$ médio de RNAs. Método de segmentação: MTD1. Base de dados: IEE}.
-	\begin{center}
-	    \includegraphics[width=0.75\linewidth]{./img/matlab/results/mtd4_iee.eps}
-	\end{center}
-	%\legend{Fonte: adaptado de BASMAJIAN \& DE LUCA, 1985}
-\end{figure}
+Para a base de dados IEE, foi identifica grande dificuldade de classificação (valor $F$ médio inferior a 0,7) para as classes 8 (adução de dedos) e 10(rotação de punho em torno do dedo médio). Um total de 8 classes de movimento (1 - 4, 7 - 11) apresentaram valor $F$ médio inferior a 0,75. Os melhores desempenhos de classificação desta base foram obtidos para as classes 5(abdução de dedos) e 16(devio ulnar do punho).
 
-\textcolor{red}{TODO: finalizar análise}
+Os métodos de segmentação que produzem segmentos de comprimento constante (MTD1 e MTD2) produziram os melhores desempenhos de classificação para ambas as bases de dados quando comparados aos métodos de segmentos de comprimento variável (MTD3 e MTD4), além de apresentarem média de número de segmentos obtido por classe de movimento mais próximo de 6 (Tabela \ref{tab:chosen_params}).
 
-%%-------------------------------------------------------------------------
-%		\section{Classificação de Movimentos Utilizando RNAs}
-%%-------------------------------------------------------------------------
-%Para os resultados de segmentação obtidos com diferentes parâmetros testados apresentados nas Tabelas \ref{tab:num_mtd1_ninapro} a \ref{tab:number_mtd4_iee}, identificou-se as combinações de parâmetros que apresentaram os resultados de segmentação mais satisfatórios (i.e. parâmetros que segmentaram em seis partes cada movimento para o maior número possível de voluntários da base) para serem usados nos nos códigos dos apêndices \ref{ap:rna_mtd1} a \ref{ap:rna_mtd4}, que realizam segmentação e classificação de movimentos utilizando RNA. As combinações de parâmetros selecionadas são apresentadas na Tabela \ref{tab:chosen_params}.
-%
-%\input{./tables/chosen_params.tex}
+O uso dos métodos de segmentação MTD1 e MTD2  As RNAs apresentaram melhor desempenho de classificação para todas as classes de movimentos em ambas as bases de dados quando foram 
 
 %=========================================================================
 % CONCLUSÃO
@@ -688,6 +763,10 @@ As diferentes combinações de parâmetros testadas nos métodos MTD1 a MTD4 for
 \chapter{Código utilizado para determinação de $r_{target}$ do MTD1}
 \label{ap:r_target}
 \lstinputlisting{../../MATLAB/rtarget_mtd1.m}
+%-------------------------------------------------------------------------
+\chapter{Código utilizado para escolha de valores de $A$ do MTD2}
+\label{ap:Avalue}
+\lstinputlisting{../../MATLAB/A_value_mtd2.m}
 %-------------------------------------------------------------------------
 \chapter{Função em MATLAB para obtenção dos movimentos relacionados aos segmentos}
 \label{ap:idMoves}

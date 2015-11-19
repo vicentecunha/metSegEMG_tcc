@@ -1,22 +1,21 @@
 \begin{table}[htb]
 \IBGEtab{\caption{\label{tab:chosen_params}Combinações de parâmetros selecionados para cada base de dados.}}
 {
-	\begin{tabular}{c|ccc}
+	\begin{tabular}{c|ccccc}
 		\toprule
-		Método 					& Base de dados	& Índice da combinação	& Parâmetros \\
+		Método 					& Base de dados	& Índice	& Parâmetros	&\pbox{2cm}{Média de \\ Segmentos por Classe}&\pbox{2cm}{Moda de \\ Segmentos por Classe}\\
 		\midrule \midrule
-		\multirow{2}{*}{MTD1}	& NinaPro		& 8						& $q = 0.95 \quad T_{lim} = 0.10$\\
-								& IEE			& \textcolor{red}{TODO}						& \textcolor{red}{TODO}\\
-		\midrule
-		\multirow{2}{*}{MTD2}	& NinaPro		& 8						& $A = 30 \quad B = 8 \quad C = 2$\\
-								& IEE			& \textcolor{red}{TODO}						& \textcolor{red}{TODO}\\
-		\midrule
-		\multirow{2}{*}{MTD3}	& NinaPro		& 4						& $B = 0.04 \quad C = -0.01$\\
-								& IEE			&\textcolor{red}{TODO} 						&\textcolor{red}{TODO} \\
-		\midrule
-		\multirow{2}{*}{MTD4}	& NinaPro		& \textcolor{red}{TODO}						&\textcolor{red}{TODO} \\
-								& IEE			& \textcolor{red}{TODO}						&\textcolor{red}{TODO} \\
-		\midrule
+		\multirow{2}{*}{MTD1}	& NinaPro		& 15 & $q = 0.95 \quad T_{lim} = 0.15$	&6,05&6\\
+								& IEE			& 11 & $q = 0.75 \quad T_{lim} = 0.15$	&6,23&6\\
+		\midrule                                                                             
+		\multirow{2}{*}{MTD2}	& NinaPro		& 7	& $A = 60 \quad B = 8 \quad C = 2$	&6,01&6\\
+								& IEE			& 18& $A = 100 \quad B = 8 \quad C = 5$	&6,28&6\\
+		\midrule                                                                             
+		\multirow{2}{*}{MTD3}	& NinaPro		& 7	& $B = 0.10 \quad C = -0.10$		&4,29&6\\
+								& IEE			& 7 & $B = 0.10 \quad C = -0.10$		&3,15&3\\
+		\midrule                                                                             
+		\multirow{2}{*}{MTD4}	& NinaPro		& 6	& $T = 0.06$						&4,46&6\\
+								& IEE			& 21& $T = 0.21$						&2,78&2\\
 		\bottomrule
 	\end{tabular}
 }{}
