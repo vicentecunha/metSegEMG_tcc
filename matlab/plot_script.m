@@ -32,7 +32,7 @@ chosenIndex = zeros(4,1);
 
 %% CALCULOS
 for currentMethod = 1:4
-    load(['./out/workspace/complete_MTD' num2str(currentMethod)])
+    load(['./out/workspace/complete_MTD' num2str(currentMethod) '_IEE'])
     
     segMean{currentMethod,1} = squeeze(mean(numberOfSegPerClass,2));
     segMode{currentMethod,1} = squeeze(mode(numberOfSegPerClass,2));
