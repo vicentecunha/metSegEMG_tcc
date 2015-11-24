@@ -33,53 +33,9 @@
 \imprimircapa
 \imprimirfolhaderosto*
 
-% ---
-% Inserir a ficha bibliografica
-% ---
-
-% Isto é um exemplo de Ficha Catalográfica, ou ``Dados internacionais de
-% catalogação-na-publicação''. Você pode utilizar este modelo como referência. 
-% Porém, provavelmente a biblioteca da sua universidade lhe fornecerá um PDF
-% com a ficha catalográfica definitiva após a defesa do trabalho. Quando estiver
-% com o documento, salve-o como PDF no diretório do seu projeto e substitua todo
-% o conteúdo de implementação deste arquivo pelo comando abaixo:
-%
-% \begin{fichacatalografica}
-%     \includepdf{fig_ficha_catalografica.pdf}
-% \end{fichacatalografica}
-
-%\begin{fichacatalografica}
-%	\sffamily
-%	\vspace*{\fill}					% Posição vertical
-%	\begin{center}					% Minipage Centralizado
-%	\fbox{\begin{minipage}[c][8cm]{13.5cm}		% Largura
-%	\small
-%	\imprimirautor
-%	%Sobrenome, Nome do autor
-%	
-%	\hspace{0.5cm} \imprimirtitulo  / \imprimirautor. --
-%	\imprimirlocal, \imprimirdata-
-%	
-%	\hspace{0.5cm} \pageref{LastPage} p. : il. (algumas color.) ; 30 cm.\\
-%	
-%	\hspace{0.5cm} \imprimirorientadorRotulo~\imprimirorientador\\
-%	
-%	\hspace{0.5cm}
-%	\parbox[t]{\textwidth}{\imprimirtipotrabalho~--~\imprimirinstituicao,
-%	\imprimirdata.}\\
-%	
-%	\hspace{0.5cm}
-%		1. Palavra-chave1.
-%		2. Palavra-chave2.
-%		2. Palavra-chave3.
-%		I. Orientador.
-%		II. Universidade xxx.
-%		III. Faculdade de xxx.
-%		IV. Título 			
-%	\end{minipage}}
-%	\end{center}
-%\end{fichacatalografica}
-% ---
+\begin{fichacatalografica}
+    \includepdf{fichaCatalog.pdf}
+\end{fichacatalografica}
 
 %=========================================================================
 % FOLHA DE APROVAÇÃO
@@ -160,7 +116,7 @@
 \setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
 \begin{resumo}
 
-	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação automática possibilitam a individualização de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície, adaptados de outros trabalhos na área, foram propostos e implementados em MATLAB R2015a. Os métodos foram aplicados nos sinais da base de dados número 2 do projeto NinaPro (\emph{Non-Invasive Adaptive Prosthetics project}) e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNA) foram utilizadas para classificar os sinais segmentados com os quatro métodos de segmentação entre 17 diferentes movimentos de mão e punho. Resultados mostram ser possível utilizar segmentação automática baseada na detecção de picos com \emph{threshold} para resultados dFe valor $F$ médio de classificação acima de 91\% entre diferentes classes de movimentos.
+	A segmentação de sinais de eletromiografia (EMG) é parte essencial da etapa de preprocessamento em aplicações de reconhecimento de movimentos e controle de próteses. Métodos de segmentação automática possibilitam a individualização de trechos de interesse do sinal correspondentes a esforços musculares e o descarte de trechos de sinal com baixa atividade muscular, por exemplo. Neste estudo, quatro métodos para segmentação automática de sinais de EMG de superfície, adaptados de outros trabalhos na área, foram propostos e implementados em MATLAB R2015a. Os métodos foram aplicados nos sinais da base de dados número 2 do projeto NinaPro (\emph{Non-Invasive Adaptive Prosthetics project}) e nos sinais da base de dados adquiridos pelo Laboratório de Instrumentação Eletro-Eletrônica da UFRGS. Redes neurais artificais (RNA) foram utilizadas para classificar os sinais segmentados com os quatro métodos de segmentação entre 17 diferentes movimentos de mão e punho. Resultados mostram ser possível utilizar segmentação automática baseada na detecção de picos com \emph{threshold} para resultados de valor $F$ médio de classificação acima de 91\% entre diferentes classes de movimentos.
 	
 
 	\vspace{\onelineskip}
@@ -391,7 +347,7 @@ Uma RNA pode ser utilizada para resolver determinado problema após um processo 
 
 Quando uma RNA é aplicada para classificação de séries temporais de sinais, as entradas (chamadas ``preditores'') utilizadas pela RNA são características extraídas de um trecho do sinal (e.g. número de cruzamentos por zero, valor médio, valor RMS). A extração de características tem o objetivo de reduzir a dimensionalidade do vetor de entradas da RNA (i.e. ao invés de um trecho de sinal com grande número de amostras, a entrada da RNA trata-se de um número arbitrariamente pequeno de preditores), o que apresenta vantagens em desempenho computacional e contorna problemas que surgem da classificação de sinais ruidosos \cite{Kim2000}.
 
-Para maiores detalhes sobre RNAs e outros métodos de aprendizado computacional, sugere-se consulta das seguintes referências: \citeonline{YEGNANARAYANA2009}, \citeonline{Abraham2005} e \citeonline{Drew20003}.
+Para maiores detalhes sobre RNAs e outros métodos de aprendizado computacional, sugere-se consulta das seguintes referências: \citeonline{YEGNANARAYANA2009}, \citeonline{Abraham2005} e \citeonline{Drew2000}.
 
 %-------------------------------------------------------------------------
 			\subsection{Valor $F$}
@@ -435,7 +391,7 @@ Extrapolar a Tabela \ref{tab:conf_example} para o caso das RNAs deste trabalho, 
 %	%\legend{Fonte: adaptado de \cite{Gijsberts2014}}
 %\end{figure}
 
-Em situações onde existe grande disparidade entre o número de classificações esperadas positivas e negativas, é comum o uso de indicadores de precisão $p_\zeta$ (Equação(\ref{eq:precisao})) e sensitividade $r_\zeta$ (Equação(\ref{eq:sensitividade})) por classe $\zeta$ - que não utilizam em suas definições o número geralmente grande de classificações verdadeiras negativas $a_\zeta$ - e combinações destes indicadores \cite{Kubat1998}. O valor $F_{\zeta_{\nu}}$ para determinada classe $\zeta$ e volutário $\nu$ é definido como a média harmônica entre precisão e senstividade, conforme a Equação (\ref{eq:fscore}).
+Em situações onde existe grande disparidade entre o número de classificações esperadas positivas e negativas, é comum o uso de indicadores de precisão $p_\zeta$ (Equação (\ref{eq:precisao})) e sensitividade $r_\zeta$ (Equação (\ref{eq:sensitividade})) por classe $\zeta$ - que não utilizam em suas definições o número geralmente grande de classificações verdadeiras negativas $a_\zeta$ - e combinações destes indicadores \cite{Kubat1998}. O valor $F_{\zeta_{\nu}}$ para determinada classe $\zeta$ e volutário $\nu$ é definido como a média harmônica entre precisão e senstividade, conforme a Equação (\ref{eq:fscore}).
 
 \begin{equation}
 \label{eq:precisao}
@@ -452,7 +408,7 @@ Em situações onde existe grande disparidade entre o número de classificaçõe
 	F_{\zeta_{\nu}} = 2 \times \frac{p_{\zeta_{\nu}} \times r_{\zeta_{\nu}}}{p_{\zeta_{\nu}} + r_{\zeta_{\nu}}}
 \end{equation}
 
-Para avaliação de desempenho de classificação de RNAs, este trabalho utilizará valor $F$ médio $\bar{F_\zeta}$ por classe de movimento $\zeta$ entre os $M$ voluntários de uma mesma base de dados (definido pela Equação \ref{eq:f_value_medio}) e valor $F$ médio entre as 17 classes de movimento e $M$ voluntários $\bar{\bar{F}}$ (Equação \ref{eq:f_value_medio_medio}).
+Para avaliação de desempenho de classificação de RNAs, este trabalho utilizará valor $F$ médio $\bar{F_\zeta}$ por classe de movimento $\zeta$ entre os $M$ voluntários de uma mesma base de dados (definido pela Equação (\ref{eq:f_value_medio})) e valor $F$ médio entre as 17 classes de movimento e $M$ voluntários $\bar{\bar{F}}$ (Equação (\ref{eq:f_value_medio_medio})).
 
 \begin{equation}
 \label{eq:f_value_medio}
@@ -529,7 +485,7 @@ Esta seção descreve a implementação dos métodos de segmentação propostos.
 
 Os sinais de eletromiografia para ambas as bases de dados (NinaPro e IEE) são armazenados mantendo sua polaridade original (i.e. amostras do sinal podem assumir valores positivos e negativos). Primeiramente, realiza-se a retificação completa dos sinais tomando o módulo dos valores amostrados (em MATLAB, função \emph{abs()}). A retificação completa do sinal mantém sua energia e é fundamental para a implementação dos métodos de segmentação aqui desenvolvidos.
 
-Após a etapa de retificação, os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da Equação (\ref{eq:x_normalization}), onde $x_j$ é o sinal original para um canal j e $x_{j_{norm}}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica retificação e normalização para trecho de sinal de um canal de EMG.
+Após a etapa de retificação, os sinais para cada canal de aquisição são normalizados de acordo com seu valor máximo, de modo que seu novo valor máximo seja unitário, a partir da Equação (\ref{eq:x_normalization}), onde $x_j$ é o sinal original para um canal $j$ e $x_{j_{norm}}$ é sua versão normalizada. A normalização de canais faz com que os parâmetros utilizados pelos métodos de segmentação sejam relativos ao valor máximo do sinal, possibilitando a implementação para diferentes voluntários. A Figura \ref{fig:normalization} exemplifica retificação e normalização para trecho de sinal de um canal de EMG.
 
 \begin{equation}
 	\label{eq:x_normalization}
@@ -582,7 +538,7 @@ Esta seção descreve o uso de RNAs para classificação dos segmentos obtidos d
 %-------------------------------------------------------------------------
 			\subsection{Características Utilizadas como Preditores}
 %-------------------------------------------------------------------------
-Os preditores (``entradas'') das RNAs são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no Laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultados em métodos de inteligência computacional, como \cite{Favieiro2009}, \cite{Schons2014} e \cite{Cene2015}.
+Os preditores (``entradas'') das RNAs são o valor RMS, a variância e a frequência mediana do espectro de potência dos segmentos de sinal obtidos pelos métodos MTD1 - MTD4. Tais características foram selecionados de acordo com outros trabalhos já realizados no Laboratório de Instrumentação Eletro-Eletrônica que obtiveram bons resultados em métodos de inteligência computacional, como \citeonline{Favieiro2009}, \citeonline{Schons2014} e \citeonline{Cene2015}.
 
 O valor RMS ou \emph{Root Mean Square} de um sinal discreto \emph{x} de comprimento $L$ (em MATLAB, função \emph{rms()}) é dada pela Equação (\ref{eq:rms}) e a variância deste sinal (em MATLAB, função \emph{var()}) é dada pela Equação (\ref{eq:var}), onde $\bar{x}$ é o valor médio do sinal. A frequência mediana é tal que a soma total da densidade de potência para frequências abaixo da frequência mediana é igual à soma total da densidade de potência para frequências acima da frequência mediana, sendo estimada pela função \emph{medfreq()} em MATLAB.
 
@@ -610,14 +566,14 @@ A função apresentada no Apêndice \ref{ap:idMoves} é utilizada para criar o v
 %-------------------------------------------------------------------------
 			\subsection{Separação de Grupos de Treino, Validação e Teste para Treinamento}
 %-------------------------------------------------------------------------
-Sendo $N_i$ o número de segmentos obtidos por classe de movimentos $i$, os grupos de segmentos utilizados nos treinamentos de RNAs são tais que: 
+Sendo $N_\zeta$ o número de segmentos obtidos por classe de movimentos $\zeta$, os grupos de segmentos utilizados nos treinamentos de RNAs são tais que: 
 
 \begin{itemize}
-\item grupo de treino: primeiros $N_i-2$ segmentos obtidos de todas as classes de movimentos
-\item grupo de validação: segmento obtido de índice $N_i-1$ de todas as classes de movimentos
-\item grupo de teste: $N_i$-ésimo segmento obtido de todas as classes de movimentos
-\item Para $N_i=2$, o primeiro segmento identificado da classe $i$ entra no grupo de treino e o segundo segmento no grupo de validação.
-\item Para $N_i=1$, o segmento identificado da classe $i$ entra no grupo de treino.
+\item grupo de treino: primeiros $N_\zeta-2$ segmentos obtidos de todas as classes de movimentos
+\item grupo de validação: segmento obtido de índice $N_\zeta-1$ de todas as classes de movimentos
+\item grupo de teste: $N_\zeta$-ésimo segmento obtido de todas as classes de movimentos
+\item Para $N_\zeta=2$, o primeiro segmento identificado da classe $\zeta$ entra no grupo de treino e o segundo segmento no grupo de validação.
+\item Para $N_\zeta=1$, o segmento identificado da classe $\zeta$ entra no grupo de treino.
 \end{itemize}
 
 Optou-se por este controle da divisão por indexação (método de divisão chamado em MATLAB de $divideind$) ao invés de métodos de divisão aleatória de grupos ($dividerand$) devido ao número reduzido de repetições por classe de movimento (6 repetições). Utilizar divisão aleatória de grupos apresentaria alta chance de situações particulares em que nenhum (ou, na situação oposta e igualmente indesejada, todos) segmentos de determinada classe estariam inclusos no grupo ``treino'', viciando resultados de classificação.
@@ -721,7 +677,7 @@ Para avaliação de desempenho de classificação das diferentes classes de movi
 
 \input{./tables/chosen_params.tex}
 
-A Figura \ref{fig:fperclass} e a Tabela \ref{tab:fperclass} apresentam resultados de valores $\bar{F_\zeta}$ (Equação \ref{eq:f_value_medio}), indexados nas classes $\zeta$ de acordo com a Tabela \ref{tab:movimentos}, utilizando os parâmetros selecionados na Tabela \ref{tab:chosen_params}.
+A Figura \ref{fig:fperclass} e a Tabela \ref{tab:fperclass} apresentam resultados de valores $\bar{F_\zeta}$ (Equação (\ref{eq:f_value_medio})), indexados nas classes $\zeta$ de acordo com a Tabela \ref{tab:movimentos}, utilizando os parâmetros selecionados na Tabela \ref{tab:chosen_params}.
 
 \begin{figure}[htb]
 \IBGEtab{
