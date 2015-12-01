@@ -1,0 +1,111 @@
+%------------------------------------------------------------------------------		
+% Styles:
+%------------------------------------------------------------------------------
+\tikzstyle{io} = [circle, minimum width=0.1cm, draw=black, fill=black]
+\tikzstyle{neuron} = [circle, minimum width=1cm, draw=black]
+\tikzstyle{section} = [rectangle, minimum width=2cm, densely dotted, very thick]
+
+\begin{figure}[htb]
+	\caption{\label{fig:feedforward} Exemplo de uma RNA em arquitetura \emph{feedforward}.}
+	\begin{center}
+		\begin{tikzpicture}[>=triangle 60]
+%------------------------------------------------------------------------------
+% Node placement
+%------------------------------------------------------------------------------
+			\node[io](x1){}; \node[left=of x1](x1in){$in_1$};
+			\node[io, below=of x1](x2){}; \node[left=of x2](x2in){$in_2$};
+			\node[io, below=of x2](x3){}; \node[left=of x3](x3in){$in_3$};
+			\node[below=of x3, yshift=2em]{...};
+			\node[io, below=of x3](x4){}; \node[left=of x4](x4in){$in_m$};
+
+			\node[neuron, right=of x1, xshift=2em, yshift=2em](n1){$N_1$};
+			\node[neuron, below=of n1](n2){$N_2$};
+			\node[neuron, below=of n2](n3){$N_3$};
+			\node[below=of n3, yshift=2em]{...};
+			\node[neuron, below=of n3](n4){$N_r$};
+			
+			\node[neuron, right=of n1, xshift=2em](ns1){$N_1$};
+			\node[neuron, below=of ns1](ns2){$N_2$};
+			\node[neuron, below=of ns2](ns3){$N_3$};
+			\node[below=of ns3, yshift=2em]{...};
+			\node[neuron, below=of ns3](ns4){$N_s$};
+			
+			\node[neuron, right=of ns1, xshift=2em, yshift=-2em](nt1){$N_1$};
+			\node[neuron, below=of nt1](nt2){$N_2$};
+			\node[below=of nt2, yshift=2em]{...};
+			\node[neuron, below=of nt2](nt3){$N_n$};
+			
+			\node[right=of nt1](y1){$out_1$};
+			\node[right=of nt2](y2){$out_2$};
+			\node[right=of nt3](y3){$out_n$};
+			
+			\node[section, above=of n1,  minimum height=7.2cm, yshift=-8.1cm, draw=red](s1){};
+			\node[below=of s1, align=left, yshift=2em]{Primeira \\ Camada \\ Oculta};
+			\node[section, above=of ns1,  minimum height=7.2cm, yshift=-8.1cm, draw=green](s2){};
+			\node[below=of s2, align=left, yshift=2em]{Segunda \\ Camada \\ Oculta};
+			\node[section, above=of nt1,  minimum height=5.2cm, yshift=-6.1cm, draw=blue](s3){};
+			\node[below=of s3, align=left, yshift=2em]{Camada \\ de Saída};
+
+%------------------------------------------------------------------------------
+% Connections
+%------------------------------------------------------------------------------
+			\draw [->,black] (x1in) -- (x1);
+			\draw [->,black] (x2in) -- (x2);
+			\draw [->,black] (x3in) -- (x3);
+			\draw [->,black] (x4in) -- (x4);
+
+			\draw [->,black] (x1) -- (n1);
+			\draw [->,black] (x1) -- (n2);
+			\draw [->,black] (x1) -- (n3);
+			\draw [->,black] (x1) -- (n4);
+			\draw [->,black] (x2) -- (n1);
+			\draw [->,black] (x2) -- (n2);
+			\draw [->,black] (x2) -- (n3);
+			\draw [->,black] (x2) -- (n4);
+			\draw [->,black] (x3) -- (n1);
+			\draw [->,black] (x3) -- (n2);
+			\draw [->,black] (x3) -- (n3);
+			\draw [->,black] (x3) -- (n4);
+			\draw [->,black] (x4) -- (n1);
+			\draw [->,black] (x4) -- (n2);
+			\draw [->,black] (x4) -- (n3);
+			\draw [->,black] (x4) -- (n4);
+
+			\draw [->,black] (n1) -- (ns1);
+			\draw [->,black] (n1) -- (ns2);
+			\draw [->,black] (n1) -- (ns3);
+			\draw [->,black] (n1) -- (ns4);
+			\draw [->,black] (n2) -- (ns1);
+			\draw [->,black] (n2) -- (ns2);
+			\draw [->,black] (n2) -- (ns3);
+			\draw [->,black] (n2) -- (ns4);
+			\draw [->,black] (n3) -- (ns1);
+			\draw [->,black] (n3) -- (ns2);
+			\draw [->,black] (n3) -- (ns3);
+			\draw [->,black] (n3) -- (ns4);
+			\draw [->,black] (n4) -- (ns1);
+			\draw [->,black] (n4) -- (ns2);
+			\draw [->,black] (n4) -- (ns3);
+			\draw [->,black] (n4) -- (ns4);
+			
+			\draw [->,black] (ns1) -- (nt1);
+			\draw [->,black] (ns1) -- (nt2);
+			\draw [->,black] (ns1) -- (nt3);
+			\draw [->,black] (ns2) -- (nt1);
+			\draw [->,black] (ns2) -- (nt2);
+			\draw [->,black] (ns2) -- (nt3);
+			\draw [->,black] (ns3) -- (nt1);
+			\draw [->,black] (ns3) -- (nt2);
+			\draw [->,black] (ns3) -- (nt3);
+			\draw [->,black] (ns4) -- (nt1);
+			\draw [->,black] (ns4) -- (nt2);
+			\draw [->,black] (ns4) -- (nt3);
+		
+			\draw [->,black] (nt1) -- (y1);
+			\draw [->,black] (nt2) -- (y2);
+			\draw [->,black] (nt3) -- (y3);
+			
+		\end{tikzpicture}
+	\end{center}
+	\legend{Fonte: adaptado de \citeonline{BARBOSA2005}}
+\end{figure}

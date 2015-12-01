@@ -1,0 +1,80 @@
+% Set up a few colours
+\colorlet{lcfree}{green}
+\colorlet{lcnorm}{blue}
+\colorlet{lccong}{red}
+% -------------------------------------------------
+% Set up a new layer for the debugging marks, and make sure it is on
+% top
+\pgfdeclarelayer{marx}
+\pgfsetlayers{main,marx}
+% A macro for marking coordinates (specific to the coordinate naming
+% scheme used here). Swap the following 2 definitions to deactivate
+% marks.
+\providecommand{\cmark}[2][]{%
+  \begin{pgfonlayer}{marx}
+    \node [nmark] at (c#2#1) {#2};
+  \end{pgfonlayer}{marx}
+  } 
+\providecommand{\cmark}[2][]{\relax} 
+% -------------------------------------------------
+% Start the picture
+\begin{figure}[htb]
+	\caption{\label{fig_mtd1flux}Fluxograma representativo do MTD1.}
+	\begin{center}
+		\begin{tikzpicture}[%
+			>=triangle 60,              % Nice arrows; your taste may be different
+			start chain=going below,    % General flow is top-to-bottom
+			node distance=6mm and 60mm, % Global setup of box spacing
+			every join/.style={norm},   % Default linetype for connecting boxes
+			]
+		% ------------------------------------------------- 
+		% A few box styles 
+		% <on chain> *and* <on grid> reduce the need for manual relative
+		% positioning of nodes
+		\tikzset{
+		  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
+		  proc/.style={base, rectangle, text width=8em},
+		  test/.style={base, diamond, aspect=2, text width=8em},
+		  term/.style={proc, rounded corners},
+		  % coord node style is used for placing corners of connecting lines
+		  coord/.style={coordinate, on chain, on grid, node distance=6mm and 25mm},
+		  % nmark node style is used for coordinate debugging marks
+		  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+		  % -------------------------------------------------
+		  % Connector line styles for different parts of the diagram
+		  norm/.style={->, draw, lcnorm},
+		  free/.style={->, draw, lcfree},
+		  cong/.style={->, draw, lccong},
+		  it/.style={font={\small\itshape}}
+		}
+		% -------------------------------------------------
+		% Node placement: column 1
+		\node [term, densely dotted, it, fill=lccong!25] (init) {INÍCIO};
+		\node [proc, fill=lcnorm!25, join] {$k = 0$};
+		\node [proc, fill=lcnorm!25, join] {$T_k = max(x)$};
+		\node [proc, fill=lcnorm!25, join] (in) {$k \gets k + 1$};
+		\node [proc, fill=lcnorm!25, join] {$T_k = q \times T_{k-1}$};
+		\node [test, join] (t1) {$T_k < T_{min}$};
+		\node [proc, fill=lcfree!25] (fin) {Segmentos de comprimento $l$ centrados nos candidatos identificados};
+		\node [term, densely dotted, it, fill=lccong!25, join] {FIM};
+		% -------------------------------------------------
+		% Node placement: column 2
+		\node [proc, fill=lcfree!25, right=of t1] (id) {Identificação de candidatos a centros de segmentos};
+		\node [test, yshift=-0.2em, join] (t2) {$\frac{N_k}{L} \geq r_{target}$};
+		% -------------------------------------------------
+		% Test connections
+		\path (t1.south) to node [near start, xshift=2em] {$sim$} (fin);
+			\draw [*->,lcnorm] (t1.south) -- (fin);
+			
+		\path (t1.east) to node [near start, yshift=1em] {$não$} (id);
+			\draw [o->,lcnorm] (t1.east) -- (id);
+			
+		\path (t2.west) to node [near start, yshift=1em] {$sim$} (fin);
+			\draw [*->,lcnorm] (t2.west) -- (fin);
+		
+		\path (t2.east) to node [near start, xshift=6em, yshift=-3em] {$não$} (in);
+			\draw [o->,lcnorm] (t2.east) |- (in);
+		% -------------------------------------------------
+		\end{tikzpicture}
+	\end{center}
+\end{figure}
