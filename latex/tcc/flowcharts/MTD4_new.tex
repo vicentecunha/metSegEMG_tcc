@@ -56,12 +56,12 @@
 		\node [test, join] (t1) {$w_0 + W > L$};
 		% -------------------------------------------------
 		% Node placement: column 2
-		\node [test, fill=lcfree!25, right=of t1] (B) {Máximo do sinal contido na janela $< T$?};
+		\node [test, fill=lcfree!25, right=of t1] (B) {Máximo do sinal contido na janela $> T$?};
 		\node [proc, fill=lcfree!25] (BEP) {$w_0$ é BEP};
 		\node [proc, fill=lcnorm!25, join] (w01) {$w_0 \gets w_0 + step$};
 		\node [test, join] (t2) {$w_0+W > L$};
-		\node [test] (lMax) {$w_0+W > l_{máx}$};
-		\node [test, fill=lcfree!25] (C) {Máximo do sinal contido na janela $< T$?};
+		\node [test] (lMax) {$w_0+W - BEP  > l_{máx}$};
+		\node [test, fill=lcfree!25] (C) {Máximo do sinal contido na janela $< T$ e $w_0+W - BEP < l_{mín}$?};
 		\node [proc, fill=lcfree!25] (EEP) {$w_0+W$ é EEP};
 		% -------------------------------------------------
 		% Node placement: column 3
