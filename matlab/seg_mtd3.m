@@ -101,7 +101,7 @@ for currentDelta = 1:numberOfDeltas
         finalEEPsFlags(currentDelta+1) = true;
     end
 end
-finalBEPs = allLocs(finalBEPsFlags,1);
+finalBEPs = allLocs(finalBEPsFlags, 1);
 finalEEPs = allLocs(finalEEPsFlags, 1);
 
 %% Segmentacao
